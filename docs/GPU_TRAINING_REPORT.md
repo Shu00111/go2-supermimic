@@ -1,7 +1,10 @@
 # GPU training report
 
-Status: implementation and preflight complete; formal seed 14011 is configured
-for detached execution. This document must not be read as a convergence claim.
+Status: implementation and preflight complete. Formal seed 14011 was launched
+at 2026-11-10 12:28:56 Asia/Shanghai from source commit
+`e9615dec86a8fcec66160450193c86f8a893bda0` under the user systemd service
+`go2-supermimic-seed14011.service`. This document must not be read as a
+convergence claim.
 
 ## Scalability and end-to-end gates
 
@@ -51,3 +54,8 @@ last checkpoint iteration, and checkpoint age to `runtime/watchdog.jsonl`.
 It performs no Codex or model calls. The Codex task also has a separate quiet
 40-minute heartbeat for user-visible intervention only when state changes or
 action is required.
+
+The first post-launch verification observed iteration 50/4,000 in Stage A,
+finite loss, both systemd services active, training PID 684464, and 2,424 MiB
+owned by the training Python process (3,757 MiB total GPU memory in use). These
+are liveness measurements, not outcome metrics.
