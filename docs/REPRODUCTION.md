@@ -52,5 +52,25 @@ python scripts/watch_soft_terrain_training.py \
 tail -n 50 outputs/soft_terrain/seed_14011/runtime/training.log
 ```
 
-The formal evaluation command and checkpoint SHA-256 manifest will be recorded
-after the frozen iteration-12,000 checkpoint exists.
+## Freeze and held-out evaluation
+
+The frozen checkpoint is read-only at
+`outputs/soft_terrain/seed_14011/frozen/model_12000.pt`; its SHA-256 is
+`49ee17ecd2009499416492d98b1d49e51a8d4ba5b373b3f4be546f45dd8f6067`.
+
+Run or resume the complete 2x8 matrix (existing valid summaries are skipped):
+
+```bash
+PYTHONNOUSERSITE=1 python scripts/run_soft_terrain_formal_eval.py \
+  --episodes 128 --device cuda:0 \
+  --output-dir outputs/soft_terrain/seed_14011/evaluation/held_out_v1
+PYTHONNOUSERSITE=1 python scripts/summarize_soft_terrain_eval.py \
+  --input-dir outputs/soft_terrain/seed_14011/evaluation/held_out_v1
+PYTHONNOUSERSITE=1 python scripts/plot_soft_terrain_training.py \
+  --training-dir outputs/soft_terrain/seed_14011/training \
+  --output outputs/soft_terrain/seed_14011/evaluation/held_out_v1/training_curves.png
+```
+
+The evaluation matrix is chase-only so pursuit velocity error has a single
+definition. `protocol.json` records condition tasks, fixed seeds, and
+coefficient scales. `ARTIFACT_SHA256SUMS.txt` covers all result artifacts.

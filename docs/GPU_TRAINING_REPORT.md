@@ -1,10 +1,10 @@
 # GPU training report
 
-Status: implementation and preflight complete. Formal seed 14011 was launched
+Status: implementation, training, and held-out evaluation complete. Formal seed 14011 was launched
 at 2026-11-10 12:28:56 Asia/Shanghai from source commit
 `e9615dec86a8fcec66160450193c86f8a893bda0` under the user systemd service
 `go2-supermimic-seed14011.service`. This document must not be read as a
-convergence claim.
+multi-seed convergence claim.
 
 ## Scalability and end-to-end gates
 
@@ -59,3 +59,22 @@ The first post-launch verification observed iteration 50/4,000 in Stage A,
 finite loss, both systemd services active, training PID 684464, and 2,424 MiB
 owned by the training Python process (3,757 MiB total GPU memory in use). These
 are liveness measurements, not outcome metrics.
+
+## Completed cost
+
+- Start: 2026-11-10 12:28:56 Asia/Shanghai.
+- Finish: 2026-11-10 14:04:50 Asia/Shanghai.
+- Wall/GPU time: 1 h 35 min 54 s (one RTX 3090, no concurrent heavy training).
+- Global iterations: 12,000.
+- Approximate environment transitions: 6.14 million, plus short replay prefill
+  at each stage; each transition contains ten 2 ms physics substeps.
+- World-model optimizer updates: 24,000.
+- Actor/Critic policy iterations: approximately 11,700 after the initial 300
+  world-model warm-up iterations.
+- Final checkpoint: `model_12000.pt`, 35,221,167 bytes.
+- Frozen SHA-256:
+  `49ee17ecd2009499416492d98b1d49e51a8d4ba5b373b3f4be546f45dd8f6067`.
+
+The four stage-ending world-model losses were 0.2559, 0.1499, 0.4624, and
+0.2845. Stage-boundary discontinuities are distribution changes visible in
+`training_curves.png`; they are not evaluation scores.

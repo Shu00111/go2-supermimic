@@ -31,9 +31,16 @@ transition foot geoms collide only with their dedicated hard half-plane.
 The Actor observation is unchanged and contains neither soil coefficients,
 RFT forces, nor the soil-memory state. The privileged world-model state is 78
 dimensions: the original 70 robot dimensions, four per-foot plastic depths,
-and four signed distances to the hard/soft boundary. This is the minimal
-Markov state for loading-history dynamics and transition prediction. Uniform
+and four signed distances to the hard/soft boundary. This makes loading-history
+and boundary dynamics Markov conditional on a fixed soil coefficient. Uniform
 soft tasks use a constant positive distance; original hard tasks use zeros.
+
+The baseline does **not** put the randomized soil coefficient into the
+world-model context (and never exposes it to the Actor). Consequently Stage B
+is a latent-parameter dynamics mixture rather than a strictly fully observed
+Markov model. Held-out one/eight-step errors are reported explicitly; adding a
+privileged coefficient or learned system-identification latent is a future
+ablation, not something retrofitted after training.
 
 TensorBoard additionally records sinkage, RFT force magnitude, absolute
 mechanical power, plastic depth, soft-foot fraction, and boundary-band fraction.
