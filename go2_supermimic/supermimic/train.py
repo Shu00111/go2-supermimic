@@ -407,6 +407,20 @@ class Trainer:
       # Fast turning (|yaw rate| > 3 rad/s): watches for circling / spinning.
       wz = env.scene["robot"].data.root_link_ang_vel_b[:, 2].abs()
       self.ep_stats["Metrics/fast_yaw"].append(float((wz > 3.0).float().mean()))
+      if "rft" in env.action_manager.active_terms:
+        rft = env.action_manager.get_term("rft")
+        force = rft.last_force.norm(dim=-1)
+        soft = rft.last_signed_distance > 0.0
+        self.ep_stats["Metrics/rft/sinkage_m"].append(float(rft.last_sinkage.mean()))
+        self.ep_stats["Metrics/rft/force_n"].append(float(force.mean()))
+        self.ep_stats["Metrics/rft/abs_power_w"].append(float(rft.last_power.abs().mean()))
+        self.ep_stats["Metrics/rft/plastic_depth_m"].append(
+          float(rft.state.plastic_depth.mean())
+        )
+        self.ep_stats["Metrics/rft/soft_foot_fraction"].append(float(soft.float().mean()))
+        self.ep_stats["Metrics/rft/boundary_band_fraction"].append(
+          float((rft.last_signed_distance.abs() < 0.05).float().mean())
+        )
       self.a_prev = torch.where(done.unsqueeze(-1), torch.zeros_like(a), a)
       self.obs = obs["actor"]
       self.env_steps += env.num_envs

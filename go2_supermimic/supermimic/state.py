@@ -4,11 +4,12 @@ Defines the world-model state, the sim context xi, the robot planar pose, and
 an exact re-implementation of the actor observation so that a policy trained
 in imagination can be evaluated (and deployed) in the real env unchanged.
 
-World-model state s (70):
+World-model state s (78):
   base height (1), gravity in body frame (3), base linear velocity in the yaw
   frame (3), base angular velocity in body frame (3), joint pos - default (12),
   joint vel (12), then hip, knee and foot positions relative to the base in the
-  yaw frame (3 x 4 x 3, legs ordered FR FL RR RL). The limb points make contact
+  yaw frame (3 x 4 x 3, legs ordered FR FL RR RL), four per-foot RFT plastic
+  depths, and four signed distances to the soft/hard boundary. The limb points make contact
   changes (touchdown / liftoff) explicit and let imagination compute per-leg
   collisions with obstacles exactly as the env does.
 The planar pose (x, y, yaw) is not part of s: the model predicts its change in
@@ -26,7 +27,7 @@ from go2_supermimic.target import interface as ti
 from go2_supermimic.target.interface import yaw_rotate_inverse
 from go2_supermimic.target.terrain import SCAN_POINTS, ground
 
-STATE_DIM = 70
+STATE_DIM = 78
 POSE_DELTA_DIM = 3
 CONTEXT_DIM = 4  # foot friction (1), base COM offset (3)
 NUM_JOINTS = 12
@@ -41,6 +42,8 @@ QD = slice(22, 34)
 HIPS = slice(34, 46)
 KNEES = slice(46, 58)
 FEET = slice(58, 70)
+SOIL_MEMORY = slice(70, 74)
+SOIL_DISTANCE = slice(74, 78)
 LEGS = ("FR", "FL", "RR", "RL")
 FOOT_SITES = LEGS
 HIP_BODIES = tuple(f"{leg}_thigh" for leg in LEGS)  # thigh frame = hip pitch joint
@@ -169,6 +172,15 @@ def robot_state(env, field=None) -> torch.Tensor:
     r = limbs[name] - d.root_link_pos_w.unsqueeze(1)
     rel.append(torch.stack([yaw_rotate_inverse(r[:, i], heading) for i in range(4)], 1))
   base_h = d.root_link_pos_w[:, 2:3] - ground(d.root_link_pos_w[:, :2], field).unsqueeze(-1)
+  if "rft" in env.action_manager.active_terms:
+    rft = env.action_manager.get_term("rft")
+    soil_memory = rft.state.plastic_depth
+    soil_distance = rft.last_signed_distance
+  else:
+    # Keep original hard-ground tasks physically unchanged while giving the
+    # shared world-model architecture a fixed-size Markov state.
+    soil_memory = torch.zeros((env.num_envs, 4), device=env.device)
+    soil_distance = torch.zeros((env.num_envs, 4), device=env.device)
   return torch.cat(
     [
       base_h,
@@ -177,7 +189,7 @@ def robot_state(env, field=None) -> torch.Tensor:
       d.root_link_ang_vel_b,
       d.joint_pos - d.default_joint_pos,
       d.joint_vel,
-    ] + [r.reshape(-1, 12) for r in rel],
+    ] + [r.reshape(-1, 12) for r in rel] + [soil_memory, soil_distance],
     dim=-1,
   )
 

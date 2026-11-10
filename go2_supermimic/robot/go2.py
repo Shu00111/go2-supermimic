@@ -112,6 +112,32 @@ FULL_COLLISION = CollisionCfg(
   friction={_foot_regex: (1, 5e-3, 5e-4)},
 )
 
+# RFT supplies the complete foot/soil wrench in the soft-terrain tasks.  Foot
+# geoms therefore cannot participate in MuJoCo contact, while every other robot
+# collision remains active so a fallen body still contacts the underlying plane.
+SOFT_TERRAIN_COLLISION = CollisionCfg(
+  geom_names_expr=(_collision_regex,),
+  contype={_foot_regex: 0, _collision_regex: 1},
+  conaffinity={_foot_regex: 0, _collision_regex: 1},
+  condim={_foot_regex: 1, _collision_regex: 1},
+  priority={_foot_regex: 0, ".*": 0},
+  friction={_foot_regex: (0.0,), _collision_regex: (1.0,)},
+  solref=(0.01, 1),
+)
+
+# Transition scenes use contact bit 2 for the rigid half-plane.  The ordinary
+# terrain plane has affinity bit 1, so these feet pass through the soft visual
+# surface but collide with the dedicated hard platform only.
+TRANSITION_COLLISION = CollisionCfg(
+  geom_names_expr=(_collision_regex,),
+  contype={_foot_regex: 2, _collision_regex: 1},
+  conaffinity={_foot_regex: 0, _collision_regex: 1},
+  condim={_foot_regex: 6, _collision_regex: 1},
+  priority={_foot_regex: 1, ".*": 0},
+  friction={_foot_regex: (1.0, 5e-3, 5e-4)},
+  solref=(0.01, 1),
+)
+
 ##
 # Final config.
 ##
@@ -130,6 +156,26 @@ def get_go2_robot_cfg() -> EntityCfg:
   return EntityCfg(
     init_state=INIT_STATE,
     collisions=(FULL_COLLISION,),
+    spec_fn=get_spec,
+    articulation=GO2_ARTICULATION,
+  )
+
+
+def get_go2_soft_robot_cfg() -> EntityCfg:
+  """Go2 with rigid foot contacts disabled for exclusive RFT soil support."""
+  return EntityCfg(
+    init_state=INIT_STATE,
+    collisions=(SOFT_TERRAIN_COLLISION,),
+    spec_fn=get_spec,
+    articulation=GO2_ARTICULATION,
+  )
+
+
+def get_go2_transition_robot_cfg() -> EntityCfg:
+  """Go2 whose feet contact only the transition scene's rigid half-plane."""
+  return EntityCfg(
+    init_state=INIT_STATE,
+    collisions=(TRANSITION_COLLISION,),
     spec_fn=get_spec,
     articulation=GO2_ARTICULATION,
   )

@@ -9,6 +9,12 @@ for task_id, kw in (
   ("Go2-Chase-Flat", {}),
   ("Go2-Chase-Obstacles", {"obstacles": True}),
   ("Go2-Chase-Terrain", {"terrain": True}),
+  ("Go2-Chase-SoftTerrain", {"soft_terrain": True}),
+  ("Go2-Chase-SoftTerrainLevels", {
+    "soft_terrain": True, "soil_strength_range": (0.3, 1.0)
+  }),
+  ("Go2-Chase-SoftTransition", {"transition": "hard_to_soft"}),
+  ("Go2-Chase-SoftToHard", {"transition": "soft_to_hard"}),
 ):
   register_mjlab_task(
     task_id=task_id,

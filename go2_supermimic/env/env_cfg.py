@@ -23,7 +23,14 @@ from mjlab.utils.noise import UniformNoiseCfg as Unoise
 from go2_supermimic.env import mdp
 from go2_supermimic.env.command import TargetCommandCfg
 from go2_supermimic.env.terrains import clean_look, rough_terrain
-from go2_supermimic.robot.go2 import FOOT_GEOM_NAMES, GO2_ACTION_SCALE, get_go2_robot_cfg
+from go2_supermimic.robot.go2 import (
+  FOOT_GEOM_NAMES,
+  GO2_ACTION_SCALE,
+  get_go2_robot_cfg,
+  get_go2_soft_robot_cfg,
+  get_go2_transition_robot_cfg,
+)
+from go2_supermimic.soft_terrain.action import RftActionCfg
 from go2_supermimic.target import obstacles as ob
 
 CMD = "target"
@@ -63,7 +70,29 @@ def _obstacle_entity(half: tuple[float, float]) -> EntityCfg:
   return EntityCfg(spec_fn=spec_fn, init_state=EntityCfg.InitialStateCfg(pos=(0.0, 0.0, -5.0)))
 
 
-def _configure_go2(cfg: ManagerBasedRlEnvCfg) -> None:
+def _hard_half_plane(*, hard_positive_x: bool) -> EntityCfg:
+  """Rigid half-plane ending at env-local x=0, paired with RFT on the other side."""
+  half = 20.0
+
+  def spec_fn() -> mujoco.MjSpec:
+    spec = mujoco.MjSpec()
+    body = spec.worldbody.add_body(name="hard_ground", mocap=True)
+    body.add_geom(
+      name="hard_ground_collision", type=mujoco.mjtGeom.mjGEOM_BOX,
+      size=[half, 20.0, 0.05], rgba=[0.45, 0.47, 0.50, 1.0],
+      contype=1, conaffinity=2, condim=6, friction=[1.0, 5e-3, 5e-4],
+    )
+    return spec
+
+  center_x = half if hard_positive_x else -half
+  return EntityCfg(
+    spec_fn=spec_fn,
+    init_state=EntityCfg.InitialStateCfg(pos=(center_x, 0.0, -0.05)),
+  )
+
+
+def _configure_go2(cfg: ManagerBasedRlEnvCfg, *, soft_terrain: bool = False,
+                   transition: bool = False) -> None:
   """Go2 entity, sim settings, foot contact sensing and domain randomisation."""
   cfg.sim.mujoco.impratio = 10
   cfg.sim.mujoco.cone = "elliptic"
@@ -71,7 +100,9 @@ def _configure_go2(cfg: ManagerBasedRlEnvCfg) -> None:
   cfg.sim.mujoco.ccd_iterations = 50
   cfg.sim.contact_sensor_maxmatch = 64
   cfg.sim.nconmax = None
-  cfg.scene.entities = {"robot": get_go2_robot_cfg()}
+  robot_cfg = (get_go2_transition_robot_cfg() if transition else
+               get_go2_soft_robot_cfg() if soft_terrain else get_go2_robot_cfg())
+  cfg.scene.entities = {"robot": robot_cfg}
   cfg.scene.sensors = tuple(s for s in (cfg.scene.sensors or ()) if s.name != "terrain_scan")
   for sensor in cfg.scene.sensors:
     if sensor.name == "foot_height_scan":
@@ -81,7 +112,12 @@ def _configure_go2(cfg: ManagerBasedRlEnvCfg) -> None:
   cfg.scene.sensors += (ContactSensorCfg(
     name="feet_ground_contact",
     primary=ContactMatch(mode="geom", pattern=FOOT_GEOM_NAMES, entity="robot"),
-    secondary=ContactMatch(mode="body", pattern="terrain"),
+    # Transition feet may contact the dedicated hard-ground entity rather than
+    # the ordinary terrain body.  With collision bits already excluding the
+    # soft visual plane, accepting any counterpart records exactly the rigid
+    # side (and avoids baking a namespaced entity name into the sensor).
+    secondary=(None if transition else ContactMatch(mode="body", pattern="terrain")),
+    secondary_policy=("any" if transition else "first"),
     fields=("found", "force"),
     reduce="netforce",
     num_slots=1,
@@ -130,12 +166,26 @@ def _configure_go2(cfg: ManagerBasedRlEnvCfg) -> None:
 
 
 def go2_chase_env_cfg(play: bool = False, terrain: bool = False,
-                      obstacles: bool = False) -> ManagerBasedRlEnvCfg:
+                      obstacles: bool = False, soft_terrain: bool = False,
+                      soil_strength_range: tuple[float, float] = (1.0, 1.0),
+                      transition: str = ""
+                      ) -> ManagerBasedRlEnvCfg:
   """terrain: generated rough terrain, a ground height scan for the actor, and
   chasing with thrown bars only (no balls).
   obstacles: static boxes, pillars and walls, and a planar LiDAR for the actor."""
   cfg = make_velocity_env_cfg()
-  _configure_go2(cfg)
+  if transition:
+    soft_terrain = True
+  if soft_terrain and (terrain or obstacles):
+    raise ValueError("the initial soft-terrain baseline must use the uniform flat scene")
+  if transition not in ("", "hard_to_soft", "soft_to_hard"):
+    raise ValueError(f"unknown transition={transition!r}")
+  _configure_go2(cfg, soft_terrain=soft_terrain, transition=bool(transition))
+  if soft_terrain:
+    # Preserve the validated source simulator's 2 ms force/update cadence while
+    # keeping the original SuperMimic policy rate at 50 Hz.
+    cfg.sim.mujoco.timestep = 0.002
+    cfg.decimation = 10
   if terrain:
     cfg.scene.terrain = rough_terrain()
   else:
@@ -165,7 +215,20 @@ def go2_chase_env_cfg(play: bool = False, terrain: bool = False,
     target_cmd.target.max_time_to_robot = 0.75
     for k, half in enumerate(ob.OBSTACLE_HALF):
       cfg.scene.entities[f"obstacle{k}"] = _obstacle_entity(half)
+  if transition:
+    cfg.scene.entities["hard_ground"] = _hard_half_plane(
+      hard_positive_x=transition == "soft_to_hard"
+    )
   cfg.commands = {CMD: target_cmd}
+  if soft_terrain:
+    # Zero policy dimensions: this hook runs RFT immediately before each 2 ms
+    # MuJoCo Warp substep without changing the 12-D joint action interface.
+    cfg.actions["rft"] = RftActionCfg(
+      entity_name="robot",
+      coefficient_scale_range=soil_strength_range,
+      soft_region=("positive_x" if transition == "hard_to_soft" else
+                   "negative_x" if transition == "soft_to_hard" else "all"),
+    )
 
   # Observations. No linear velocity (not measured on hardware); a short
   # history lets the actor infer its own motion.

@@ -1,0 +1,20 @@
+{
+  "seed": 14011,
+  "curriculum": [
+    {"stage": "A", "task": "Go2-Chase-SoftTerrain", "end_iteration": 4000},
+    {"stage": "B", "task": "Go2-Chase-SoftTerrainLevels", "end_iteration": 8000},
+    {"stage": "C1", "task": "Go2-Chase-SoftTransition", "end_iteration": 10000},
+    {"stage": "C2", "task": "Go2-Chase-SoftToHard", "end_iteration": 12000}
+  ],
+  "initial_iterations": 12000,
+  "maximum_iterations": 30000,
+  "multi_seed": false,
+  "physics_dt_s": 0.002,
+  "foot_radius_m": 0.022,
+  "num_envs": 512,
+  "wm_batch": 2048,
+  "imag_batch": 4096,
+  "save_interval": 250,
+  "watchdog_interval_minutes": 40,
+  "formal_run": true
+}
