@@ -35,12 +35,16 @@ def _quiet_solver_warnings(env, env_ids) -> None:
   """Startup event: silence per-step solver iteration-limit warnings (with
   thousands of worlds one hits the limit nearly every step)."""
   del env_ids
-  from mujoco_warp import OverflowType
+  try:
+    from mujoco_warp import OverflowType
+  except ImportError:  # MuJoCo Warp 3.11, pinned by mjlab 1.6.
+    from mujoco_warp._src.types import OverflowType
 
   opt = env.sim.wp_model.opt
-  opt.warn_overflow = int(opt.warn_overflow) & ~int(
-    OverflowType.ITERATIONS | OverflowType.LS_ITERATIONS
-  )
+  iterations = getattr(OverflowType, "ITERATIONS", 0)
+  ls_iterations = getattr(OverflowType, "LS_ITERATIONS", 0)
+  if iterations or ls_iterations:
+    opt.warn_overflow = int(opt.warn_overflow) & ~int(iterations | ls_iterations)
   # The flag is baked into the solver kernels when the CUDA graphs are captured.
   env.sim.create_graph()
 

@@ -31,6 +31,8 @@ from go2_supermimic.target import terrain as tr
 @dataclass(kw_only=True)
 class TrainCfg:
   task: str = "Go2-Chase-Terrain"
+  device: str = "cuda:0"
+  """Torch/Warp device. Keep cuda:0 for released training; cpu is useful for smoke tests."""
   num_envs: int = 4096
   buffer_len: int = 1000
   iterations: int = 40_000
@@ -238,7 +240,7 @@ class Trainer:
     if "terrain_levels" in env_cfg.curriculum:
       env_cfg.curriculum["terrain_levels"].params["steps"] = cfg.terrain_curriculum_iterations
     self.env_cfg = env_cfg
-    self.env = ManagerBasedRlEnv(cfg=env_cfg, device="cuda:0")
+    self.env = ManagerBasedRlEnv(cfg=env_cfg, device=cfg.device)
     self.dev = self.env.device
     self.term = self.env.command_manager.get_term("target")
     self.history = env_cfg.observations["actor"].history_length

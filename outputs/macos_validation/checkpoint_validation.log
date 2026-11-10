@@ -1,0 +1,24 @@
+
+ weights/flat.pt
+keys ['actor', 'cfg', 'obs_dim', 'supermimic']
+cfg actor_hidden [512, 256, 128]
+actor tensors 11
+load <All keys matched successfully>
+input 350 output (1, 12) finite True
+action_minmax -0.6179404854774475 0.6125826835632324
+
+ weights/obstacles.pt
+keys ['actor', 'cfg', 'obs_dim', 'supermimic']
+cfg actor_hidden [512, 256, 128]
+actor tensors 11
+load <All keys matched successfully>
+input 430 output (1, 12) finite True
+action_minmax -1.2175294160842896 1.7848060131072998
+
+ weights/terrain.pt
+keys ['actor', 'cfg', 'obs_dim', 'supermimic']
+cfg actor_hidden [512, 256, 128]
+actor tensors 11
+load <All keys matched successfully>
+input 735 output (1, 12) finite True
+action_minmax -2.121865749359131 3.2958366870880127

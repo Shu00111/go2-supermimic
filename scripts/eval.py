@@ -41,6 +41,8 @@ def main() -> None:
                   help="Put env 0 on this terrain type (e.g. stairs, boxes; see env/terrains.py).")
   ap.add_argument("--width", type=int, default=1280)
   ap.add_argument("--height", type=int, default=720)
+  ap.add_argument("--device", default="cuda:0",
+                  help="Torch/Warp device (default: cuda:0; use cpu on supported macOS installs).")
   args = ap.parse_args()
 
   env_cfg = load_env_cfg(args.task, play=True)
@@ -65,9 +67,9 @@ def main() -> None:
     for sensor in env_cfg.scene.sensors or ():
       if hasattr(sensor, "debug_vis"):
         sensor.debug_vis = False
-  env = ManagerBasedRlEnv(cfg=env_cfg, device="cuda:0",
+  env = ManagerBasedRlEnv(cfg=env_cfg, device=args.device,
                           render_mode="rgb_array" if args.video else None)
-  ckpt = torch.load(args.checkpoint, map_location="cuda:0", weights_only=False)
+  ckpt = torch.load(args.checkpoint, map_location=args.device, weights_only=False)
   if args.terrain:
     names = list(env_cfg.scene.terrain.terrain_generator.sub_terrains)
     env.scene.terrain.terrain_types[0] = names.index(args.terrain)
@@ -78,7 +80,7 @@ def main() -> None:
     polish_renderer(env)
     if target_cfg.target.obstacles.enabled:  # LiDAR view under the scene
       pano = DepthPanorama(env._offline_renderer._model)
-  actor = Actor(obs["actor"].shape[-1], tuple(ckpt["cfg"]["actor_hidden"]), 12).to("cuda:0")
+  actor = Actor(obs["actor"].shape[-1], tuple(ckpt["cfg"]["actor_hidden"]), 12).to(args.device)
   actor.load_state_dict(ckpt["actor"])
   actor.eval()
 
@@ -99,9 +101,13 @@ def main() -> None:
 
   prev_flying, prev_cat = gen.flying.clone(), category()
   frames = []
+  obs_finite, actions_finite = True, True
   with torch.inference_mode():
     for _ in range(steps):
-      obs, _, terminated, _, _ = env.step(actor(obs["actor"]))
+      action = actor(obs["actor"])
+      actions_finite &= bool(torch.isfinite(action).all())
+      obs, _, terminated, _, _ = env.step(action)
+      obs_finite &= bool(torch.isfinite(obs["actor"]).all())
       data = term.robot.data
       pos, vel = data.root_link_pos_w, data.root_link_lin_vel_w[:, :2]
       near += ((term.head_ball_dist() < term.cfg.near_radius) & term.has_chase).float()
@@ -148,6 +154,11 @@ def main() -> None:
     print(f"  obstacle contact (time)    {(contact.mean() / steps).item():.3f}")
   print(f"  falls per minute           {(falls.mean() / minutes).item():.3f}")
   print(f"  mean speed                 {(speed / steps).mean().item():.2f} m/s")
+  root = term.robot.data.root_link_pos_w[0]
+  quat = term.robot.data.root_link_quat_w[0]
+  print(f"  finite observations/actions {obs_finite}/{actions_finite}")
+  print(f"  final root position        {root.detach().cpu().tolist()}")
+  print(f"  final root quaternion      {quat.detach().cpu().tolist()}")
   if args.video:
     import mediapy
 

@@ -1,0 +1,206 @@
+/Users/shuyiwei/Projects/go2-supermimic/.venv/lib/python3.12/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+Warp 1.19.0 initialized:
+   CUDA not enabled in this build
+   Devices:
+     "cpu"      : "arm"
+   Kernel cache:
+     /Users/shuyiwei/Library/Caches/warp/1.19.0
+Module mujoco_warp._src.render_util cc64180 load on device 'cpu' took 1.73 ms  (cached)
+Module mujoco_warp._src.bvh cbc1abb load on device 'cpu' took 0.68 ms  (cached)
+
++--------------------------------+
+|        Base Environment        |
++------------------------+-------+
+| Property               | Value |
++------------------------+-------+
+| Number of environments | 1     |
+| Environment device     | cpu   |
+| Environment seed       | None  |
+| Physics step-size      | 0.005 |
+| Environment step-size  | 0.02  |
++------------------------+-------+
+
+[INFO] <EventManager> contains 2 active terms.
++-------------------------------------+
+| Active Event Terms in Mode: 'reset' |
++--------+----------------------------+
+| Index  | Name                       |
++--------+----------------------------+
+|   0    | reset_base                 |
+|   1    | reset_robot_joints         |
++--------+----------------------------+
++---------------------------------------+
+| Active Event Terms in Mode: 'startup' |
++--------+------------------------------+
+| Index  | Name                         |
++--------+------------------------------+
+|   0    | encoder_bias                 |
+|   1    | base_com                     |
+|   2    | foot_friction_slide          |
+|   3    | foot_friction_spin           |
+|   4    | foot_friction_roll           |
+|   5    | quiet_solver_warnings        |
++--------+------------------------------+
++-----------------------------+
+| Domain Randomization Fields |
++-------+---------------------+
+| Index | Field Name          |
++-------+---------------------+
+|   0   | body_ipos           |
+|   1   | body_subtreemass    |
+|   2   | dof_invweight0      |
+|   3   | body_invweight0     |
+|   4   | tendon_length0      |
+|   5   | tendon_invweight0   |
+|   6   | actuator_acc0       |
+|   7   | geom_friction       |
++-------+---------------------+
+
+[INFO] <CommandManager> contains 1 active terms.
++--------------------------------+
+|      Active Command Terms      |
++-------+--------+---------------+
+| Index | Name   |      Type     |
++-------+--------+---------------+
+|   0   | target | TargetCommand |
++-------+--------+---------------+
+
+[INFO] <ActionManager> contains 1 active terms.
++---------------------------------+
+| Active Action Terms (shape: 12) |
++-------+-----------+-------------+
+| Index | Name      |   Dimension |
++-------+-----------+-------------+
+|   0   | joint_pos |          12 |
++-------+-----------+-------------+
+
+[INFO] <ObservationManager> contains 1 groups.
++------------------------------------------------------------+
+| Active Observation Terms in Group: 'actor' (shape: (350,)) |
++--------+------------------------+--------------------------+
+| Index  | Name                   |          Shape           |
++--------+------------------------+--------------------------+
+|   0    | base_ang_vel           |     (15,)  ← 5×(3,)      |
+|   1    | projected_gravity      |     (15,)  ← 5×(3,)      |
+|   2    | joint_pos              |     (60,)  ← 5×(12,)     |
+|   3    | joint_vel              |     (60,)  ← 5×(12,)     |
+|   4    | actions                |     (60,)  ← 5×(12,)     |
+|   5    | target                 |    (140,)  ← 5×(28,)     |
++--------+------------------------+--------------------------+
+
+[INFO] <TerminationManager> contains 2 active terms.
++------------------------------+
+|   Active Termination Terms   |
++-------+-----------+----------+
+| Index | Name      | Time Out |
++-------+-----------+----------+
+|   0   | time_out  |   True   |
+|   1   | fell_over |  False   |
++-------+-----------+----------+
+
+[INFO] <RewardManager> contains 18 active terms.
++---------------------------------------+
+|          Active Reward Terms          |
++-------+--------------------+----------+
+| Index | Name               |   Weight |
++-------+--------------------+----------+
+|   0   | chase_approach     |      1.5 |
+|   1   | chase_tag          |     15.0 |
+|   2   | facing_target      |      0.5 |
+|   3   | evade_danger       |     -2.0 |
+|   4   | hit                |   -100.0 |
+|   5   | evade_anticipate   |     -1.5 |
+|   6   | outside_arena      |     -2.0 |
+|   7   | upright            |      1.0 |
+|   8   | tilt_rate_l2       |    -0.05 |
+|   9   | hard_landing       |     -0.5 |
+|   10  | crouch             |    -30.0 |
+|   11  | joint_deviation_l2 |     -0.1 |
+|   12  | base_height_low    |    -10.0 |
+|   13  | terminated         |   -200.0 |
+|   14  | action_rate_l2     |    -0.05 |
+|   15  | dof_pos_limits     |     -1.0 |
+|   16  | joint_torques_l2   |   -2e-05 |
+|   17  | joint_acc_l2       | -2.5e-07 |
++-------+--------------------+----------+
+
+[INFO] <NullCurriculumManager> (inactive)
+[INFO] <MetricsManager> contains 1 active terms.
++-------------------------+
+|   Active Metrics Terms  |
++-------+-----------------+
+| Index | Name            |
++-------+-----------------+
+|   0   | mean_action_acc |
++-------+-----------------+
+
+[INFO] <NullRecorderManager> (inactive)
+Module mujoco_warp._src.io 4e17991 load on device 'cpu' took 1582.89 ms  (compiled)
+Module mujoco_warp._src.smooth 9b07484 load on device 'cpu' took 2570.09 ms  (compiled)
+Module _tile_cholesky_factorize_block__locals__kernel_c65d824f 330fa8c load on device 'cpu' took 145.22 ms  (compiled)
+Module _tile_cholesky_solve_block__locals__kernel_2b5f8f40 4fb5a00 load on device 'cpu' took 149.03 ms  (compiled)
+Module reset_data__locals__reset_xfrc_applied_67d781b3 2cf398c load on device 'cpu' took 58.53 ms  (compiled)
+Module reset_data__locals__reset_M_b85ae5c6 7d34226 load on device 'cpu' took 54.80 ms  (compiled)
+Module reset_data__locals__reset_mocap_4a02d0ee 60970e1 load on device 'cpu' took 71.96 ms  (compiled)
+Module reset_data__locals__reset_contact_73dd9a4c e989182 load on device 'cpu' took 100.56 ms  (compiled)
+Module reset_data__locals__reset_sleep_6f87d6aa a2d0bcc load on device 'cpu' took 71.52 ms  (compiled)
+Module reset_data__locals__reset_nworld_6bf0ac6b f49a574 load on device 'cpu' took 116.64 ms  (compiled)
+Module _nxn_broadphase__locals__kernel_8e6bae75 2874044 load on device 'cpu' took 258.73 ms  (compiled)
+Module ccd_kernel_builder__locals__ccd_kernel_26a80e4c 3becdd0 load on device 'cpu' took 2901.23 ms  (compiled)
+Module _primitive_narrowphase__locals__primitive_narrowphase_a9da0ad9 666afe5 load on device 'cpu' took 1767.84 ms  (compiled)
+Module mujoco_warp._src.constraint 1a5d36e load on device 'cpu' took 68.89 ms  (compiled)
+Module _friction_dof__locals__kernel_98f73a3f cb514db load on device 'cpu' took 119.03 ms  (compiled)
+Module _limit_slide_hinge__locals__kernel_7aedeb47 02351f4 load on device 'cpu' took 130.21 ms  (compiled)
+Module _efc_contact_init__locals__kernel_0c82a751 8953988 load on device 'cpu' took 72.75 ms  (compiled)
+Module _efc_contact_jac_dense__locals__kernel_c022b097 8fe784a load on device 'cpu' took 399.36 ms  (compiled)
+Module _efc_contact_update__locals__kernel_afcbe206 4706bb6 load on device 'cpu' took 127.35 ms  (compiled)
+Module mujoco_warp._src.sensor fbb72c0 load on device 'cpu' took 2523.01 ms  (compiled)
+Module mujoco_warp._src.forward 2496153 load on device 'cpu' took 592.78 ms  (compiled)
+Module mujoco_warp._src.passive b3dc2b9 load on device 'cpu' took 1564.43 ms  (compiled)
+Module _qfrc_smooth__locals__kernel_4258d405 0767af0 load on device 'cpu' took 60.57 ms  (compiled)
+Module mujoco_warp._src.support 0224b40 load on device 'cpu' took 166.37 ms  (compiled)
+Module _tile_cholesky_factorize_solve_block__locals__kernel_c6333a70 65b49b3 load on device 'cpu' took 208.18 ms  (compiled)
+Module _solve_init_dof__locals__kernel_862a1917 d1d3a7b load on device 'cpu' took 58.76 ms  (compiled)
+Module mujoco_warp._src.solver 99042aa load on device 'cpu' took 705.94 ms  (compiled)
+Module _solve_init_jaref_kernel__locals__kernel_91f9fff1 554f0f6 load on device 'cpu' took 74.83 ms  (compiled)
+Module mul_m_kernel__locals___mul_m_972d9bf0 d45916a load on device 'cpu' took 84.15 ms  (compiled)
+Module _update_constraint_efc__locals__kernel_98654588 d960ee9 load on device 'cpu' took 118.92 ms  (compiled)
+Module _update_constraint_init_qfrc_constraint_dense__locals__kernel_cdb78c33 9dd8d1d load on device 'cpu' took 68.84 ms  (compiled)
+Module _update_gradient_zero_grad_dot__locals__kernel_871f7ea5 0260449 load on device 'cpu' took 66.35 ms  (compiled)
+Module _update_gradient_grad__locals__kernel_1708178a ba0ef58 load on device 'cpu' took 62.33 ms  (compiled)
+Module _update_gradient_JTDAJ_dense_tiled__locals__kernel_509bff38 979007a load on device 'cpu' took 302.58 ms  (compiled)
+Module _update_gradient_cholesky__locals__kernel_0747fda0 b268a97 load on device 'cpu' took 296.21 ms  (compiled)
+Module _linesearch_iterative_kernel__locals__kernel_1fbb6541 686e832 load on device 'cpu' took 485.58 ms  (compiled)
+Module _contact_sort__locals__contact_sort_1a8f8c92 ee99f6a load on device 'cpu' took 122.02 ms  (compiled)
+Module mujoco_warp._src.ray 4751c72 load on device 'cpu' took 1122.83 ms  (compiled)
+Module mujoco_warp._src.derivative 52b3ca0 load on device 'cpu' took 820.07 ms  (compiled)
+Module _next_time_builder__locals___next_time_0a0c2660 a3620bc load on device 'cpu' took 76.87 ms  (compiled)
+Go2-Chase-Flat  modes=(1.0, 0.0, 0.0)  envs=1  seconds=5.0
+  chase  tags per minute     12.0
+  chase  time within 0.3 m  0.02
+  falls per minute           0.000
+  mean speed                 2.41 m/s
+  finite observations/actions True/True
+  final root position        [-1.9372916221618652, 4.202674865722656, 0.3470122218132019]
+  final root quaternion      [-0.2557298243045807, 0.004624749068170786, 0.018581144511699677, 0.9665586352348328]
+real 31.97
+user 31.15
+sys 0.98
+           899137536  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+              267146  page reclaims
+                 193  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                1345  voluntary context switches
+                2781  involuntary context switches
+        355035982260  instructions retired
+        108724381855  cycles elapsed
+           881675968  peak memory footprint
