@@ -37,6 +37,10 @@ def main() -> None:
   ap.add_argument("--video", default=None, help="Write an mp4 of env 0 here.")
   ap.add_argument("--difficulty", type=float, default=1.0,
                   help="Curriculum progress in [0, 1] for the targets and terrain rows (1: hardest).")
+  ap.add_argument("--seed", type=int, default=None,
+                  help="Fix environment initialization for reproducible recordings.")
+  ap.add_argument("--soil-scale", type=float, default=None,
+                  help="Fix the RFT coefficient scale for a soft-terrain task.")
   ap.add_argument("--terrain", default=None,
                   help="Put env 0 on this terrain type (e.g. stairs, boxes; see env/terrains.py).")
   ap.add_argument("--width", type=int, default=1280)
@@ -47,6 +51,13 @@ def main() -> None:
 
   env_cfg = load_env_cfg(args.task, play=True)
   env_cfg.scene.num_envs = args.num_envs
+  if args.seed is not None:
+    torch.manual_seed(args.seed)
+    env_cfg.seed = args.seed
+  if args.soil_scale is not None:
+    if "rft" not in env_cfg.actions:
+      ap.error("--soil-scale requires a soft-terrain task")
+    env_cfg.actions["rft"].coefficient_scale_range = (args.soil_scale, args.soil_scale)
   target_cfg = env_cfg.commands["target"]
   if args.mode:
     target_cfg.mode_probs = MODE_PROBS[args.mode]
