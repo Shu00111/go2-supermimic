@@ -1,0 +1,38 @@
+[
+  {
+    "task": "Go2-Chase-RoughSoftTerrain",
+    "num_envs": 16,
+    "steps": 100,
+    "seed": 14011,
+    "max_rft_force_n": 120.31073760986328,
+    "episode_resets": 0,
+    "simultaneous_mixed_material_envs": 0,
+    "simultaneous_mixed_env_steps": 0,
+    "support_tolerance_n": 0.0001,
+    "status": "PASS"
+  },
+  {
+    "task": "Go2-Chase-AlternatingMaterial",
+    "num_envs": 16,
+    "steps": 100,
+    "seed": 14011,
+    "max_rft_force_n": 241.04177856445312,
+    "episode_resets": 0,
+    "simultaneous_mixed_material_envs": 16,
+    "simultaneous_mixed_env_steps": 1528,
+    "support_tolerance_n": 0.0001,
+    "status": "PASS"
+  },
+  {
+    "task": "Go2-Chase-MixedMaterialDiagnostic",
+    "num_envs": 16,
+    "steps": 100,
+    "seed": 14011,
+    "max_rft_force_n": 244.53695678710938,
+    "episode_resets": 0,
+    "simultaneous_mixed_material_envs": 16,
+    "simultaneous_mixed_env_steps": 1600,
+    "support_tolerance_n": 0.0001,
+    "status": "PASS"
+  }
+]

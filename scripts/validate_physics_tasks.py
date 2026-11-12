@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+import sys
 
 import torch
 
@@ -46,7 +47,7 @@ def validate(task: str, num_envs: int, steps: int, seed: int, device: str) -> di
       )
       if not bool(finite):
         raise RuntimeError(f"non-finite state in {task}")
-      soft = rft.last_signed_distance > 0
+      soft = rft.last_soft_mask
       mixed_now = soft.any(dim=1) & (~soft).any(dim=1)
       saw_mixed_simultaneously |= mixed_now
       mixed_env_steps += int(mixed_now.sum())
@@ -56,8 +57,20 @@ def validate(task: str, num_envs: int, steps: int, seed: int, device: str) -> di
       if rft.last_force[~soft].count_nonzero():
         raise RuntimeError(f"RFT force present on rigid material in {task}")
       if rigid_support[soft].any():
-        worst = float(rigid_force[soft].norm(dim=-1).max())
-        raise RuntimeError(f"rigid force {worst:.6g} N present on soft material in {task}")
+        masked = rigid_force.norm(dim=-1).masked_fill(~soft, -1.0)
+        flat = int(masked.argmax())
+        env_index, foot_index = divmod(flat, masked.shape[1])
+        feet = rft._entity.data.site_pos_w[:, rft.site_ids]
+        local_xy = feet[env_index, foot_index, :2] - env.scene.env_origins[env_index, :2]
+        raise RuntimeError(
+          f"rigid force {float(masked[env_index, foot_index]):.6g} N present on "
+          f"soft material in {task}; env={env_index}, foot={foot_index}, "
+          f"signed_distance={float(rft.last_signed_distance[env_index, foot_index]):.9g}, "
+          f"rft_force={float(rft.last_force[env_index, foot_index].norm()):.6g} N, "
+          f"foot_xyz={feet[env_index, foot_index].tolist()}, "
+          f"env_origin={env.scene.env_origins[env_index].tolist()}, "
+          f"foot_local_xy={local_xy.tolist()}"
+        )
       if (rigid_support & rft_support).any():
         raise RuntimeError(f"simultaneous rigid and RFT support in {task}")
       max_force = max(max_force, float(rft.last_force.norm(dim=-1).max()))
@@ -91,7 +104,12 @@ def main() -> None:
   args = ap.parse_args()
   if not 1 <= args.num_envs <= 32 or not 1 <= args.steps <= 200:
     raise SystemExit("bounded validation requires 1..32 envs and 1..200 steps")
-  report = [validate(t, args.num_envs, args.steps, args.seed, args.device) for t in TASKS]
+  report = []
+  for task in TASKS:
+    print(f"physics validation: START {task}", file=sys.stderr, flush=True)
+    result = validate(task, args.num_envs, args.steps, args.seed, args.device)
+    report.append(result)
+    print(f"physics validation: PASS {task}", file=sys.stderr, flush=True)
   text = json.dumps(report, indent=2) + "\n"
   if args.output:
     if args.output.exists():

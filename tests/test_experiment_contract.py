@@ -34,6 +34,21 @@ def test_new_tasks_register_with_shared_action_interface_and_sim2real_contract()
   alternating = load_env_cfg(names[1])
   assert alternating.actions["rft"].soft_region == "checkerboard"
   assert "hard_patches" in alternating.scene.entities
+  alternating_contact = next(
+    sensor for sensor in alternating.scene.sensors if sensor.name == "feet_ground_contact"
+  )
+  assert alternating_contact.secondary.entity == "hard_patches"
+  assert alternating_contact.secondary.mode == "body"
+  assert alternating_contact.secondary_policy == "first"
+  assert alternating.events["reset_hard_patches"].params["asset_cfg"].name == "hard_patches"
+  assert "per_world_contact_modes" not in alternating.events
+
+  transition = load_env_cfg("Go2-Chase-SoftTransition")
+  transition_contact = next(
+    sensor for sensor in transition.scene.sensors if sensor.name == "feet_ground_contact"
+  )
+  assert transition_contact.secondary.entity == "hard_ground"
+  assert transition.events["reset_hard_ground"].params["asset_cfg"].name == "hard_ground"
 
   robust = load_env_cfg("Go2-Chase-AlternatingMaterial-Sim2Real")
   assert robust.observations["actor"].terms["base_ang_vel"].delay_max_lag == 1

@@ -14,6 +14,8 @@ from go2_supermimic.target import terrain as terrain_query
 
 FOOT_SITES = ("FR", "FL", "RR", "RL")
 FOOT_BODIES = tuple(f"{leg}_calf" for leg in FOOT_SITES)
+FOOT_GEOMS = tuple(f"{leg}_foot_collision" for leg in FOOT_SITES)
+MATERIAL_BOUNDARY_GUARD_M = 0.01
 
 
 @dataclass(kw_only=True)
@@ -36,6 +38,12 @@ class RftActionCfg(ActionTermCfg):
   use_local_height: bool = False
   material_cell_size: float = 0.6
   material_seed: int = 7
+  boundary_guard_m: float = MATERIAL_BOUNDARY_GUARD_M
+  """Extra clearance beyond the foot footprint at rigid/soft boundaries."""
+  boundary_prediction_steps: int = 3
+  """Substeps reserved for contact release before enabling RFT."""
+  soft_activation_steps: int = 3
+  """Consecutive soft candidates required before the contact mode switches."""
 
   def build(self, env):
     return RftAction(self, env)
@@ -50,11 +58,18 @@ class RftAction(ActionTerm):
       raise ValueError("RFT coefficient scale must be positive")
     if cfg.coefficient_scale_range[1] < cfg.coefficient_scale_range[0]:
       raise ValueError("invalid RFT coefficient scale range")
+    if (cfg.boundary_guard_m < 0.0 or cfg.boundary_prediction_steps < 1
+        or cfg.soft_activation_steps < 1):
+      raise ValueError("invalid rigid/soft boundary guard")
     self._raw_actions = torch.empty((env.num_envs, 0), device=env.device)
     self.site_ids, site_names = self._entity.find_sites(FOOT_SITES, preserve_order=True)
     self.body_ids, body_names = self._entity.find_bodies(FOOT_BODIES, preserve_order=True)
-    if tuple(site_names) != FOOT_SITES or tuple(body_names) != FOOT_BODIES:
-      raise RuntimeError(f"unexpected foot order: sites={site_names}, bodies={body_names}")
+    _, geom_names = self._entity.find_geoms(FOOT_GEOMS, preserve_order=True)
+    if (tuple(site_names) != FOOT_SITES or tuple(body_names) != FOOT_BODIES
+        or tuple(geom_names) != FOOT_GEOMS):
+      raise RuntimeError(
+        f"unexpected foot order: sites={site_names}, bodies={body_names}, geoms={geom_names}"
+      )
     self.operator = RftOperator(
       device=env.device,
       radius=cfg.radius,
@@ -70,7 +85,10 @@ class RftAction(ActionTerm):
     self.last_sinkage = torch.zeros((env.num_envs, len(FOOT_SITES)), device=env.device)
     self.last_power = torch.zeros_like(self.last_sinkage)
     self.last_signed_distance = torch.ones_like(self.last_sinkage)
+    self.last_soft_mask = torch.zeros_like(self.last_sinkage, dtype=torch.bool)
+    self.soft_candidate_steps = torch.zeros_like(self.last_sinkage, dtype=torch.int16)
     self.env_origin_x = env.scene.env_origins[:, 0].unsqueeze(-1)
+    self.physics_dt = float(env.cfg.sim.mujoco.timestep)
     self.material = CheckerboardMaterial(
       cell_size=cfg.material_cell_size, seed=cfg.material_seed, foot_radius=cfg.radius
     ) if cfg.soft_region == "checkerboard" else None
@@ -105,21 +123,39 @@ class RftAction(ActionTerm):
     self.last_sinkage[env_ids] = 0.0
     self.last_power[env_ids] = 0.0
     self.last_signed_distance[env_ids] = 1.0
+    self.last_soft_mask[env_ids] = False
+    self.soft_candidate_steps[env_ids] = 0
 
-  def _soft_mask(self, foot_position: torch.Tensor) -> torch.Tensor:
+  def _soft_mask(self, foot_position: torch.Tensor,
+                 foot_velocity: torch.Tensor) -> torch.Tensor:
+    # The RFT wrench is evaluated before a physics substep, while MuJoCo's
+    # contact sensor reports the constraint solution after it.  Reserve the
+    # distance the foot can travel during that substep, plus a small numerical
+    # guard, so the same foot cannot receive RFT and rigid support while
+    # crossing a material boundary.
+    dynamic_guard = (
+      foot_velocity[..., :2].norm(dim=-1) * self.physics_dt
+      * self.cfg.boundary_prediction_steps
+      + self.cfg.boundary_guard_m
+    )
     local_x = foot_position[..., 0] - self.env_origin_x
     if self.cfg.soft_region == "all":
       self.last_signed_distance.fill_(1.0)
       return torch.ones_like(local_x, dtype=torch.bool)
     if self.cfg.soft_region == "positive_x":
-      self.last_signed_distance.copy_(local_x - self.cfg.boundary_x)
+      self.last_signed_distance.copy_(
+        local_x - self.cfg.boundary_x - self.cfg.radius - dynamic_guard
+      )
     elif self.cfg.soft_region == "negative_x":
-      self.last_signed_distance.copy_(self.cfg.boundary_x - local_x)
+      self.last_signed_distance.copy_(
+        self.cfg.boundary_x - local_x - self.cfg.radius - dynamic_guard
+      )
     elif self.cfg.soft_region == "checkerboard":
       assert self.material is not None
       soft, distance = self.material.query(foot_position[..., :2], self.env.scene.env_origins)
-      self.last_signed_distance.copy_(distance)
-      return soft
+      del soft
+      self.last_signed_distance.copy_(distance - dynamic_guard)
+      return self.last_signed_distance > 0.0
     else:
       raise ValueError(f"unknown soft_region={self.cfg.soft_region!r}")
     return self.last_signed_distance > 0.0
@@ -143,7 +179,14 @@ class RftAction(ActionTerm):
     foot_position = data.site_pos_w[:, self.site_ids]
     foot_velocity = data.site_lin_vel_w[:, self.site_ids]
     foot_omega = data.site_ang_vel_w[:, self.site_ids]
-    soft = self._soft_mask(foot_position)
+    candidate = self._soft_mask(foot_position, foot_velocity)
+    self.soft_candidate_steps.copy_(torch.where(
+      candidate,
+      (self.soft_candidate_steps + 1).clamp_max(self.cfg.soft_activation_steps),
+      torch.zeros_like(self.soft_candidate_steps),
+    ))
+    soft = candidate & (self.soft_candidate_steps >= self.cfg.soft_activation_steps)
+    self.last_soft_mask.copy_(soft)
     surface_z, face_surface_z = self._surface_height(foot_position)
     plastic_depth = self.state.update(
       foot_position, surface_z, self.cfg.radius

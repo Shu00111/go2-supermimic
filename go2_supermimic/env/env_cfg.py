@@ -80,7 +80,8 @@ def _hard_half_plane(*, hard_positive_x: bool) -> EntityCfg:
     body = spec.worldbody.add_body(name="hard_ground", mocap=True)
     body.add_geom(
       name="hard_ground_collision", type=mujoco.mjtGeom.mjGEOM_BOX,
-      size=[half, 20.0, 0.05], rgba=[0.45, 0.47, 0.50, 1.0],
+      size=[half, 20.0, 0.05],
+      rgba=[0.45, 0.47, 0.50, 1.0],
       contype=1, conaffinity=2, condim=6, friction=[1.0, 5e-3, 5e-4],
     )
     return spec
@@ -102,7 +103,8 @@ def _hard_checkerboard(*, cell_size: float, seed: int, half_extent: float = 7.2)
     for index, (x, y) in enumerate(material.rigid_cells(half_extent)):
       body.add_geom(
         name=f"hard_patch_{index}", type=mujoco.mjtGeom.mjGEOM_BOX,
-        pos=[x, y, -0.025], size=[cell_size / 2, cell_size / 2, 0.025],
+        pos=[x, y, -0.025],
+        size=[cell_size / 2, cell_size / 2, 0.025],
         rgba=[0.45, 0.47, 0.50, 1.0], contype=1, conaffinity=2,
         condim=6, friction=[1.0, 5e-3, 5e-4],
       )
@@ -112,7 +114,8 @@ def _hard_checkerboard(*, cell_size: float, seed: int, half_extent: float = 7.2)
 
 
 def _configure_go2(cfg: ManagerBasedRlEnvCfg, *, soft_terrain: bool = False,
-                   transition: bool = False, sim2real: bool = False) -> None:
+                   transition: bool = False, sim2real: bool = False,
+                   rigid_contact_entity: str | None = None) -> None:
   """Go2 entity, sim settings, foot contact sensing and domain randomisation."""
   cfg.sim.mujoco.impratio = 10
   cfg.sim.mujoco.cone = "elliptic"
@@ -133,12 +136,15 @@ def _configure_go2(cfg: ManagerBasedRlEnvCfg, *, soft_terrain: bool = False,
   cfg.scene.sensors += (ContactSensorCfg(
     name="feet_ground_contact",
     primary=ContactMatch(mode="geom", pattern=FOOT_GEOM_NAMES, entity="robot"),
-    # Transition feet may contact the dedicated hard-ground entity rather than
-    # the ordinary terrain body.  With collision bits already excluding the
-    # soft visual plane, accepting any counterpart records exactly the rigid
-    # side (and avoids baking a namespaced entity name into the sensor).
-    secondary=(None if transition else ContactMatch(mode="body", pattern="terrain")),
-    secondary_policy=("any" if transition else "first"),
+    # Filter mixed-material contacts to the one rigid support body.  mjlab's
+    # secondary_policy="any" means *no secondary filter*, not "any geom in the
+    # requested entity"; using it here would include robot self-collisions in
+    # the rigid-contact oracle.  Each dedicated rigid entity has one body even
+    # when that body owns many checkerboard geoms.
+    secondary=(ContactMatch(
+      mode="body", pattern=rigid_contact_entity, entity=rigid_contact_entity
+    ) if rigid_contact_entity else ContactMatch(mode="body", pattern="terrain")),
+    secondary_policy="first",
     fields=("found", "force"),
     reduce="netforce",
     num_slots=1,
@@ -206,7 +212,9 @@ def go2_chase_env_cfg(play: bool = False, terrain: bool = False,
   if material not in ("", "checkerboard"):
     raise ValueError(f"unknown material={material!r}")
   _configure_go2(
-    cfg, soft_terrain=soft_terrain, transition=bool(transition or material), sim2real=sim2real
+    cfg, soft_terrain=soft_terrain, transition=bool(transition or material),
+    sim2real=sim2real,
+    rigid_contact_entity=("hard_patches" if material else "hard_ground" if transition else None),
   )
   if soft_terrain:
     # Preserve the validated source simulator's 2 ms force/update cadence while
@@ -246,9 +254,19 @@ def go2_chase_env_cfg(play: bool = False, terrain: bool = False,
     cfg.scene.entities["hard_ground"] = _hard_half_plane(
       hard_positive_x=transition == "soft_to_hard"
     )
+    cfg.events["reset_hard_ground"] = EventTermCfg(
+      mode="reset", func=envs_mdp.reset_root_state_uniform,
+      params={"pose_range": {}, "velocity_range": {},
+              "asset_cfg": SceneEntityCfg("hard_ground")},
+    )
   if material == "checkerboard":
     cfg.scene.entities["hard_patches"] = _hard_checkerboard(
       cell_size=material_cell_size, seed=material_seed
+    )
+    cfg.events["reset_hard_patches"] = EventTermCfg(
+      mode="reset", func=envs_mdp.reset_root_state_uniform,
+      params={"pose_range": {}, "velocity_range": {},
+              "asset_cfg": SceneEntityCfg("hard_patches")},
     )
   if mixed_diagnostic:
     pose = cfg.events["reset_base"].params["pose_range"]

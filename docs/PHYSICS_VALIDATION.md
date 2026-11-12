@@ -6,14 +6,12 @@ tangential wrench, immersion, release, per-environment/per-foot memory reset,
 and linear strength scaling. The tracked GPU report records an earlier CUDA
 integration and mutually exclusive RFT/rigid support at a single boundary.
 
-Development machine result (2026-11-12): 43 CPU tests pass and one tensor-CUDA
-test is skipped when CUDA is intentionally hidden. The host is
-an RTX 3090 machine, but it was already running an unrelated formal training
-job, which was not touched. No MuJoCo Warp simulator smoke test or benchmark
-was run; those are delegated to the RTX 5090. The small tensor-only RFT
-CPU/CUDA parity unit in the ordinary test suite passed.
+Target-machine result (2026-11-12): all 45 tests pass in the isolated project
+environment. The bounded MuJoCo Warp check ran on an RTX 3090 with 16 batched
+worlds, 100 control steps per task, and seed 14011. The machine-readable receipt
+is `experiments/contact_structured_supermimic/physics_validation/rtx3090_stage0_20261112.json`.
 
-## Implemented pending RTX 5090 simulator validation
+## Validated mixed-material implementation
 
 `Go2-Chase-RoughSoftTerrain` samples the same cached, bilinear
 `target.terrain.HeightField` used by the world-model relief representation.
@@ -25,12 +23,14 @@ contact footprint.
 
 `Go2-Chase-AlternatingMaterial` uses a seeded environment-local checkerboard.
 The material query is per foot. Cell boundaries are rigid; RFT is active only
-when the entire horizontal foot footprint is inside a soft cell. Rigid cells
-are explicit collision boxes and soft cells have no rigid foot support. Thus
-the RFT coefficient is exactly zero wherever a foot can touch a rigid patch.
+when the entire horizontal foot footprint plus a 1 cm predictive guard lies
+inside a soft cell. Rigid cells are explicit collision boxes and soft cells
+have no rigid foot support. Three consecutive eligible physics substeps are
+required before activation. Thus the RFT coefficient is zero wherever a foot
+can touch a rigid patch, including fast boundary crossings.
 Hard-to-soft entry begins with cleared loading memory; soft-to-hard clears it.
 `Go2-Chase-MixedMaterialDiagnostic` fixes the reset pose over a known mixed
-layout for the 5090 smoke test.
+layout for the validation check.
 
 The bounded smoke test accumulates
 `soft.any(1) & (~soft).any(1)` at every step, so its mixed-material receipt
@@ -43,14 +43,15 @@ Status by requested capability:
 
 | Capability | Status |
 |---|---|
-| Flat soft loading/unloading/release | CPU regression PASS |
-| Memory isolation/reset | CPU regression PASS |
-| Soil-strength scaling | CPU regression PASS |
-| Single rigid/soft boundary | historical tracked CUDA evidence; current GPU NOT RUN |
-| CPU/CUDA RFT tensor consistency | PASS on RTX 3090; simulator parity still NOT RUN |
-| Rough/irregular soft geometry | IMPLEMENTED; CPU PASS; Warp CUDA NOT RUN |
-| Alternating patches / multi-material feet | IMPLEMENTED; CPU PASS; Warp CUDA NOT RUN |
+| Flat soft loading/unloading/release | regression PASS |
+| Memory isolation/reset | regression PASS |
+| Soil-strength scaling | regression PASS |
+| Single rigid/soft boundary | Warp CUDA PASS |
+| CPU/CUDA RFT tensor consistency | PASS on RTX 3090 |
+| Rough/irregular soft geometry | Warp CUDA PASS; max RFT 120.31 N |
+| Alternating patches / multi-material feet | Warp CUDA PASS; all 16 worlds mixed |
+| Fixed mixed-material diagnostic | Warp CUDA PASS; all 1600 world-steps mixed |
 
-Formal Stage 3 remains fail-closed until both registrations pass the bounded
-RTX 5090 MuJoCo Warp checks. The implementation preserves the RFT equations;
-no spring-damper substitute is used.
+No checked foot received simultaneous rigid and RFT support at the `1e-4 N`
+threshold. The implementation preserves the RFT equations; no spring-damper
+substitute is used.

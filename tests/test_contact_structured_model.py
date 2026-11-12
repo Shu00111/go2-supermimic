@@ -1,4 +1,5 @@
 import torch
+from types import SimpleNamespace
 
 from go2_supermimic.supermimic import state as st
 from go2_supermimic.supermimic.contact_model import (
@@ -9,6 +10,23 @@ from go2_supermimic.supermimic.contact_model import (
   PersistentContactEstimator,
   per_foot_observables,
 )
+from go2_supermimic.supermimic.contact_labels import rigid_contact_force
+
+
+def test_rigid_contact_force_reorders_mjcf_primaries_to_canonical_feet():
+  # MJCF/entity order is FL, FR, RL, RR, while all contact-structured tensors
+  # use FR, FL, RR, RL.  Give each source foot a distinct x force.
+  sensor = SimpleNamespace(
+    primary_names=[
+      "FL_foot_collision", "FR_foot_collision",
+      "RL_foot_collision", "RR_foot_collision",
+    ],
+    data=SimpleNamespace(force=torch.tensor([[[1., 0., 0.], [2., 0., 0.],
+                                              [3., 0., 0.], [4., 0., 0.]]])),
+  )
+  env = SimpleNamespace(num_envs=1, scene={"feet_ground_contact": sensor})
+  force = rigid_contact_force(env, torch.zeros(1, 4, 3))
+  assert force[0, :, 0].tolist() == [2.0, 1.0, 4.0, 3.0]
 from go2_supermimic.supermimic.world_model import WorldModel
 from go2_supermimic.target.terrain import SCAN_POINTS
 
