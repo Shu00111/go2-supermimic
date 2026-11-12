@@ -369,7 +369,14 @@ class Trainer:
       self.start_it = int(ckpt.get("iteration", 0))
       self.env.common_step_counter = self.start_it
       if "replay_buffer" in ckpt:
-        self.buf.load_state_dict(ckpt["replay_buffer"])
+        try:
+          self.buf.load_state_dict(ckpt["replay_buffer"])
+        except ValueError as exc:
+          # Adding the shared height-scan interface at the Stage 1 -> 2
+          # boundary changes only Actor observation storage.  Dynamics windows
+          # in the archive remain compatible; start a fresh online buffer and
+          # preserve the reason in the run log.
+          print(f"replay buffer re-initialised after interface change: {exc}", flush=True)
       if "window_archive" in ckpt:
         self.archive.load_state_dict(ckpt["window_archive"])
       self.env_steps = int(ckpt.get("env_steps", self.env_steps))

@@ -194,6 +194,7 @@ def _configure_go2(cfg: ManagerBasedRlEnvCfg, *, soft_terrain: bool = False,
 
 def go2_chase_env_cfg(play: bool = False, terrain: bool = False,
                       obstacles: bool = False, soft_terrain: bool = False,
+                      height_scan: bool = False,
                       soil_strength_range: tuple[float, float] = (1.0, 1.0),
                       transition: str = "", material: str = "",
                       material_cell_size: float = 0.6, material_seed: int = 7,
@@ -340,7 +341,7 @@ def go2_chase_env_cfg(play: bool = False, terrain: bool = False,
     actor_terms["lidar"] = ObservationTermCfg(
       func=mdp.lidar, params={"command_name": CMD}, noise=Unoise(n_min=-0.03, n_max=0.03)
     )
-  if terrain:
+  if terrain or height_scan:
     actor_terms["height_scan"] = ObservationTermCfg(
       func=mdp.height_scan, params={"command_name": CMD}, noise=Unoise(n_min=-0.02, n_max=0.02)
     )

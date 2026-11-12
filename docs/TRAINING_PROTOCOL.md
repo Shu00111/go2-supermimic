@@ -18,9 +18,11 @@ Optional Sim2Real runs use the `-Sim2Real` task registrations. Their sensor
 noise, latency, inertial, friction and reset distributions are shared by all
 three methods and are never exposed as oracle Actor inputs.
 
-The formal transition budget is `PILOT_REQUIRED`: run matched short pilots on
-the RTX 3090 at 128, 256, 512, and 1024 environments, select one budget before
-formal runs, then freeze it for every method/seed. Do not inherit 12,000
+The four bounded scalability probes have completed for M1 and M2; their receipt
+is `experiments/contact_structured_supermimic/reports/rtx3090_scalability_20261112.json`.
+They nominate 1024 environments for matched post-warmup pilots, but the formal
+transition budget remains `PILOT_REQUIRED` until those pilots finish. Then
+freeze one budget for every method/seed. Do not inherit 12,000
 iterations without that evidence. Track wall time, environment transitions,
 optimizer steps and GPU-hours.
 

@@ -13,10 +13,24 @@ for task_id, kw in (
   ("Go2-Chase-SoftTerrainLevels", {
     "soft_terrain": True, "soil_strength_range": (0.3, 1.0)
   }),
+  ("Go2-Chase-Flat-Scan", {"height_scan": True}),
+  ("Go2-Chase-SoftTerrain-Scan", {"soft_terrain": True, "height_scan": True}),
+  ("Go2-Chase-SoftTerrainLevels-Scan", {
+    "soft_terrain": True, "soil_strength_range": (0.3, 1.0), "height_scan": True
+  }),
   ("Go2-Chase-SoftTransition", {"transition": "hard_to_soft"}),
   ("Go2-Chase-SoftToHard", {"transition": "soft_to_hard"}),
+  ("Go2-Chase-SoftTransition-Scan", {
+    "transition": "hard_to_soft", "height_scan": True
+  }),
+  ("Go2-Chase-SoftToHard-Scan", {
+    "transition": "soft_to_hard", "height_scan": True
+  }),
   ("Go2-Chase-RoughSoftTerrain", {"terrain": True, "soft_terrain": True}),
   ("Go2-Chase-AlternatingMaterial", {"material": "checkerboard"}),
+  ("Go2-Chase-AlternatingMaterial-Scan", {
+    "material": "checkerboard", "height_scan": True
+  }),
   ("Go2-Chase-MixedMaterialDiagnostic", {
     "material": "checkerboard", "material_cell_size": 0.6, "mixed_diagnostic": True
   }),

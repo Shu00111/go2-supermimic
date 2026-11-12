@@ -11,6 +11,7 @@ logs/
 videos/
 checkpoints/
 outputs/
+/experiments/contact_structured_supermimic/benchmarks/
 *.pt
 !weights/*.pt
 *.mp4

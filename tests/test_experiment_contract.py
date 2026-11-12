@@ -58,3 +58,22 @@ def test_new_tasks_register_with_shared_action_interface_and_sim2real_contract()
   robust_actuators = robust.scene.entities["robot"].articulation.actuators
   assert all(a.delay_hold_prob == 0.0 and a.delay_update_period == 0 for a in clean_actuators)
   assert all(a.delay_hold_prob == 0.2 and a.delay_update_period == 2 for a in robust_actuators)
+
+
+def test_later_curriculum_tasks_share_height_scan_actor_interface():
+  import json
+  from pathlib import Path
+
+  import go2_supermimic.env  # noqa: F401
+  from go2_supermimic.supermimic.state import obs_terms
+  from mjlab.tasks.registry import load_env_cfg
+
+  root = Path(__file__).resolve().parents[1]
+  for stage in (2, 3):
+    contract = json.loads((root / f"configs/stages/stage{stage}.json").read_text())
+    dims = set()
+    for task in contract["tasks"]:
+      actor = load_env_cfg(task).observations["actor"]
+      assert "height_scan" in actor.terms
+      dims.add(sum(dim for _, dim in obs_terms(load_env_cfg(task))) * actor.history_length)
+    assert dims == {contract["actor_observation_dim"]}

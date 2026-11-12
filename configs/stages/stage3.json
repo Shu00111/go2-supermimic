@@ -1,14 +1,15 @@
 {
   "stage": 3,
   "tasks": [
-    "Go2-Chase-Flat",
+    "Go2-Chase-Flat-Scan",
     "Go2-Chase-Terrain",
-    "Go2-Chase-SoftTerrainLevels",
+    "Go2-Chase-SoftTerrainLevels-Scan",
     "Go2-Chase-RoughSoftTerrain",
-    "Go2-Chase-SoftTransition",
-    "Go2-Chase-SoftToHard",
-    "Go2-Chase-AlternatingMaterial"
+    "Go2-Chase-SoftTransition-Scan",
+    "Go2-Chase-SoftToHard-Scan",
+    "Go2-Chase-AlternatingMaterial-Scan"
   ],
   "retention": [0.05, 0.05, 0.10, 0.25, 0.15, 0.15, 0.25],
+  "actor_observation_dim": 735,
   "physics_validation_receipt": "experiments/contact_structured_supermimic/physics_validation/rtx3090_stage0_20261112.json"
 }

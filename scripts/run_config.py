@@ -37,20 +37,25 @@ def main() -> None:
       raise SystemExit(f"RESUME checkpoint not found: {resume}")
     cfg["resume"] = str(Path(resume).resolve())
     cfg["continue_run"] = True
-  canonical = json.dumps(cfg, sort_keys=True, separators=(",", ":")).encode()
-  config_hash = hashlib.sha256(canonical).hexdigest()
   source_sha = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
   output_root = Path(os.environ.get("OUTPUT_ROOT", ROOT / "runs")).resolve()
   run_id = os.environ.get("RUN_ID") or datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
   run_dir = output_root / f"{args.method}-seed{cfg['seed']}-{run_id}"
   if run_dir.exists():
     raise SystemExit(f"refusing to overwrite existing run: {run_dir}")
+  cfg["log_root"] = str(run_dir)
+  dirty = subprocess.check_output(
+    ["git", "status", "--porcelain", "--untracked-files=no"], cwd=ROOT, text=True
+  ).strip()
+  if dirty and os.environ.get("ALLOW_DIRTY_SOURCE") != "1":
+    raise SystemExit("refusing to train from a dirty tracked worktree")
+  canonical = json.dumps(cfg, sort_keys=True, separators=(",", ":")).encode()
+  config_hash = hashlib.sha256(canonical).hexdigest()
   if args.dry_run:
     print(json.dumps({"run_dir": str(run_dir), "source_sha": source_sha,
                       "config_sha256": config_hash, "config": cfg}, indent=2))
     return
   run_dir.mkdir(parents=True)
-  cfg["log_root"] = str(run_dir)
   manifest = {
     "schema": 1,
     "status": "starting",

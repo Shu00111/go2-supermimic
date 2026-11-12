@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "device": "NVIDIA GeForce RTX 3090",
+  "probe_contract": {
+    "task": "Go2-Chase-SoftTerrain",
+    "seed": 14011,
+    "iterations": 2,
+    "world_model_updates_only": true,
+    "note": "Bounded scalability gate; convergence and post-warmup BPTT require matched pilots."
+  },
+  "results": [
+    {"method": "m1", "num_envs": 128, "elapsed_seconds": 20.471, "peak_vram_mib": 3289},
+    {"method": "m1", "num_envs": 256, "elapsed_seconds": 21.315, "peak_vram_mib": 3523},
+    {"method": "m1", "num_envs": 512, "elapsed_seconds": 22.426, "peak_vram_mib": 4018},
+    {"method": "m1", "num_envs": 1024, "elapsed_seconds": 24.147, "peak_vram_mib": 4974},
+    {"method": "m2", "num_envs": 128, "elapsed_seconds": 20.406, "peak_vram_mib": 3402},
+    {"method": "m2", "num_envs": 256, "elapsed_seconds": 21.591, "peak_vram_mib": 3632},
+    {"method": "m2", "num_envs": 512, "elapsed_seconds": 22.510, "peak_vram_mib": 4112},
+    {"method": "m2", "num_envs": 1024, "elapsed_seconds": 24.178, "peak_vram_mib": 5038}
+  ],
+  "pilot_choice": {
+    "num_envs": 1024,
+    "rationale": "Eight times the transitions of 128 environments for about 18% more bounded wall time, with <= 5038 MiB observed peak VRAM. Final selection remains contingent on post-warmup BPTT pilots."
+  }
+}

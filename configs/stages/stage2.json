@@ -1,1 +1,1 @@
-{"stage": 2, "tasks": ["Go2-Chase-Flat", "Go2-Chase-SoftTerrain", "Go2-Chase-Terrain", "Go2-Chase-SoftTerrainLevels"], "retention": [0.1, 0.1, 0.4, 0.4]}
+{"stage": 2, "tasks": ["Go2-Chase-Flat-Scan", "Go2-Chase-SoftTerrain-Scan", "Go2-Chase-Terrain", "Go2-Chase-SoftTerrainLevels-Scan"], "retention": [0.1, 0.1, 0.4, 0.4], "actor_observation_dim": 735}
