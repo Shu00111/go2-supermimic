@@ -19,17 +19,20 @@ from pathlib import Path
 
 import torch
 from torch import nn
-from torch.utils.tensorboard import SummaryWriter
 
 from go2_supermimic.supermimic import state as st
 from go2_supermimic.supermimic.buffer import ReplayBuffer, WindowArchive, pack_generator
 from go2_supermimic.supermimic.imagine import ImagineCfg, Imagination, RewardWeights
 from go2_supermimic.supermimic.world_model import RunningNorm, WorldModel, mlp
+from go2_supermimic.supermimic.contact_model import ContactStructuredWorldModel
+from go2_supermimic.supermimic.contact_labels import oracle_contact_state
 from go2_supermimic.target import terrain as tr
 
 
 @dataclass(kw_only=True)
 class TrainCfg:
+  method: str = "m1"
+  """m1 vanilla, m2 contact-structured, or m3 capacity-matched generic."""
   task: str = "Go2-Chase-Terrain"
   device: str = "cuda:0"
   """Torch/Warp device. Keep cuda:0 for released training; cpu is useful for smoke tests."""
@@ -227,6 +230,7 @@ def expand_world_model_scan(old: dict, wm: WorldModel) -> bool:
 
 class Trainer:
   def __init__(self, cfg: TrainCfg):
+    from torch.utils.tensorboard import SummaryWriter
     import go2_supermimic.env  # noqa: F401
     from mjlab.envs import ManagerBasedRlEnv
     from mjlab.tasks.registry import load_env_cfg
@@ -253,7 +257,14 @@ class Trainer:
     self.xi = self.ctx.read()
     self.enc_bias = self.env.scene["robot"].data.encoder_bias.clone()
 
-    self.wm = WorldModel(cfg.wm_hidden).to(self.dev)
+    if cfg.method == "m2":
+      self.wm = ContactStructuredWorldModel(cfg.wm_hidden).to(self.dev)
+    elif cfg.method == "m3":
+      self.wm = WorldModel(cfg.wm_hidden).to(self.dev)
+    elif cfg.method == "m1":
+      self.wm = WorldModel(cfg.wm_hidden).to(self.dev)
+    else:
+      raise ValueError(f"unknown method {cfg.method!r}")
     self.actor = Actor(obs_dim, cfg.actor_hidden, st.NUM_JOINTS).to(self.dev)
     self.opt_wm = torch.optim.Adam(self.wm.parameters(), lr=cfg.lr)
     self.opt_actor = torch.optim.Adam(self.actor.parameters(), lr=cfg.lr, betas=(0.9, 0.95))
@@ -314,7 +325,7 @@ class Trainer:
       self.wm.load_state_dict(ckpt["world_model"])
       if "opt_wm" in ckpt:
         self.opt_wm.load_state_dict(ckpt["opt_wm"])
-    elif expand_world_model_scan(ckpt["world_model"], self.wm):
+    elif isinstance(self.wm, WorldModel) and expand_world_model_scan(ckpt["world_model"], self.wm):
       print("world model: ground-scan inputs added (zero weight, same predictions)", flush=True)
     else:
       self.policy_start = max(self.policy_start, self.cfg.wm_rewarmup_iterations)
@@ -357,6 +368,20 @@ class Trainer:
       # One env step per iteration: the env-side curricula count env steps.
       self.start_it = int(ckpt.get("iteration", 0))
       self.env.common_step_counter = self.start_it
+      if "replay_buffer" in ckpt:
+        self.buf.load_state_dict(ckpt["replay_buffer"])
+      if "window_archive" in ckpt:
+        self.archive.load_state_dict(ckpt["window_archive"])
+      self.env_steps = int(ckpt.get("env_steps", self.env_steps))
+      training_state = ckpt.get("training_state", {})
+      for name in ("actor_frozen_until", "policy_start", "ramp_start", "nonfinite_steps"):
+        if name in training_state:
+          setattr(self, name, training_state[name])
+      self.lr_scale = float(training_state.get("lr_scale", self.lr_scale))
+      if "torch_rng_state" in ckpt:
+        torch.random.set_rng_state(ckpt["torch_rng_state"].cpu())
+      if torch.device(self.dev).type == "cuda" and "cuda_rng_state" in ckpt:
+        torch.cuda.set_rng_state_all([x.cpu() for x in ckpt["cuda_rng_state"]])
       print(f"continuing at iteration {self.start_it}", flush=True)
 
   # Phase 1.
@@ -369,6 +394,7 @@ class Trainer:
       pose = st.planar_pose(env)
       gen = pack_generator(self.term.gen)
       relief = self._relief(pose)
+      contact = oracle_contact_state(env)
       a = self.actor(self.obs)
       dt = env.step_dt
       # Driven envs are the last ones: MoE-CTS, then before them the expert.
@@ -395,7 +421,7 @@ class Trainer:
         self.driver.reset(done)
         self.steer.resample(done, self.term.gen.center)
       self.ou = torch.where(done.unsqueeze(-1), torch.zeros_like(self.ou), self.ou)
-      self.buf.add(s, pose, a, self.a_prev, self.obs, gen, done, relief)
+      self.buf.add(s, pose, a, self.a_prev, self.obs, gen, done, relief, contact)
       keep = ~done
       if keep.any():
         s1 = st.robot_state(env, field=self.field)
@@ -446,6 +472,7 @@ class Trainer:
       "s": b.s[e, idx], "pose": b.pose[e, idx], "a": b.a[e, idx[:, :k]],
       "a_prev": b.a_prev[e, idx[:, :k]], "xi": self.xi[env], "valid": valid,
       "relief": b.relief[e, idx[:, :k]],
+      "contact": b.contact[e, idx[:, 1:k + 1]],
     }
 
   @staticmethod
@@ -496,10 +523,12 @@ class Trainer:
       pose_tgt = torch.stack(
         [st.pose_delta(w["pose"][:, j], w["pose"][:, j + 1]) for j in range(k)], 1
       )
-      loss = self.wm.loss(
-        w["s"][:, 0], w["a"], w["a_prev"], w["xi"], w["relief"].float(), w["s"][:, 1:],
-        pose_tgt, w["valid"],
+      args = (
+        w["s"][:, 0], w["a"], w["a_prev"], w["xi"], w["relief"].float(),
+        w["s"][:, 1:], pose_tgt, w["valid"],
       )
+      loss = (self.wm.loss(*args, contact_targets=w["contact"])
+              if isinstance(self.wm, ContactStructuredWorldModel) else self.wm.loss(*args))
       self.opt_wm.zero_grad(set_to_none=True)
       loss.backward()
       gn = clip_grads(self.wm.parameters(), cfg.grad_clip, float("inf"))
@@ -577,6 +606,19 @@ class Trainer:
         "opt_actor": self.opt_actor.state_dict(),
         "opt_critic": self.opt_critic.state_dict(),
         "obs_dim": self.obs.shape[-1],
+        "env_steps": self.env_steps,
+        "replay_buffer": self.buf.state_dict(),
+        "window_archive": self.archive.state_dict(),
+        "torch_rng_state": torch.random.get_rng_state(),
+        "cuda_rng_state": (torch.cuda.get_rng_state_all()
+                           if torch.device(self.dev).type == "cuda" else []),
+        "training_state": {
+          "actor_frozen_until": self.actor_frozen_until,
+          "policy_start": self.policy_start,
+          "ramp_start": self.ramp_start,
+          "lr_scale": self.lr_scale,
+          "nonfinite_steps": self.nonfinite_steps,
+        },
       },
       path,
     )

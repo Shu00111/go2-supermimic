@@ -10,6 +10,7 @@ from __future__ import annotations
 import torch
 
 from go2_supermimic.supermimic import state as st
+from go2_supermimic.supermimic.contact_model import CONTACT_STATE_DIM
 
 from go2_supermimic.target.generator import BOOL_FIELDS, STATE_DIMS
 from go2_supermimic.target.terrain import SCAN_POINTS
@@ -49,14 +50,17 @@ class ReplayBuffer:
     self.relief = torch.zeros(num_envs, length, SCAN_POINTS, device=device, dtype=torch.float16)
     self.gen = f(gen_dim)
     self.done = f()
+    self.contact = f(CONTACT_STATE_DIM)
     self.ptr = 0
     self.size = 0
 
-  def add(self, s, pose, a, a_prev, obs, gen, done, relief) -> None:
+  def add(self, s, pose, a, a_prev, obs, gen, done, relief, contact=None) -> None:
     i = self.ptr
     self.s[:, i], self.pose[:, i], self.a[:, i], self.a_prev[:, i] = s, pose, a, a_prev
     self.relief[:, i] = relief.half()
     self.obs[:, i], self.gen[:, i], self.done[:, i] = obs.half(), gen, done.float()
+    if contact is not None:
+      self.contact[:, i] = contact.reshape(self.n, CONTACT_STATE_DIM)
     self.ptr = (self.ptr + 1) % self.L
     self.size = min(self.size + 1, self.L)
 
@@ -81,8 +85,25 @@ class ReplayBuffer:
     t = self._phys(torch.randint(0, self.size, (batch,), device=self.device))
     return env, t
 
+  def state_dict(self) -> dict:
+    return {
+      "schema": 1, "n": self.n, "length": self.L, "ptr": self.ptr, "size": self.size,
+      **{name: getattr(self, name) for name in
+         ("s", "pose", "a", "a_prev", "obs", "relief", "gen", "done", "contact")},
+    }
 
-WINDOW_KEYS = ("s", "pose", "a", "a_prev", "xi", "valid", "relief")
+  def load_state_dict(self, state: dict) -> None:
+    if state.get("schema") != 1 or state.get("n") != self.n or state.get("length") != self.L:
+      raise ValueError("replay-buffer schema or shape mismatch")
+    for name in ("s", "pose", "a", "a_prev", "obs", "relief", "gen", "done", "contact"):
+      target, source = getattr(self, name), state[name]
+      if target.shape != source.shape:
+        raise ValueError(f"replay-buffer {name} shape mismatch")
+      target.copy_(source)
+    self.ptr, self.size = int(state["ptr"]), int(state["size"])
+
+
+WINDOW_KEYS = ("s", "pose", "a", "a_prev", "xi", "valid", "relief", "contact")
 
 
 class WindowArchive:
@@ -97,6 +118,7 @@ class WindowArchive:
       "s": z(k + 1, st.STATE_DIM), "pose": z(k + 1, 3), "a": z(k, st.NUM_JOINTS),
       "a_prev": z(k, st.NUM_JOINTS), "xi": z(context_dim), "valid": z(k),
       "relief": torch.zeros(capacity, k, SCAN_POINTS, device=device, dtype=torch.float16),
+      "contact": z(k, CONTACT_STATE_DIM),
     }
     self.ptr = 0
     self.size = 0
@@ -115,3 +137,17 @@ class WindowArchive:
   def sample(self, batch: int) -> dict[str, torch.Tensor]:
     idx = torch.randint(0, self.size, (batch,), device=self.device)
     return {k: v[idx] for k, v in self.data.items()}
+
+  def state_dict(self) -> dict:
+    return {"schema": 1, "capacity": self.cap, "ptr": self.ptr, "size": self.size,
+            "data": self.data}
+
+  def load_state_dict(self, state: dict) -> None:
+    if state.get("schema") != 1 or state.get("capacity") != self.cap:
+      raise ValueError("window-archive schema or capacity mismatch")
+    for name, target in self.data.items():
+      source = state["data"][name]
+      if target.shape != source.shape:
+        raise ValueError(f"window-archive {name} shape mismatch")
+      target.copy_(source)
+    self.ptr, self.size = int(state["ptr"]), int(state["size"])

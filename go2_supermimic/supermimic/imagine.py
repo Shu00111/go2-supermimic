@@ -210,13 +210,17 @@ class Imagination:
       parts.append(self.scan(s, pose, gst, grad=False))
     return torch.cat(parts + [xi], dim=-1)
 
-  def _step(self, s, pose, a_prev, hist, gst, xi, enc_bias, k, dt, actor, wm):
+  def _step(self, s, pose, a_prev, hist, gst, xi, enc_bias, k, dt, actor, wm, z=None):
     """One imagined step. Pure function of its inputs (compiled when cfg.compile)."""
     cfg = self.cfg
     crit_in = self.critic_input(s, pose, gst, xi)
     a = actor(hist)
     relief = self.relief(pose, gst, cfg.sensor_grad)
-    s_next, dpose = wm(s, a, a_prev, xi, relief)
+    if z is None:
+      s_next, dpose = wm(s, a, a_prev, xi, relief)
+      z_next = None
+    else:
+      s_next, dpose, z_next = wm.step(s, z, a, a_prev, xi, relief)
     pose_next = st.apply_pose_delta(pose, dpose)
     yaw = pose_next[:, 2]
     v_w = planar_velocity_world(s_next, yaw)
@@ -231,7 +235,7 @@ class Imagination:
     scan = self.scan(s_next, pose_next, gst, cfg.sensor_grad) if self.use_scan else None
     frame = st.obs_frame(s_next, a, tgt, enc_bias, noise=True, lidar=lidar, height_scan=scan)
     hist = st.push_history(hist, frame, self.h, self.terms)
-    return s_next, pose_next, a, hist, gst, r, d, crit_in
+    return s_next, pose_next, a, hist, gst, r, d, crit_in, z_next
 
   def rollout(self, wm, actor, critic, seed: dict, hint_weight: float = 0.0):
     """Imagine H steps from replay seeds. Returns differentiable objective and critic data."""
@@ -245,6 +249,7 @@ class Imagination:
     gst = gen.state()
     s, pose, a_prev, hist = seed["s"], seed["pose"], seed["a_prev"], seed["obs"]
     xi, enc_bias = seed["xi"], seed["enc_bias"]
+    z = wm.initial_contact(s, a_prev)[0] if hasattr(wm, "initial_contact") else None
     dt = torch.full((B,), cfg.dt, device=self.device)
     k = {
       "default_q": self.c.default_q[env_ids],
@@ -259,8 +264,8 @@ class Imagination:
     rewards, survs, crit_in = [], [], []
     for _ in range(cfg.horizon):
       survs.append(surv)
-      s, pose, a_prev, hist, gst, r, d, x = self._step_fn(
-        s, pose, a_prev, hist, gst, xi, enc_bias, k, dt, actor, wm
+      s, pose, a_prev, hist, gst, r, d, x, z = self._step_fn(
+        s, pose, a_prev, hist, gst, xi, enc_bias, k, dt, actor, wm, z
       )
       crit_in.append(x)
       ret = ret + disc * surv * r
