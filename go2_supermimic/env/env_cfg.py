@@ -31,6 +31,7 @@ from go2_supermimic.robot.go2 import (
   get_go2_transition_robot_cfg,
 )
 from go2_supermimic.soft_terrain.action import RftActionCfg
+from go2_supermimic.soft_terrain.materials import CheckerboardMaterial
 from go2_supermimic.target import obstacles as ob
 
 CMD = "target"
@@ -89,6 +90,25 @@ def _hard_half_plane(*, hard_positive_x: bool) -> EntityCfg:
     spec_fn=spec_fn,
     init_state=EntityCfg.InitialStateCfg(pos=(center_x, 0.0, -0.05)),
   )
+
+
+def _hard_checkerboard(*, cell_size: float, seed: int, half_extent: float = 7.2) -> EntityCfg:
+  """Rigid cells aligned exactly with :class:`CheckerboardMaterial`."""
+  material = CheckerboardMaterial(cell_size=cell_size, seed=seed)
+
+  def spec_fn() -> mujoco.MjSpec:
+    spec = mujoco.MjSpec()
+    body = spec.worldbody.add_body(name="hard_patches", mocap=True)
+    for index, (x, y) in enumerate(material.rigid_cells(half_extent)):
+      body.add_geom(
+        name=f"hard_patch_{index}", type=mujoco.mjtGeom.mjGEOM_BOX,
+        pos=[x, y, -0.025], size=[cell_size / 2, cell_size / 2, 0.025],
+        rgba=[0.45, 0.47, 0.50, 1.0], contype=1, conaffinity=2,
+        condim=6, friction=[1.0, 5e-3, 5e-4],
+      )
+    return spec
+
+  return EntityCfg(spec_fn=spec_fn, init_state=EntityCfg.InitialStateCfg())
 
 
 def _configure_go2(cfg: ManagerBasedRlEnvCfg, *, soft_terrain: bool = False,
@@ -168,19 +188,23 @@ def _configure_go2(cfg: ManagerBasedRlEnvCfg, *, soft_terrain: bool = False,
 def go2_chase_env_cfg(play: bool = False, terrain: bool = False,
                       obstacles: bool = False, soft_terrain: bool = False,
                       soil_strength_range: tuple[float, float] = (1.0, 1.0),
-                      transition: str = ""
+                      transition: str = "", material: str = "",
+                      material_cell_size: float = 0.6, material_seed: int = 7,
+                      sim2real: bool = False, mixed_diagnostic: bool = False,
                       ) -> ManagerBasedRlEnvCfg:
   """terrain: generated rough terrain, a ground height scan for the actor, and
   chasing with thrown bars only (no balls).
   obstacles: static boxes, pillars and walls, and a planar LiDAR for the actor."""
   cfg = make_velocity_env_cfg()
-  if transition:
+  if transition or material:
     soft_terrain = True
-  if soft_terrain and (terrain or obstacles):
-    raise ValueError("the initial soft-terrain baseline must use the uniform flat scene")
+  if soft_terrain and obstacles:
+    raise ValueError("soft-terrain tasks do not combine with obstacles")
   if transition not in ("", "hard_to_soft", "soft_to_hard"):
     raise ValueError(f"unknown transition={transition!r}")
-  _configure_go2(cfg, soft_terrain=soft_terrain, transition=bool(transition))
+  if material not in ("", "checkerboard"):
+    raise ValueError(f"unknown material={material!r}")
+  _configure_go2(cfg, soft_terrain=soft_terrain, transition=bool(transition or material))
   if soft_terrain:
     # Preserve the validated source simulator's 2 ms force/update cadence while
     # keeping the original SuperMimic policy rate at 50 Hz.
@@ -219,6 +243,13 @@ def go2_chase_env_cfg(play: bool = False, terrain: bool = False,
     cfg.scene.entities["hard_ground"] = _hard_half_plane(
       hard_positive_x=transition == "soft_to_hard"
     )
+  if material == "checkerboard":
+    cfg.scene.entities["hard_patches"] = _hard_checkerboard(
+      cell_size=material_cell_size, seed=material_seed
+    )
+  if mixed_diagnostic:
+    pose = cfg.events["reset_base"].params["pose_range"]
+    pose.update({"x": (0.0, 0.0), "y": (0.0, 0.0), "yaw": (0.0, 0.0)})
   cfg.commands = {CMD: target_cmd}
   if soft_terrain:
     # Zero policy dimensions: this hook runs RFT immediately before each 2 ms
@@ -227,7 +258,11 @@ def go2_chase_env_cfg(play: bool = False, terrain: bool = False,
       entity_name="robot",
       coefficient_scale_range=soil_strength_range,
       soft_region=("positive_x" if transition == "hard_to_soft" else
-                   "negative_x" if transition == "soft_to_hard" else "all"),
+                   "negative_x" if transition == "soft_to_hard" else
+                   "checkerboard" if material == "checkerboard" else "all"),
+      use_local_height=terrain,
+      material_cell_size=material_cell_size,
+      material_seed=material_seed,
     )
 
   # Observations. No linear velocity (not measured on hardware); a short
@@ -249,6 +284,37 @@ def go2_chase_env_cfg(play: bool = False, terrain: bool = False,
     "actions": ObservationTermCfg(func=vel_mdp.last_action),
     "target": ObservationTermCfg(func=vel_mdp.generated_commands, params={"command_name": CMD}),
   }
+  if sim2real:
+    # At 50 Hz, one observation step is 20 ms.  Per-term lag is independent,
+    # while actuator delay remains sampled at the physics-step bus cadence.
+    for term in actor_terms.values():
+      term.delay_min_lag = 0
+      term.delay_max_lag = 1
+      term.delay_hold_prob = 0.2
+    cfg.events.pop("base_com", None)
+    cfg.events["base_inertia"] = EventTermCfg(
+      mode="startup", func=envs_mdp.dr.pseudo_inertia,
+      params={
+        "asset_cfg": SceneEntityCfg("robot", body_names=("base",)),
+        "alpha_range": (0.5 * math.log(0.9), 0.5 * math.log(1.1)),
+        "t_range": (-0.02, 0.02),
+      },
+    )
+    cfg.events["link_inertia"] = EventTermCfg(
+      mode="startup", func=envs_mdp.dr.pseudo_inertia,
+      params={
+        "asset_cfg": SceneEntityCfg("robot", body_names=(".*_hip", ".*_thigh", ".*_calf")),
+        "alpha_range": (0.5 * math.log(0.9), 0.5 * math.log(1.1)),
+      },
+    )
+    cfg.events["joint_friction"] = EventTermCfg(
+      mode="startup", func=envs_mdp.dr.joint_friction,
+      params={
+        "asset_cfg": SceneEntityCfg("robot", joint_names=(".*",)),
+        "operation": "abs", "distribution": "uniform", "ranges": (0.0, 0.08),
+      },
+    )
+    cfg.events["reset_robot_joints"].params["position_range"] = (-0.05, 0.05)
   if obstacles:
     actor_terms["lidar"] = ObservationTermCfg(
       func=mdp.lidar, params={"command_name": CMD}, noise=Unoise(n_min=-0.03, n_max=0.03)

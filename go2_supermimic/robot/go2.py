@@ -66,6 +66,8 @@ GO2_HIP_ACTUATOR_CFG = DcMotorActuatorCfg(
   velocity_limit=HIP_ACTUATOR.velocity_limit,
   armature=HIP_ACTUATOR.reflected_inertia,
   delay_max_lag=ACTUATOR_DELAY_MAX_LAG,
+  delay_hold_prob=0.2,
+  delay_update_period=2,
 )
 GO2_KNEE_ACTUATOR_CFG = DcMotorActuatorCfg(
   target_names_expr=(".*_calf_joint",),
@@ -76,6 +78,8 @@ GO2_KNEE_ACTUATOR_CFG = DcMotorActuatorCfg(
   velocity_limit=KNEE_ACTUATOR.velocity_limit,
   armature=KNEE_ACTUATOR.reflected_inertia,
   delay_max_lag=ACTUATOR_DELAY_MAX_LAG,
+  delay_hold_prob=0.2,
+  delay_update_period=2,
 )
 
 ##

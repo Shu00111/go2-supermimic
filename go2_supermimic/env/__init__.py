@@ -15,6 +15,17 @@ for task_id, kw in (
   }),
   ("Go2-Chase-SoftTransition", {"transition": "hard_to_soft"}),
   ("Go2-Chase-SoftToHard", {"transition": "soft_to_hard"}),
+  ("Go2-Chase-RoughSoftTerrain", {"terrain": True, "soft_terrain": True}),
+  ("Go2-Chase-AlternatingMaterial", {"material": "checkerboard"}),
+  ("Go2-Chase-MixedMaterialDiagnostic", {
+    "material": "checkerboard", "material_cell_size": 0.6, "mixed_diagnostic": True
+  }),
+  ("Go2-Chase-RoughSoftTerrain-Sim2Real", {
+    "terrain": True, "soft_terrain": True, "sim2real": True
+  }),
+  ("Go2-Chase-AlternatingMaterial-Sim2Real", {
+    "material": "checkerboard", "sim2real": True
+  }),
 ):
   register_mjlab_task(
     task_id=task_id,

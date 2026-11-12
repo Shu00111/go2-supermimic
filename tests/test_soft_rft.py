@@ -5,6 +5,7 @@ import pytest
 import torch
 
 from go2_supermimic.soft_terrain.rft import RftOperator, RftState
+from go2_supermimic.soft_terrain.materials import CheckerboardMaterial
 
 
 POSITIONS = torch.tensor([
@@ -92,3 +93,81 @@ def test_strength_multiplier_is_linear_for_static_loading():
     position, zeros, zeros, coefficient_scale=torch.tensor([[0.3], [0.6]])
   )
   assert (result.force[1, 0, 2] / result.force[0, 0, 2]).item() == pytest.approx(2.0)
+
+
+def test_flat_face_heights_are_exactly_backward_compatible():
+  op = RftOperator(device="cpu", dtype=torch.float64, subdivisions=1)
+  pos = POSITIONS[:3]
+  args = (pos, VELOCITIES[:3], ANGULAR[:3])
+  old = op.compute(*args, surface_z=0.13, plastic_depth=PLASTIC[:3])
+  faces = torch.full((3, op.num_faces), 0.13, dtype=torch.float64)
+  new = op.compute(*args, surface_z=0.13, face_surface_z=faces, plastic_depth=PLASTIC[:3])
+  torch.testing.assert_close(new.force, old.force, rtol=0.0, atol=0.0)
+  torch.testing.assert_close(new.torque, old.torque, rtol=0.0, atol=0.0)
+
+
+def test_rough_face_height_and_penetration_use_local_surface():
+  op = RftOperator(device="cpu", dtype=torch.float64, subdivisions=1)
+  pos = torch.tensor([[[0.0, 0.0, 0.010], [0.0, 0.0, 0.110]]], dtype=torch.float64)
+  zero = torch.zeros_like(pos)
+  surface = torch.tensor([[0.0, 0.1]], dtype=torch.float64)
+  result = op.compute(pos, zero, zero, surface_z=surface)
+  torch.testing.assert_close(result.force[0, 0], result.force[0, 1])
+  state = RftState(1, 2, device="cpu", dtype=torch.float64)
+  depth = state.update(pos, surface, op.radius)
+  torch.testing.assert_close(depth, torch.full_like(depth, 0.012))
+
+
+def test_loading_anchor_updates_when_moving_to_new_local_geometry():
+  state = RftState(1, 1, device="cpu", dtype=torch.float64)
+  p = torch.tensor([[[0.0, 0.0, 0.012]]], dtype=torch.float64)
+  state.update(p, torch.tensor([[0.0]]), 0.022)
+  assert state.plastic_depth.item() == pytest.approx(0.010)
+  p[..., 0] = 0.1
+  p[..., 2] = 0.105
+  state.update(p, torch.tensor([[0.1]]), 0.022)
+  assert state.plastic_depth.item() == pytest.approx(0.017)
+  assert state.plastic_surface_z.item() == pytest.approx(0.1)
+
+
+def test_checkerboard_material_is_seeded_per_foot_and_boundary_is_rigid():
+  material = CheckerboardMaterial(cell_size=0.6, seed=19, foot_radius=0.022)
+  px, py = material.phase
+  origins = torch.tensor([[10.0, -4.0, 0.0], [-3.0, 8.0, 0.0]], dtype=torch.float64)
+  local = torch.tensor([
+    [[0.3, 0.3], [0.9, 0.3], [0.3, 0.9], [0.9, 0.9]],
+    [[0.3, 0.3], [0.9, 0.3], [0.3, 0.9], [0.9, 0.9]],
+  ], dtype=torch.float64)
+  points = local + origins[:, None, :2] + torch.tensor([px, py])
+  soft, signed = material.query(points, origins)
+  assert soft.tolist() == [[False, True, True, False]] * 2
+  assert torch.equal(soft[0], soft[1])
+  boundary = origins[:, None, :2] + torch.tensor([[[px, py]]], dtype=torch.float64)
+  boundary_soft, boundary_distance = material.query(boundary, origins)
+  assert not boundary_soft.any() and (boundary_distance <= 0).all()
+
+
+def test_rft_force_is_exactly_zero_for_rigid_feet_in_mixed_batch():
+  op = RftOperator(device="cpu", dtype=torch.float64, subdivisions=1)
+  pos = torch.zeros((1, 4, 3), dtype=torch.float64)
+  pos[..., 2] = 0.015
+  zero = torch.zeros_like(pos)
+  scale = torch.tensor([[0.0, 1.0, 0.0, 1.0]], dtype=torch.float64)
+  result = op.compute(pos, zero, zero, coefficient_scale=scale)
+  assert result.force[0, [0, 2]].count_nonzero() == 0
+  assert (result.force[0, [1, 3], 2] > 0).all()
+
+
+def test_soft_hard_transitions_clear_memory_and_reentry_starts_fresh():
+  state = RftState(2, 4, device="cpu", dtype=torch.float64)
+  position = torch.zeros((2, 4, 3), dtype=torch.float64)
+  position[..., 2] = 0.012
+  state.update(position, 0.0, 0.022)
+  hard = torch.zeros((2, 4), dtype=torch.bool)
+  hard[0, 1] = True
+  state.clear_where(hard, position, 0.0)
+  assert state.plastic_depth[0, 1] == 0.0
+  torch.testing.assert_close(state.plastic_depth[~hard], torch.full((7,), 0.010, dtype=torch.float64))
+  position[0, 1, 2] = 0.017
+  state.update(position, 0.0, 0.022)
+  assert state.plastic_depth[0, 1] == pytest.approx(0.005)

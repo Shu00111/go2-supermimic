@@ -179,6 +179,7 @@ class RftOperator:
     angular_velocity: torch.Tensor,
     *,
     surface_z: torch.Tensor | float = 0.0,
+    face_surface_z: torch.Tensor | None = None,
     plastic_depth: torch.Tensor | None = None,
     coefficient_scale: torch.Tensor | float = 1.0,
   ) -> RftResult:
@@ -205,7 +206,13 @@ class RftOperator:
     face_velocity = velocity[..., None, :] + torch.linalg.cross(
       angular_velocity[..., None, :], centroids.expand(*batch_shape, -1, -1), dim=-1
     )
-    depth = surface_z[..., None] - face_position[..., 2]
+    if face_surface_z is None:
+      face_surface_z = surface_z[..., None]
+    else:
+      face_surface_z = torch.as_tensor(
+        face_surface_z, device=self.device, dtype=self.dtype
+      ).expand(*batch_shape, self.num_faces)
+    depth = face_surface_z - face_position[..., 2]
     immersed = depth > 0.0
     speed = torch.linalg.vector_norm(face_velocity, dim=-1)
     lam = torch.clamp(speed / self.yield_speed, 0.0, 1.0)
@@ -267,11 +274,26 @@ class RftState:
   def __init__(self, num_envs: int, num_feet: int, *, device, dtype=torch.float32):
     self.plastic_depth = torch.zeros((num_envs, num_feet), device=device, dtype=dtype)
     self.plastic_position = torch.zeros((num_envs, num_feet, 2), device=device, dtype=dtype)
+    self.plastic_surface_z = torch.zeros((num_envs, num_feet), device=device, dtype=dtype)
 
   def reset(self, env_ids: torch.Tensor | slice | None = None) -> None:
     env_ids = slice(None) if env_ids is None else env_ids
     self.plastic_depth[env_ids] = 0.0
     self.plastic_position[env_ids] = 0.0
+    self.plastic_surface_z[env_ids] = 0.0
+
+  def clear_where(self, mask: torch.Tensor, foot_position: torch.Tensor, surface_z) -> None:
+    """Clear loading paths for selected environment/foot rows."""
+    if mask.shape != self.plastic_depth.shape:
+      raise ValueError("material mask shape must match RFT state")
+    surface_z = torch.as_tensor(
+      surface_z, device=foot_position.device, dtype=foot_position.dtype
+    ).expand_as(self.plastic_depth)
+    self.plastic_depth.masked_fill_(mask, 0.0)
+    self.plastic_position.copy_(torch.where(
+      mask[..., None], foot_position[..., :2], self.plastic_position
+    ))
+    self.plastic_surface_z.copy_(torch.where(mask, surface_z, self.plastic_surface_z))
 
   def update(self, foot_position: torch.Tensor, surface_z, radius: float) -> torch.Tensor:
     surface_z = torch.as_tensor(
@@ -286,10 +308,14 @@ class RftState:
     depth = self.plastic_depth.clamp(0.0, radius)
     width = 2 * torch.sqrt(torch.clamp_min(2 * radius * depth - depth.square(), 0.0))
     fresh = (~airborne) & (~deeper) & (displacement > width)
+    # Loading memory is tied to the anchored contact footprint.  Once motion
+    # exceeds that footprint, the new local height becomes a fresh loading path.
+    # Small motion on a slope retains unloading memory while footprints overlap.
     self.plastic_depth = torch.where(airborne, 0.0, self.plastic_depth)
     update = deeper | fresh
     self.plastic_depth = torch.where(update, penetration, self.plastic_depth)
     self.plastic_position = torch.where(
       update[..., None], foot_position[..., :2], self.plastic_position
     )
+    self.plastic_surface_z = torch.where(update, surface_z, self.plastic_surface_z)
     return self.plastic_depth
