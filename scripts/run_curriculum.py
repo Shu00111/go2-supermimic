@@ -7,6 +7,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -34,16 +35,46 @@ def main() -> None:
       if amount <= 0:
         raise SystemExit(f"non-positive segment allocation for {task}")
       cumulative += amount
-      run_id = f"stage{stage}-segment{index}-{task}"
+      run_prefix = f"stage{stage}-segment{index}-{task}"
       segment_root = output / f"seed{seed}" / args.method / f"stage{stage}"
+      completed = list(
+        segment_root.glob(f"{args.method}-seed{seed}-{run_prefix}*/**/model_{cumulative}.pt")
+      )
+      if len(completed) == 1:
+        resume = str(completed[0])
+        print(f"skip completed segment at {resume}", flush=True)
+        continue
+      if len(completed) > 1:
+        raise SystemExit(f"ambiguous completed segment checkpoints: {completed}")
+      # Preserve failed/interrupted run directories. Resume from their newest
+      # compatible periodic checkpoint in a newly suffixed retry directory.
+      candidates = []
+      for path in segment_root.glob(f"{args.method}-seed{seed}-{run_prefix}*/**/model_*.pt"):
+        try:
+          iteration = int(path.stem.rsplit("_", 1)[1])
+        except (IndexError, ValueError):
+          continue
+        if iteration < cumulative:
+          candidates.append((iteration, path))
+      if candidates:
+        resume = str(max(candidates, key=lambda item: item[0])[1])
+      run_id = run_prefix
+      retry = 0
+      while (segment_root / f"{args.method}-seed{seed}-{run_id}").exists():
+        retry += 1
+        run_id = f"{run_prefix}-retry{retry}"
       env = os.environ.copy()
       env.update(OUTPUT_ROOT=str(segment_root), RUN_ID=run_id, TASK=task,
                  TRAINING_ITERATIONS=str(cumulative), SEED=str(seed))
       if resume:
         env["RESUME"] = resume
-      subprocess.run(["python", "scripts/run_config.py", "--method", args.method],
+      subprocess.run([sys.executable, "scripts/run_config.py", "--method", args.method],
                      cwd=ROOT, env=env, check=True)
-      matches = list(segment_root.glob(f"{args.method}-seed{seed}-{run_id}/**/model_{cumulative}.pt"))
+      matches = list(
+        (segment_root / f"{args.method}-seed{seed}-{run_id}").glob(
+          f"**/model_{cumulative}.pt"
+        )
+      )
       if len(matches) != 1:
         raise SystemExit(f"expected one checkpoint model_{cumulative}.pt, found {matches}")
       resume = str(matches[0])
