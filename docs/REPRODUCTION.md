@@ -1,5 +1,12 @@
 # Reproduction
 
+## Contact-structured RSS 2027 development branch
+
+The authoritative development and RTX 5090 handoff procedure is in
+`RTX5090_HANDOFF.md`; the frozen fairness contract is in `TRAINING_PROTOCOL.md`.
+Run `scripts/preflight.sh` before any pilot. Formal training is blocked until
+the physics gaps listed in `PHYSICS_VALIDATION.md` are resolved.
+
 ## Environment
 
 ```bash

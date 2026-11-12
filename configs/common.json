@@ -1,0 +1,13 @@
+{
+  "device": "cuda:0",
+  "num_envs": 512,
+  "wm_window": 8,
+  "horizon": 32,
+  "wm_batch": 2048,
+  "imag_batch": 4096,
+  "compile": true,
+  "seed": 14011,
+  "iterations": 1000,
+  "save_interval": 250,
+  "log_interval": 50
+}

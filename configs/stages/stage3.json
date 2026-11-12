@@ -1,0 +1,1 @@
+{"stage": 3, "tasks": ["Go2-Chase-Flat", "Go2-Chase-SoftTerrainLevels", "Go2-Chase-SoftTransition", "Go2-Chase-SoftToHard"], "retention": [0.1, 0.2, 0.35, 0.35], "known_gap": "rough-soft and alternating-patch registrations require GPU simulator validation before formal use"}

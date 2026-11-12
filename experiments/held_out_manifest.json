@@ -1,0 +1,9 @@
+{
+  "version": "rss2027-stage4-v1",
+  "frozen": true,
+  "seeds": [90101, 90103, 90107],
+  "training_seeds": [14011, 24017, 34019],
+  "episodes_per_condition": 128,
+  "selection_allowed": false,
+  "conditions": ["rigid_rough_ood", "soft_strength_ood", "hard_to_soft_ood", "soft_to_hard_ood", "initial_state_ood", "command_ood"]
+}

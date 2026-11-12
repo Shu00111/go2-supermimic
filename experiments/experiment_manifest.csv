@@ -1,0 +1,10 @@
+method,seed,terrain_stage,configuration,source_sha,dataset_version,training_budget,evaluation_manifest,checkpoint_path,status
+m1,14011,1,configs/methods/m1.json,TBD,sim-generated-v1,PILOT_REQUIRED,experiments/held_out_manifest.json,TBD,prepared
+m2,14011,1,configs/methods/m2.json,TBD,sim-generated-v1,PILOT_REQUIRED,experiments/held_out_manifest.json,TBD,prepared
+m3,14011,1,configs/methods/m3.json,TBD,sim-generated-v1,PILOT_REQUIRED,experiments/held_out_manifest.json,TBD,prepared
+m1,24017,1,configs/methods/m1.json,TBD,sim-generated-v1,PILOT_REQUIRED,experiments/held_out_manifest.json,TBD,prepared
+m2,24017,1,configs/methods/m2.json,TBD,sim-generated-v1,PILOT_REQUIRED,experiments/held_out_manifest.json,TBD,prepared
+m3,24017,1,configs/methods/m3.json,TBD,sim-generated-v1,PILOT_REQUIRED,experiments/held_out_manifest.json,TBD,prepared
+m1,34019,1,configs/methods/m1.json,TBD,sim-generated-v1,PILOT_REQUIRED,experiments/held_out_manifest.json,TBD,prepared
+m2,34019,1,configs/methods/m2.json,TBD,sim-generated-v1,PILOT_REQUIRED,experiments/held_out_manifest.json,TBD,prepared
+m3,34019,1,configs/methods/m3.json,TBD,sim-generated-v1,PILOT_REQUIRED,experiments/held_out_manifest.json,TBD,prepared

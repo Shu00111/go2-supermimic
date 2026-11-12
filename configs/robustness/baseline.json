@@ -1,0 +1,1 @@
+{"enabled": false, "observation_noise": false, "imu_noise": false, "joint_noise": false, "observation_latency": false, "action_latency": false, "communication_jitter": false, "mass": false, "center_of_mass": false, "joint_friction": false, "foot_friction": false, "initial_joint_position": false, "actuation": false}
