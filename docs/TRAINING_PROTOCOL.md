@@ -11,7 +11,13 @@ adds rough rigid plus randomized soil strength. Stage 3 retains prior coverage
 and adds rough soft, both boundary directions, alternating patches, and
 simultaneous mixed-foot materials. Stage 4 is frozen evaluation, never training
 or hyperparameter selection. The current configs explicitly mark the unverified
-rough-soft/alternating-patch gap.
+rough-soft/alternating-patch CUDA validation gap. Source and CPU tests exist,
+but Stage 3 must remain fail-closed until the RTX 5090 validation receipt is
+recorded.
+
+Optional Sim2Real runs use the `-Sim2Real` task registrations. Their sensor
+noise, latency, inertial, friction and reset distributions are shared by all
+three methods and are never exposed as oracle Actor inputs.
 
 The formal transition budget is `PILOT_REQUIRED`: run matched short pilots on
 the RTX 5090 at 128, 256, 512, and 1024 environments, select one budget before

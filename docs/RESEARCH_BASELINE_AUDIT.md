@@ -59,5 +59,9 @@ are:
   package builds are captured by preflight on the training machine.
 
 Rough deformable terrain and alternating material patches are not registered
-in the verified base. They remain a simulator-validation blocker for the full
-Stage 3 protocol and are not silently approximated.
+in the verified base. The new implementation reviewed the local
+`Go2-LunarSoftTerrain` worktree at commit `56cfe10f` for per-face local-height
+RFT semantics and the strip material query at `323fe14`; no result table or
+policy was imported. The checkerboard implementation is new in this branch.
+Both registrations remain a simulator-validation blocker for formal Stage 3
+until their RTX 5090 checks pass; neither is silently approximated.

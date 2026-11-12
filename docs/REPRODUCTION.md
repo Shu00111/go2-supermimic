@@ -7,6 +7,16 @@ The authoritative development and RTX 5090 handoff procedure is in
 Run `scripts/preflight.sh` before any pilot. Formal training is blocked until
 the physics gaps listed in `PHYSICS_VALIDATION.md` are resolved.
 
+The development-only gate for the new physics/configuration code is:
+
+```bash
+PYTHONNOUSERSITE=1 python -m pytest -q
+```
+
+Expected at the implementation commit: 43 passed and the tensor CUDA parity
+test skipped with CUDA hidden (44 total collected tests). This does not
+replace the RTX 5090 MuJoCo Warp smoke test.
+
 ## Environment
 
 ```bash
