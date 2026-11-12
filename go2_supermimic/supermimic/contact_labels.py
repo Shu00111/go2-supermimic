@@ -7,7 +7,7 @@ import torch
 from go2_supermimic.supermimic.contact_model import CONTACT_DIM, NUM_FEET
 
 
-def _rigid_force(env, ref: torch.Tensor) -> torch.Tensor:
+def rigid_contact_force(env, ref: torch.Tensor) -> torch.Tensor:
   """Read the configured net-force contact sensor without assuming one mjlab version."""
   try:
     sensor = env.scene["feet_ground_contact"]
@@ -36,7 +36,7 @@ def oracle_contact_state(env) -> torch.Tensor:
   if tuple(names) != ("FR", "FL", "RR", "RL"):
     raise RuntimeError(f"unexpected foot order {names}")
   velocity = robot.data.site_lin_vel_w[:, site_ids]
-  force = _rigid_force(env, velocity)
+  force = rigid_contact_force(env, velocity)
   intrusion = velocity.new_zeros(env.num_envs, NUM_FEET)
   memory = intrusion.clone()
   if "rft" in env.action_manager.active_terms:

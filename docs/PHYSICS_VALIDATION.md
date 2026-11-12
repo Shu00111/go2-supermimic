@@ -32,6 +32,13 @@ Hard-to-soft entry begins with cleared loading memory; soft-to-hard clears it.
 `Go2-Chase-MixedMaterialDiagnostic` fixes the reset pose over a known mixed
 layout for the 5090 smoke test.
 
+The bounded smoke test accumulates
+`soft.any(1) & (~soft).any(1)` at every step, so its mixed-material receipt
+requires feet on both materials simultaneously rather than at unrelated times.
+It also reads the per-foot `feet_ground_contact` net force. With a `1e-4 N`
+support threshold it rejects rigid force on soft rows, nonzero RFT on rigid
+rows, and any foot receiving both rigid and RFT support.
+
 Status by requested capability:
 
 | Capability | Status |

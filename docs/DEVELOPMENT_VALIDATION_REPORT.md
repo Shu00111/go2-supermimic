@@ -19,6 +19,7 @@ Validated on CPU:
 - seeded checkerboard lookup, deterministic rigid boundary semantics,
   different materials under different feet and exact zero RFT on rigid feet;
 - task registration and Sim2Real configuration parsing;
+- clean/Sim2Real actuator-delay configuration isolation;
 - smooth finite-difference diagnostic agreement;
 - shared experimental-contract configuration.
 

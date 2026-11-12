@@ -112,7 +112,7 @@ def _hard_checkerboard(*, cell_size: float, seed: int, half_extent: float = 7.2)
 
 
 def _configure_go2(cfg: ManagerBasedRlEnvCfg, *, soft_terrain: bool = False,
-                   transition: bool = False) -> None:
+                   transition: bool = False, sim2real: bool = False) -> None:
   """Go2 entity, sim settings, foot contact sensing and domain randomisation."""
   cfg.sim.mujoco.impratio = 10
   cfg.sim.mujoco.cone = "elliptic"
@@ -120,8 +120,9 @@ def _configure_go2(cfg: ManagerBasedRlEnvCfg, *, soft_terrain: bool = False,
   cfg.sim.mujoco.ccd_iterations = 50
   cfg.sim.contact_sensor_maxmatch = 64
   cfg.sim.nconmax = None
-  robot_cfg = (get_go2_transition_robot_cfg() if transition else
-               get_go2_soft_robot_cfg() if soft_terrain else get_go2_robot_cfg())
+  robot_cfg = (get_go2_transition_robot_cfg(sim2real=sim2real) if transition else
+               get_go2_soft_robot_cfg(sim2real=sim2real) if soft_terrain else
+               get_go2_robot_cfg(sim2real=sim2real))
   cfg.scene.entities = {"robot": robot_cfg}
   cfg.scene.sensors = tuple(s for s in (cfg.scene.sensors or ()) if s.name != "terrain_scan")
   for sensor in cfg.scene.sensors:
@@ -204,7 +205,9 @@ def go2_chase_env_cfg(play: bool = False, terrain: bool = False,
     raise ValueError(f"unknown transition={transition!r}")
   if material not in ("", "checkerboard"):
     raise ValueError(f"unknown material={material!r}")
-  _configure_go2(cfg, soft_terrain=soft_terrain, transition=bool(transition or material))
+  _configure_go2(
+    cfg, soft_terrain=soft_terrain, transition=bool(transition or material), sim2real=sim2real
+  )
   if soft_terrain:
     # Preserve the validated source simulator's 2 ms force/update cadence while
     # keeping the original SuperMimic policy rate at 50 Hz.

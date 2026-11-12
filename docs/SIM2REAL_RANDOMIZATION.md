@@ -9,6 +9,10 @@ mass/inertia scaling; base COM variation; joint dry friction; per-axis foot
 friction; and ±0.05 rad reset joint offsets. These distributions are part of
 the environment, so M1/M2/M3 receive exactly the same perturbations.
 
+Correlated actuator-lag controls (`hold_prob=0.2`, update period 2) are applied
+only to `-Sim2Real` robot configurations. Clean tasks retain the original
+actuator configuration (`hold_prob=0`, update period 0).
+
 The sampled masses, COM, friction, latency and material identity are not Actor
 inputs. The normal actor sensor noise remains enabled only for training
 (`play=False`). Each stressor should still be independently ablated before a

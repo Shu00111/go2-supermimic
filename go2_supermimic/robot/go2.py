@@ -1,5 +1,6 @@
 """Unitree Go2 model, actuators and collisions (after mjlab's Go1 constants)."""
 
+import copy
 from pathlib import Path
 
 import mujoco
@@ -66,8 +67,6 @@ GO2_HIP_ACTUATOR_CFG = DcMotorActuatorCfg(
   velocity_limit=HIP_ACTUATOR.velocity_limit,
   armature=HIP_ACTUATOR.reflected_inertia,
   delay_max_lag=ACTUATOR_DELAY_MAX_LAG,
-  delay_hold_prob=0.2,
-  delay_update_period=2,
 )
 GO2_KNEE_ACTUATOR_CFG = DcMotorActuatorCfg(
   target_names_expr=(".*_calf_joint",),
@@ -78,8 +77,6 @@ GO2_KNEE_ACTUATOR_CFG = DcMotorActuatorCfg(
   velocity_limit=KNEE_ACTUATOR.velocity_limit,
   armature=KNEE_ACTUATOR.reflected_inertia,
   delay_max_lag=ACTUATOR_DELAY_MAX_LAG,
-  delay_hold_prob=0.2,
-  delay_update_period=2,
 )
 
 ##
@@ -155,33 +152,43 @@ GO2_ARTICULATION = EntityArticulationInfoCfg(
 )
 
 
-def get_go2_robot_cfg() -> EntityCfg:
+def _articulation_cfg(*, sim2real: bool) -> EntityArticulationInfoCfg:
+  cfg = copy.deepcopy(GO2_ARTICULATION)
+  if sim2real:
+    for actuator in cfg.actuators:
+      assert isinstance(actuator, DcMotorActuatorCfg)
+      actuator.delay_hold_prob = 0.2
+      actuator.delay_update_period = 2
+  return cfg
+
+
+def get_go2_robot_cfg(*, sim2real: bool = False) -> EntityCfg:
   """Get a fresh Go2 robot configuration instance."""
   return EntityCfg(
     init_state=INIT_STATE,
     collisions=(FULL_COLLISION,),
     spec_fn=get_spec,
-    articulation=GO2_ARTICULATION,
+    articulation=_articulation_cfg(sim2real=sim2real),
   )
 
 
-def get_go2_soft_robot_cfg() -> EntityCfg:
+def get_go2_soft_robot_cfg(*, sim2real: bool = False) -> EntityCfg:
   """Go2 with rigid foot contacts disabled for exclusive RFT soil support."""
   return EntityCfg(
     init_state=INIT_STATE,
     collisions=(SOFT_TERRAIN_COLLISION,),
     spec_fn=get_spec,
-    articulation=GO2_ARTICULATION,
+    articulation=_articulation_cfg(sim2real=sim2real),
   )
 
 
-def get_go2_transition_robot_cfg() -> EntityCfg:
+def get_go2_transition_robot_cfg(*, sim2real: bool = False) -> EntityCfg:
   """Go2 whose feet contact only the transition scene's rigid half-plane."""
   return EntityCfg(
     init_state=INIT_STATE,
     collisions=(TRANSITION_COLLISION,),
     spec_fn=get_spec,
-    articulation=GO2_ARTICULATION,
+    articulation=_articulation_cfg(sim2real=sim2real),
   )
 
 

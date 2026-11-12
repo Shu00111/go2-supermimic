@@ -39,3 +39,7 @@ def test_new_tasks_register_with_shared_action_interface_and_sim2real_contract()
   assert robust.observations["actor"].terms["base_ang_vel"].delay_max_lag == 1
   assert {"base_inertia", "link_inertia", "joint_friction"}.issubset(robust.events)
   assert robust.events["reset_robot_joints"].params["position_range"] == (-0.05, 0.05)
+  clean_actuators = load_env_cfg("Go2-Chase-AlternatingMaterial").scene.entities["robot"].articulation.actuators
+  robust_actuators = robust.scene.entities["robot"].articulation.actuators
+  assert all(a.delay_hold_prob == 0.0 and a.delay_update_period == 0 for a in clean_actuators)
+  assert all(a.delay_hold_prob == 0.2 and a.delay_update_period == 2 for a in robust_actuators)
