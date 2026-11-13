@@ -18,3 +18,7 @@ gradient agreement at discontinuous contact events.
 scoring. Simulator capture is deliberately fail-closed until a validated
 mjlab+RFT snapshot/restore adapter exists; `evaluate_gradient_capture.py`
 records this blocker rather than generating incomparable data.
+
+## Final status (2026-11-14)
+
+Capture remained blocked: mjlab/MuJoCo-Warp has no validated full snapshot/restore adapter covering simulator state, RFT loading memory, commands, all RNG streams, and terminal bookkeeping. The fail-closed receipt is local at `outputs/contact_structured_supermimic/formal_seed14011/diagnostics/gradient_capture_blocked.json`. No finite-difference results or gradient-reliability claims were fabricated. This study therefore cannot determine whether M2 improves BPTT gradient direction or whether Reliability-Aware BPTT is justified.

@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "training_source_sha": "2a9614b3c6ed7dd9965ba62b24bf656149da5a0c",
+  "branch": "research/contact-structured-supermimic",
+  "seed": 14011,
+  "selection_rule": "final Stage-3 model_12000 checkpoint, fixed before Stage 4",
+  "checkpoints": {
+    "M1": {
+      "relative_path": "outputs/contact_structured_supermimic/formal_seed14011/seed14011/m1/stage3/m1-seed14011-stage3-segment7-Go2-Chase-AlternatingMaterial-Scan/2026-11-13_17-13-04_m1/model_12000.pt",
+      "sha256": "51aaeacc6e530fa58e686172ee5eaa684dfb04e69cfd0606866c900b0816fd05",
+      "bytes": 3151819157,
+      "environment_transitions": 12288000
+    },
+    "M2": {
+      "relative_path": "outputs/contact_structured_supermimic/formal_seed14011/seed14011/m2/stage3/m2-seed14011-stage3-segment7-Go2-Chase-AlternatingMaterial-Scan/2026-11-13_19-01-23_m2/model_12000.pt",
+      "sha256": "29f59646e51ed508cb652de95c2bf66c50641aebe47401d23707c1ce59c8191c",
+      "bytes": 3152521909,
+      "environment_transitions": 12288000
+    }
+  }
+}

@@ -2,10 +2,10 @@
 
 ## Contact-structured RSS 2027 development branch
 
-The authoritative development and RTX 5090 handoff procedure is in
-`RTX5090_HANDOFF.md`; the frozen fairness contract is in `TRAINING_PROTOCOL.md`.
-Run `scripts/preflight.sh` before any pilot. Formal training is blocked until
-the physics gaps listed in `PHYSICS_VALIDATION.md` are resolved.
+The frozen fairness contract is in `TRAINING_PROTOCOL.md`; historical RTX 5090
+handoff notes remain in `RTX5090_HANDOFF.md`. Stage-0 physics validation and
+formal seed 14011 are complete. Run `scripts/preflight.sh` before reproducing
+any training.
 
 The development-only gate for the new physics/configuration code is:
 
@@ -13,9 +13,8 @@ The development-only gate for the new physics/configuration code is:
 PYTHONNOUSERSITE=1 python -m pytest -q
 ```
 
-Expected at the implementation commit: 43 passed and the tensor CUDA parity
-test skipped with CUDA hidden (44 total collected tests). This does not
-replace the RTX 5090 MuJoCo Warp smoke test.
+Expected at the final report commit: 49 passed. This does not replace the
+recorded RTX 3090 MuJoCo-Warp Stage-0 receipt.
 
 ## Environment
 
@@ -91,3 +90,19 @@ PYTHONNOUSERSITE=1 python scripts/plot_soft_terrain_training.py \
 The evaluation matrix is chase-only so pursuit velocity error has a single
 definition. `protocol.json` records condition tasks, fixed seeds, and
 coefficient scales. `ARTIFACT_SHA256SUMS.txt` covers all result artifacts.
+
+## Contact-structured single-seed study
+
+The final source, protocols, and reports are on `research/contact-structured-supermimic`. Formal training was launched with `scripts/run_single_seed_formal.py`; frozen Stage 4 with `scripts/run_contact_formal_eval.py`; the reduced A0/A1/A2/A3 study with `scripts/run_reduced_ablations.py` and `scripts/run_reduced_ablation_eval.py`.
+
+```bash
+python scripts/summarize_contact_formal_eval.py \
+  --input-dir outputs/contact_structured_supermimic/formal_seed14011/evaluation/stage4_v1
+python scripts/plot_contact_training.py \
+  --training-root outputs/contact_structured_supermimic/formal_seed14011 \
+  --output outputs/contact_structured_supermimic/formal_seed14011/diagnostics/formal_training_curves.png
+python scripts/render_formal_videos.py \
+  --output-dir outputs/contact_structured_supermimic/formal_seed14011/videos
+```
+
+Checkpoint hashes are frozen in `experiments/contact_structured_supermimic/reports/frozen_checkpoint_manifest_20261114.json`. Large checkpoints, episode CSVs, figures, and videos remain local under `outputs/` and are not committed to ordinary Git.

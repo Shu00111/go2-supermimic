@@ -124,11 +124,31 @@ def main() -> None:
   fig.savefig(args.input_dir / "stage4_comparison.png", dpi=180)
   plt.close(fig)
 
+  contact_metrics = (
+    ("contact_accuracy", "Contact accuracy"),
+    ("contact_force_mae_n", "Force MAE (N)"),
+    ("contact_sinkage_mae_m", "Sinkage MAE (m)"),
+    ("contact_memory_mae_m", "Loading-memory MAE (m)"),
+  )
+  fig, axes = plt.subplots(2, 2, figsize=(13, 8), constrained_layout=True)
+  for ax, (metric, title) in zip(axes.flat, contact_metrics):
+    rows = [lookup[("M2", c, metric)] for c in STAGE4_CONDITIONS]
+    means = [r["mean"] for r in rows]
+    errors = [r["ci95_high"] - r["mean"] for r in rows]
+    ax.bar(x, means, yerr=errors, color="tab:orange", capsize=2)
+    ax.set_title(title)
+    ax.set_xticks(x, STAGE4_CONDITIONS, rotation=30, ha="right")
+    ax.grid(axis="y", alpha=0.25)
+  fig.suptitle("M2 frozen contact-state diagnostics (3×128 episodes/condition)")
+  fig.savefig(args.input_dir / "contact_diagnostics.png", dpi=180)
+  plt.close(fig)
+
   manifest = {
     "episodes_per_method_condition": 3 * 128,
     "aggregate": str((args.input_dir / "aggregate.csv").resolve()),
     "paired": str((args.input_dir / "paired_comparison.csv").resolve()),
     "figure": str((args.input_dir / "stage4_comparison.png").resolve()),
+    "contact_figure": str((args.input_dir / "contact_diagnostics.png").resolve()),
   }
   (args.input_dir / "summary_manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
 

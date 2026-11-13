@@ -1,5 +1,9 @@
 # GPU training report
 
+## Contact-structured formal seed 14011 (2026-11-13)
+
+The final M1/M2 runs used one RTX 3090 and 1,024 environments, never concurrently. Each consumed 12.288M environment transitions. TensorBoard wall-time spans were 1.58 GPU-hours (M1) and 1.81 GPU-hours (M2), 3.39 total excluding evaluation. Observed training memory was approximately 8--10 GiB; the Stage-4 evaluator used approximately 4--7 GiB. The local 40-minute watchdog recorded process, checkpoint-age, utilization, and disk receipts. The formal service and watchdog were stopped after training, and all later GPU jobs ran sequentially.
+
 Status: implementation, training, and held-out evaluation complete. Formal seed 14011 was launched
 at 2026-11-10 12:28:56 Asia/Shanghai from source commit
 `e9615dec86a8fcec66160450193c86f8a893bda0` under the user systemd service
