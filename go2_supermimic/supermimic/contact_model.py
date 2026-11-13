@@ -131,7 +131,7 @@ class ContactStructuredWorldModel(nn.Module):
     self.contact_transition = mlp(21 + CONTACT_DIM + st.CONTEXT_DIM, foot_hidden, CONTACT_DIM)
     self.body = mlp(base_in + CONTACT_STATE_DIM, hidden, out_dim)
     self.in_norm = RunningNorm(base_in)
-    self.out_norm = RunningNorm(out_dim)
+    self.out_norm = RunningNorm(out_dim, std_floor=1e-3)
     self.scales = self.estimator.scales
 
   @staticmethod
@@ -179,7 +179,7 @@ class ContactStructuredWorldModel(nn.Module):
            contact_targets: torch.Tensor | None = None):
     z, _ = self.initial_contact(s0, actions_prev[:, 0])
     s = s0
-    scale = self.out_norm.var.sqrt() + 1e-6
+    scale = self.out_norm.std()
     denom = valid.sum().clamp_min(1.0)
     body_total = s.new_zeros(())
     contact_total = s.new_zeros(())

@@ -67,6 +67,8 @@ class TrainCfg:
   wm_rewarmup_iterations: int = 1500
   """When resuming into a world model of a different shape, fit it this long
   before the policy moves again."""
+  task_switch_warmup_iterations: int = 300
+  """World-model-only steps after changing simulator task within a curriculum."""
   lr: float = 2e-4
   actor_lr_scale: float = 1.0
   """The actor's learning rate relative to lr. Fine-tuning on terrain wants smaller
@@ -317,6 +319,8 @@ class Trainer:
 
   def load(self, path: str) -> None:
     ckpt = torch.load(path, map_location=self.dev, weights_only=False)
+    previous_task = ckpt.get("cfg", {}).get("task")
+    task_changed = previous_task is not None and previous_task != self.cfg.task
     wm_sd = self.wm.state_dict()
     same_wm = all(
       k in ckpt["world_model"] and ckpt["world_model"][k].shape == v.shape for k, v in wm_sd.items()
@@ -377,6 +381,9 @@ class Trainer:
           # in the archive remain compatible; start a fresh online buffer and
           # preserve the reason in the run log.
           print(f"replay buffer re-initialised after interface change: {exc}", flush=True)
+        else:
+          if task_changed:
+            self.buf.mark_task_boundary()
       if "window_archive" in ckpt:
         self.archive.load_state_dict(ckpt["window_archive"])
       self.env_steps = int(ckpt.get("env_steps", self.env_steps))
@@ -385,6 +392,15 @@ class Trainer:
         if name in training_state:
           setattr(self, name, training_state[name])
       self.lr_scale = float(training_state.get("lr_scale", self.lr_scale))
+      if task_changed:
+        switch_end = self.start_it + self.cfg.task_switch_warmup_iterations
+        self.policy_start = max(self.policy_start, switch_end)
+        self.actor_frozen_until = max(self.actor_frozen_until, switch_end)
+        self.ramp_start = max(self.ramp_start, switch_end)
+        print(
+          f"task changed {previous_task} -> {self.cfg.task}; "
+          f"policy paused through iteration {switch_end}", flush=True,
+        )
       if "torch_rng_state" in ckpt:
         torch.random.set_rng_state(ckpt["torch_rng_state"].cpu())
       if torch.device(self.dev).type == "cuda" and "cuda_rng_state" in ckpt:

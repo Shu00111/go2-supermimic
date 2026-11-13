@@ -8,6 +8,7 @@
   "compile": true,
   "seed": 14011,
   "iterations": 1000,
+  "task_switch_warmup_iterations": 300,
   "save_interval": 250,
   "log_interval": 50
 }

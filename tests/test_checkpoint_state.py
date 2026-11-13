@@ -22,3 +22,11 @@ def test_replay_and_archive_round_trip():
   archive2.load_state_dict(archive.state_dict())
   assert archive2.ptr == 4 and archive2.size == 5
   torch.testing.assert_close(archive2.data["s"], archive.data["s"])
+
+
+def test_task_boundary_terminates_loaded_trajectories():
+  replay = ReplayBuffer(2, 5, 7, "cpu", gen_dim=3)
+  replay.ptr, replay.size = 3, 3
+  replay.mark_task_boundary()
+  assert replay.done[:, 2].tolist() == [1.0, 1.0]
+  assert replay.done[:, [0, 1, 3, 4]].count_nonzero() == 0

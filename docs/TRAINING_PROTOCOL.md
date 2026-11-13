@@ -1,7 +1,10 @@
 # Frozen training protocol
 
 Methods are M1 vanilla, M2 contact-structured, and M3 capacity-matched generic.
-Formal seeds are 14011, 24017, and 34019. Actor, critic, controller, observation,
+The original protocol requested seeds 14011, 24017, and 34019. The user reduced
+the execution scope on 2026-11-13 to the single formal seed 14011; results must
+therefore be reported as single-seed evidence, not a multi-seed claim. Actor,
+critic, controller, observation,
 reward, termination, task mixture, transitions, initialization rule, checkpoint
 selection and evaluation manifest are identical. Only method and world-model
 capacity may differ. Historical B1 weights must not seed one method alone.

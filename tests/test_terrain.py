@@ -13,6 +13,18 @@ def test_relief_is_zero_on_flat_ground():
   assert r.shape == (5, tr.SCAN_POINTS) and (r == 0).all()
 
 
+def test_world_model_output_normalization_has_physical_scale_floor():
+  from go2_supermimic.supermimic.world_model import WorldModel
+
+  model = WorldModel((16,))
+  model.out_norm.var.zero_()
+  assert (model.out_norm.std() == 1e-3).all()
+  torch.testing.assert_close(
+    model.out_norm.unnormalize(torch.ones(st.STATE_DIM + st.POSE_DELTA_DIM)),
+    torch.full((st.STATE_DIM + st.POSE_DELTA_DIM,), 1e-3),
+  )
+
+
 def test_height_field_bilinear_and_relief_on_a_step():
   # Ground: 0 for x < 1, 0.15 m (a stair) for x >= 1; 5 cm grid.
   xs = torch.arange(0, 4.0001, 0.05)

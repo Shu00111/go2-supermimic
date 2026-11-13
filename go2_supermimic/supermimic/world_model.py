@@ -17,12 +17,14 @@ from go2_supermimic.target.terrain import SCAN_POINTS
 class RunningNorm(nn.Module):
   """Running mean/std over batches (Welford-style merge), frozen when not updated."""
 
-  def __init__(self, dim: int, eps: float = 1e-4, clip: float = 10.0):
+  def __init__(self, dim: int, eps: float = 1e-4, clip: float = 10.0,
+               std_floor: float = 1e-6):
     super().__init__()
     self.register_buffer("mean", torch.zeros(dim))
     self.register_buffer("var", torch.ones(dim))
     self.register_buffer("count", torch.tensor(eps))
     self.clip = clip
+    self.std_floor = std_floor
 
   @torch.no_grad()
   def update(self, x: torch.Tensor) -> None:
@@ -34,11 +36,14 @@ class RunningNorm(nn.Module):
     self.var = (self.var * self.count + b_var * b_n + delta**2 * self.count * b_n / tot) / tot
     self.count = tot
 
+  def std(self) -> torch.Tensor:
+    return self.var.sqrt().clamp_min(self.std_floor)
+
   def forward(self, x: torch.Tensor) -> torch.Tensor:
-    return ((x - self.mean) / (self.var.sqrt() + 1e-6)).clamp(-self.clip, self.clip)
+    return ((x - self.mean) / self.std()).clamp(-self.clip, self.clip)
 
   def unnormalize(self, y: torch.Tensor) -> torch.Tensor:
-    return y * (self.var.sqrt() + 1e-6) + self.mean
+    return y * self.std() + self.mean
 
 
 def mlp(in_dim: int, hidden: tuple[int, ...], out_dim: int, act=nn.SiLU) -> nn.Sequential:
@@ -62,7 +67,10 @@ class WorldModel(nn.Module):
     self.net = mlp(in_dim, hidden, out_dim)
     self.in_norm = RunningNorm(in_dim)
     # Normalizes the per-step change of s and the pose delta.
-    self.out_norm = RunningNorm(out_dim)
+    # Some channels are constant on rigid terrain and become dynamic only after
+    # a curriculum switch. A physical scale floor prevents their historical
+    # near-zero variance from amplifying the first soft-terrain errors by 1e6.
+    self.out_norm = RunningNorm(out_dim, std_floor=1e-3)
 
   @staticmethod
   def _inputs(s, a, a_prev, xi, relief):
@@ -86,7 +94,7 @@ class WorldModel(nn.Module):
     masks steps after a reset inside the window.
     """
     k = actions.shape[1]
-    scale = self.out_norm.var.sqrt() + 1e-6
+    scale = self.out_norm.std()
     s = s0
     total, denom = 0.0, valid.sum().clamp(min=1.0)
     for j in range(k):

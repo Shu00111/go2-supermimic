@@ -64,6 +64,11 @@ class ReplayBuffer:
     self.ptr = (self.ptr + 1) % self.L
     self.size = min(self.size + 1, self.L)
 
+  def mark_task_boundary(self) -> None:
+    """End every current trajectory before a different simulator task starts."""
+    if self.size:
+      self.done[:, (self.ptr - 1) % self.L] = 1.0
+
   def _phys(self, logical: torch.Tensor) -> torch.Tensor:
     start = (self.ptr - self.size) % self.L
     return (start + logical) % self.L

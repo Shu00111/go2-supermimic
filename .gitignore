@@ -12,6 +12,7 @@ videos/
 checkpoints/
 outputs/
 /experiments/contact_structured_supermimic/benchmarks/
+/experiments/contact_structured_supermimic/pilots/
 *.pt
 !weights/*.pt
 *.mp4
