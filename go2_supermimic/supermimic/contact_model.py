@@ -123,16 +123,24 @@ class ContactStructuredWorldModel(nn.Module):
     hidden: tuple[int, ...] = (1024, 1024, 1024),
     foot_hidden: tuple[int, ...] = (128, 128),
     estimator: PersistentContactEstimator | None = None,
+    use_loading_memory: bool = True,
   ):
     super().__init__()
     base_in = st.STATE_DIM + 2 * st.NUM_JOINTS + st.CONTEXT_DIM + SCAN_POINTS
     out_dim = st.STATE_DIM + st.POSE_DELTA_DIM
     self.estimator = estimator or PersistentContactEstimator()
+    self.use_loading_memory = use_loading_memory
     self.contact_transition = mlp(21 + CONTACT_DIM + st.CONTEXT_DIM, foot_hidden, CONTACT_DIM)
     self.body = mlp(base_in + CONTACT_STATE_DIM, hidden, out_dim)
     self.in_norm = RunningNorm(base_in)
     self.out_norm = RunningNorm(out_dim, std_floor=1e-3)
     self.scales = self.estimator.scales
+
+  def _memory_contract(self, z: torch.Tensor) -> torch.Tensor:
+    """Remove the explicit loading-memory channel for the A1 mechanism ablation."""
+    if self.use_loading_memory:
+      return z
+    return torch.cat([z[..., :4], torch.zeros_like(z[..., 4:5]), z[..., 5:]], -1)
 
   @staticmethod
   def _base_inputs(s, a, a_prev, xi, relief):
@@ -140,7 +148,10 @@ class ContactStructuredWorldModel(nn.Module):
 
   def initial_contact(self, s: torch.Tensor, a_prev: torch.Tensor):
     recurrent = self.estimator.zero_state(s.shape[0], s)
-    return self.estimator(s, a_prev, recurrent)
+    z, recurrent = self.estimator(s, a_prev, recurrent)
+    if not self.use_loading_memory:
+      recurrent = torch.cat([recurrent[..., :-1], torch.zeros_like(recurrent[..., -1:])], -1)
+    return self._memory_contract(z), recurrent
 
   def _decode_transition(self, raw: torch.Tensor, old: torch.Tensor) -> torch.Tensor:
     probability = raw[..., 7].sigmoid()
@@ -155,10 +166,11 @@ class ContactStructuredWorldModel(nn.Module):
                       probability[..., None]], -1)
 
   def step(self, s, z, a, a_prev, xi, relief):
+    z = self._memory_contract(z)
     local = per_foot_observables(s, a)
     xi_foot = xi[:, None].expand(-1, NUM_FEET, -1)
     raw_z = self.contact_transition(torch.cat([local, normalize_contact(z), xi_foot], -1))
-    z_next = self._decode_transition(raw_z, z)
+    z_next = self._memory_contract(self._decode_transition(raw_z, z))
     base = self._base_inputs(s, a, a_prev, xi, relief)
     y = self.out_norm.unnormalize(self.body(torch.cat([
       self.in_norm(base), normalize_contact(z_next).reshape(s.shape[0], -1)
@@ -189,7 +201,9 @@ class ContactStructuredWorldModel(nn.Module):
       err = torch.cat([s_pred - s_targets[:, j], pose_pred - pose_targets[:, j]], -1)
       body_total = body_total + ((err / scale) ** 2).mean(-1).mul(valid[:, j]).sum()
       if contact_targets is not None:
-        target = contact_targets[:, j].reshape(-1, NUM_FEET, CONTACT_DIM)
+        target = self._memory_contract(
+          contact_targets[:, j].reshape(-1, NUM_FEET, CONTACT_DIM)
+        )
         physical = F.smooth_l1_loss(normalize_contact(z)[..., :7],
                                     normalize_contact(target)[..., :7], reduction="none").mean((-1, -2))
         classification = F.binary_cross_entropy(z[..., 7].clamp(1e-6, 1 - 1e-6),

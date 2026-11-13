@@ -32,7 +32,7 @@ from go2_supermimic.target import terrain as tr
 @dataclass(kw_only=True)
 class TrainCfg:
   method: str = "m1"
-  """m1 vanilla, m2 contact-structured, or m3 capacity-matched generic."""
+  """m1 vanilla, m2 contact-structured, m2_nomemory ablation, or m3 generic."""
   task: str = "Go2-Chase-Terrain"
   device: str = "cuda:0"
   """Torch/Warp device. Keep cuda:0 for released training; cpu is useful for smoke tests."""
@@ -261,6 +261,10 @@ class Trainer:
 
     if cfg.method == "m2":
       self.wm = ContactStructuredWorldModel(cfg.wm_hidden).to(self.dev)
+    elif cfg.method == "m2_nomemory":
+      self.wm = ContactStructuredWorldModel(
+        cfg.wm_hidden, use_loading_memory=False
+      ).to(self.dev)
     elif cfg.method == "m3":
       self.wm = WorldModel(cfg.wm_hidden).to(self.dev)
     elif cfg.method == "m1":

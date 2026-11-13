@@ -112,3 +112,14 @@ def test_short_imagined_contact_rollout_has_no_detach():
   objective.backward()
   assert action.grad is not None and torch.isfinite(action.grad).all()
   assert action.grad.abs().sum() > 0
+
+
+def test_no_memory_ablation_masks_loading_state_in_estimation_and_transition():
+  s, a, xi, relief = batch(2)
+  model = ContactStructuredWorldModel((32, 32), (16,), use_loading_memory=False)
+  z, recurrent = model.initial_contact(s, a)
+  assert z[..., 4].count_nonzero() == 0
+  assert recurrent[..., -1].count_nonzero() == 0
+  z[..., 4] = 100.0  # stale/external memory must not leak into the A1 path
+  _, _, z1 = model.step(s, z, a, a, xi, relief)
+  assert z1[..., 4].count_nonzero() == 0

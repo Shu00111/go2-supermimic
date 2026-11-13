@@ -27,6 +27,8 @@ if str(REPO_ROOT) not in sys.path:
 import go2_supermimic.env  # noqa: F401
 from go2_supermimic.supermimic import state as st
 from go2_supermimic.supermimic.train import Actor
+from go2_supermimic.supermimic.contact_labels import oracle_contact_state
+from go2_supermimic.supermimic.contact_model import ContactStructuredWorldModel
 from go2_supermimic.supermimic.world_model import WorldModel
 from go2_supermimic.target import terrain as tr
 from mjlab.envs import ManagerBasedRlEnv
@@ -42,6 +44,15 @@ CONDITIONS: dict[str, tuple[str, float | None]] = {
   "soft_to_hard": ("Go2-Chase-SoftToHard", 1.0),
   "soft_unseen_0.2": ("Go2-Chase-SoftTerrain", 0.2),
   "soft_unseen_1.2": ("Go2-Chase-SoftTerrain", 1.2),
+  # Contact-structured Stage-4 matrix.  These mappings were fixed before the
+  # first Stage-4 process was launched; the original manifest named the
+  # conditions but did not specify their concrete task/soil realization.
+  "rigid_rough_ood": ("Go2-Chase-Terrain", None),
+  "soft_strength_ood": ("Go2-Chase-RoughSoftTerrain", 1.2),
+  "hard_to_soft_ood": ("Go2-Chase-SoftTransition-Scan", 0.2),
+  "soft_to_hard_ood": ("Go2-Chase-SoftToHard-Scan", 1.2),
+  "initial_state_ood": ("Go2-Chase-AlternatingMaterial-Scan", 1.2),
+  "command_ood": ("Go2-Chase-AlternatingMaterial-Scan", 0.2),
 }
 
 METRIC_DEFINITIONS = {
@@ -92,7 +103,7 @@ def stats(values: list[float]) -> dict[str, float | int | None]:
 
 def main() -> None:
   parser = argparse.ArgumentParser()
-  parser.add_argument("--method", choices=("B0", "B1"), required=True)
+  parser.add_argument("--method", choices=("B0", "B1", "M1", "M2"), required=True)
   parser.add_argument("--condition", choices=tuple(CONDITIONS), required=True)
   parser.add_argument("--policy-checkpoint", type=Path, required=True)
   parser.add_argument("--world-model-checkpoint", type=Path, required=True)
@@ -112,6 +123,19 @@ def main() -> None:
   cfg.observations["actor"].enable_corruption = False
   cfg.commands["target"].mode_probs = (1.0, 0.0, 0.0)  # chase-only locomotion protocol
   cfg.commands["target"].target.curriculum_steps = 1
+  if args.condition == "initial_state_ood":
+    # Endpoint/extrapolation test relative to the +/-0.05 rad Sim2Real reset.
+    cfg.events["reset_robot_joints"].params["position_range"] = (-0.12, 0.12)
+    cfg.events["reset_base"].params["pose_range"].update({
+      "roll": (-0.0873, 0.0873), "pitch": (-0.0873, 0.0873),
+    })
+    cfg.events["reset_base"].params["velocity_range"].update({
+      "x": (-0.25, 0.25), "y": (-0.25, 0.25),
+      "roll": (-0.5, 0.5), "pitch": (-0.5, 0.5), "yaw": (-0.5, 0.5),
+    })
+  if args.condition == "command_ood":
+    # Hold the command curriculum at its hardest endpoint from episode start.
+    cfg.commands["target"].target.curriculum_steps = 1
   for sensor in cfg.scene.sensors or ():
     if hasattr(sensor, "debug_vis"):
       sensor.debug_vis = False
@@ -133,7 +157,8 @@ def main() -> None:
   actor.eval()
 
   wm_ckpt = torch.load(args.world_model_checkpoint, map_location=dev, weights_only=False)
-  wm = WorldModel(tuple(wm_ckpt["cfg"]["wm_hidden"])).to(dev)
+  wm_cls = ContactStructuredWorldModel if wm_ckpt["cfg"].get("method") == "m2" else WorldModel
+  wm = wm_cls(tuple(wm_ckpt["cfg"]["wm_hidden"])).to(dev)
   wm.load_state_dict(wm_ckpt["world_model"])
   wm.eval()
   wm_scale = wm.out_norm.var.sqrt() + 1.0e-6
@@ -163,6 +188,11 @@ def main() -> None:
   wm1_count = torch.zeros(n, device=dev)
   wm8_sum = torch.zeros(n, device=dev)
   wm8_count = torch.zeros(n, device=dev)
+  contact_force_sum = torch.zeros(n, device=dev)
+  contact_sink_sum = torch.zeros(n, device=dev)
+  contact_memory_sum = torch.zeros(n, device=dev)
+  contact_correct = torch.zeros(n, device=dev)
+  contact_count = torch.zeros(n, device=dev)
   start_pos = robot.data.root_link_pos_w[:, :2].clone()
   final_pos = start_pos.clone()
   previous_contact = torch.zeros((n, 4), dtype=torch.bool, device=dev)
@@ -216,12 +246,26 @@ def main() -> None:
       pose0 = st.planar_pose(env)
       relief = tr.relief(pose0[:, :2], pose0[:, 2], field, term.obstacle_layout)
       action = actor(obs["actor"])
-      one_state, one_pose = wm(s0, action, previous_action, context, relief)
+      if isinstance(wm, ContactStructuredWorldModel):
+        z0, _ = wm.initial_contact(s0, previous_action)
+        one_state, one_pose, z1_pred = wm.step(
+          s0, z0, action, previous_action, context, relief
+        )
+      else:
+        one_state, one_pose = wm(s0, action, previous_action, context, relief)
       roll_state_next, _ = wm(rollout_state, action, previous_action, context, relief)
       obs, reward, terminated, truncated, _ = env.step(action)
       done = terminated | truncated
       valid = active & ~done
       s1 = st.robot_state(env, field=field)
+      if isinstance(wm, ContactStructuredWorldModel):
+        z1 = oracle_contact_state(env)
+        foot_valid = valid.unsqueeze(-1)
+        contact_force_sum += (((z1_pred[..., :3] - z1[..., :3]).norm(dim=-1)) * foot_valid).sum(-1)
+        contact_sink_sum += ((z1_pred[..., 3] - z1[..., 3]).abs() * foot_valid).sum(-1)
+        contact_memory_sum += ((z1_pred[..., 4] - z1[..., 4]).abs() * foot_valid).sum(-1)
+        contact_correct += (((z1_pred[..., 7] >= 0.5) == (z1[..., 7] >= 0.5)) * foot_valid).sum(-1)
+        contact_count += foot_valid.sum(-1) * 4
       pose_delta = st.pose_delta(pose0, st.planar_pose(env))
       one_err = torch.cat([one_state - s1, one_pose - pose_delta], dim=-1) / wm_scale
       wm1_sum += valid * one_err.square().mean(-1)
@@ -280,6 +324,18 @@ def main() -> None:
       "wm_one_step_normalized_mse": float(wm1_sum[i] / wm1_count[i].clamp_min(1)),
       "wm_eight_step_normalized_state_mse": (
         float(wm8_sum[i] / wm8_count[i].clamp_min(1)) if wm8_count[i] else math.nan
+      ),
+      "contact_force_mae_n": (
+        float(contact_force_sum[i] / contact_count[i]) if contact_count[i] else math.nan
+      ),
+      "contact_sinkage_mae_m": (
+        float(contact_sink_sum[i] / contact_count[i]) if contact_count[i] else math.nan
+      ),
+      "contact_memory_mae_m": (
+        float(contact_memory_sum[i] / contact_count[i]) if contact_count[i] else math.nan
+      ),
+      "contact_accuracy": (
+        float(contact_correct[i] / contact_count[i]) if contact_count[i] else math.nan
       ),
     }
     rows.append(row)
