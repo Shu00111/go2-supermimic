@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "label": "reduced-budget mechanism study; not a formal-budget comparison",
+  "seed": 14011,
+  "num_envs": 1024,
+  "methods": ["m1", "m2_nomemory", "m2", "m3"],
+  "segments": [
+    {"task": "Go2-Chase-Flat-Scan", "iterations": 1000},
+    {"task": "Go2-Chase-AlternatingMaterial-Scan", "iterations": 1000}
+  ],
+  "total_iterations_per_method": 2000,
+  "environment_transitions_per_method": 2048000,
+  "comparison_limit": "A0/A1/A2/A3 are comparable only within this reduced study"
+}
