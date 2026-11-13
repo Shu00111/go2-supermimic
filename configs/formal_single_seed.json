@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "scope_change_date": "2026-11-13",
+  "seeds": [14011],
+  "methods": ["m1", "m2"],
+  "num_envs": 1024,
+  "stage_iterations": {"stage1": 4000, "stage2": 4000, "stage3": 4000},
+  "total_iterations_per_method": 12000,
+  "environment_transitions_per_method": 12288000,
+  "task_switch_warmup_iterations": 300,
+  "selection_basis": [
+    "experiments/contact_structured_supermimic/reports/rtx3090_scalability_20261112.json",
+    "experiments/contact_structured_supermimic/reports/stage1_pilot_failure_20261112.md",
+    "experiments/contact_structured_supermimic/reports/stage1_pilot_v2_20261113.md"
+  ],
+  "checkpoint_selection": "final Stage-3 checkpoint; validation-only diagnostics cannot select on Stage 4",
+  "status": "FROZEN_BEFORE_FORMAL_TRAINING"
+}

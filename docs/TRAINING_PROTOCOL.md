@@ -23,10 +23,12 @@ three methods and are never exposed as oracle Actor inputs.
 
 The four bounded scalability probes have completed for M1 and M2; their receipt
 is `experiments/contact_structured_supermimic/reports/rtx3090_scalability_20261112.json`.
-They nominate 1024 environments for matched post-warmup pilots, but the formal
-transition budget remains `PILOT_REQUIRED` until those pilots finish. Then
-freeze one budget for every method/seed. Do not inherit 12,000
-iterations without that evidence. Track wall time, environment transitions,
+They nominated 1024 environments for matched post-warmup pilots. The corrected
+matched pilots completed without the task-switch instability recorded
+in the rejected first pilot. The frozen single-seed budget is now defined in
+`configs/formal_single_seed.json`: 1024 environments and 4000 iterations per
+training stage (12,288,000 environment transitions per method). Track wall
+time, environment transitions,
 optimizer steps and GPU-hours.
 
 Stage 4 uses the frozen manifest, at least 128 independent first episodes per
