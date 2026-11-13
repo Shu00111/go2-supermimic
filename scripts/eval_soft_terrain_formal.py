@@ -103,7 +103,10 @@ def stats(values: list[float]) -> dict[str, float | int | None]:
 
 def main() -> None:
   parser = argparse.ArgumentParser()
-  parser.add_argument("--method", choices=("B0", "B1", "M1", "M2"), required=True)
+  parser.add_argument(
+    "--method", choices=("B0", "B1", "M1", "M2", "A0", "A1", "A2", "A3"),
+    required=True,
+  )
   parser.add_argument("--condition", choices=tuple(CONDITIONS), required=True)
   parser.add_argument("--policy-checkpoint", type=Path, required=True)
   parser.add_argument("--world-model-checkpoint", type=Path, required=True)
@@ -157,8 +160,14 @@ def main() -> None:
   actor.eval()
 
   wm_ckpt = torch.load(args.world_model_checkpoint, map_location=dev, weights_only=False)
-  wm_cls = ContactStructuredWorldModel if wm_ckpt["cfg"].get("method") == "m2" else WorldModel
-  wm = wm_cls(tuple(wm_ckpt["cfg"]["wm_hidden"])).to(dev)
+  checkpoint_method = wm_ckpt["cfg"].get("method")
+  if checkpoint_method in {"m2", "m2_nomemory"}:
+    wm = ContactStructuredWorldModel(
+      tuple(wm_ckpt["cfg"]["wm_hidden"]),
+      use_loading_memory=checkpoint_method == "m2",
+    ).to(dev)
+  else:
+    wm = WorldModel(tuple(wm_ckpt["cfg"]["wm_hidden"])).to(dev)
   wm.load_state_dict(wm_ckpt["world_model"])
   wm.eval()
   wm_scale = wm.out_norm.var.sqrt() + 1.0e-6
