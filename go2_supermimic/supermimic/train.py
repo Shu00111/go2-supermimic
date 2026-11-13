@@ -698,9 +698,18 @@ class Trainer:
         print(" | ".join(line), flush=True)
         self._collapse_guard(falls_mean)
       if it % cfg.save_interval == 0 or it == cfg.iterations:
-        if self.collapse_strikes == 0:
+        # Periodic checkpoints remain health-gated, but always preserve the
+        # exact terminal state.  Otherwise a run that ends on the first
+        # collapse warning consumes its full transition budget yet leaves no
+        # auditable final artifact (seen in reduced A0 at iteration 2000).
+        if self.collapse_strikes == 0 or it == cfg.iterations:
           self.last_ckpt = self.save(it)
           print(f"saved {self.last_ckpt}", flush=True)
+          if self.collapse_strikes:
+            print(
+              f"final checkpoint retained with collapse_strikes={self.collapse_strikes}",
+              flush=True,
+            )
 
   def _collapse_guard(self, falls: float) -> None:
     """Model exploitation shows up as many real falls: roll back and slow down."""
