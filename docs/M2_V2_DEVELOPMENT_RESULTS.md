@@ -1,6 +1,6 @@
 # M2-v2 controlled development results
 
-Status: **development complete; frozen candidate awaits the one-time held-out
+Status: **development complete; frozen candidate passed the one-time held-out
 prediction and gradient benchmark.**
 
 ## Protocol
@@ -60,6 +60,6 @@ SHA-256 is
 The frozen M2-v2 candidate is the original force contract plus corrected
 memory recurrence and the 0.25 training-only anchor. This decision prioritizes
 the diagnosed physical-semantic failure, preserves force accuracy, and avoids
-tuning for aggregate MSE alone. It does not claim that development evidence is
-sufficient for P1: the held-out prediction and physical-gradient benchmark are
-still required, and their results may close the study with a negative finding.
+tuning for aggregate MSE alone. The later held-out gate reproduced its
+one-step/contact benefits and improved physical-gradient direction and sign;
+the complete qualified result is in `P1_GATE_RESULTS.md`.

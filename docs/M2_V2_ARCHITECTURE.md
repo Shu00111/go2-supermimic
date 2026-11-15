@@ -1,7 +1,7 @@
 # M2-v2 architecture freeze candidate
 
-Status: **development architecture frozen at source commit
-`e8b6d9555cf0df3621c0a7994ab8fb9adcbaf005`; held-out evaluation pending.**
+Status: **architecture frozen at source commit
+`e8b6d9555cf0df3621c0a7994ab8fb9adcbaf005`; P1 held-out gate passed.**
 
 ## Scope
 
@@ -66,7 +66,7 @@ The development comparison isolates the effects:
   tests.
 - The full suite passed 59 tests at the freeze commit.
 
-The architecture may be rejected after the one-time held-out prediction and
-gradient benchmark, but it must not be modified in response to those results.
-Any later modification would require a new, explicitly versioned development
-cycle and a new held-out set.
+The one-time held-out prediction and gradient benchmark passed with qualified
+tradeoffs documented in `P1_GATE_RESULTS.md`. The architecture must not be
+modified in response to those results. Any later modification would require a
+new, explicitly versioned development cycle and a new held-out set.

@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "status": "COMPLETE",
+  "purpose": "one-time P1 held-out gradient gate; never model selection",
+  "scenario": "rigid_stable_stance",
+  "backend": "MuJoCo-Warp float32 CPU physical FD; CUDA forbidden by P0 Gate A",
+  "horizon": 32,
+  "seeds": [
+    15011,
+    15012,
+    15013,
+    15014
+  ],
+  "epsilons": [
+    0.01,
+    0.003,
+    0.001
+  ],
+  "methods": {
+    "M1": {
+      "path": "/home/yiwei/Documents/ChatGPT/go2-supermimic-v2/outputs/contact_structured_supermimic/p1_audit_v2/development_v2/m1/best.pt",
+      "sha256": "7d005c0b46b2a7f1b5f0f2bc7dba1d487b2bdf2d5ce0125c3ac810e43520c197"
+    },
+    "M2-v1": {
+      "path": "/home/yiwei/Documents/ChatGPT/go2-supermimic-v2/outputs/contact_structured_supermimic/p1_audit_v2/development_v2/m2/best.pt",
+      "sha256": "0d2f6f2c89167e11506b8a3b53c6feb3b0cf3633de7546c1fbbc00bbc55c23a2"
+    },
+    "M2-v2-core": {
+      "path": "/home/yiwei/Documents/ChatGPT/go2-supermimic-v2/outputs/contact_structured_supermimic/p1_audit_v2/development_v2/m2_v2_core/best.pt",
+      "sha256": "1a9dbbaa7182e0a166a1b117a31953c601fed219fa97a28251e363f583ca394f"
+    },
+    "M2-v2": {
+      "path": "/home/yiwei/Documents/ChatGPT/go2-supermimic-v2/outputs/contact_structured_supermimic/p1_audit_v2/development_v2/m2_v2/best.pt",
+      "sha256": "2d9fce5279af992ecc4ae504d6b3ee5ef86797222deb5820dcba44091f788537"
+    }
+  },
+  "aggregate": "/home/yiwei/Documents/ChatGPT/go2-supermimic-v2/outputs/contact_structured_supermimic/p1_audit_v2/heldout_gradient_v2/p1_heldout_gradient_aggregate_v2.json",
+  "aggregate_sha256": "c9e0577dc159af6b9240603ca385c9debf8d9a1df316add4062318648b62da0c"
+}

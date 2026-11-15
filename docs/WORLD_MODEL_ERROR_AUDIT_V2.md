@@ -1,8 +1,7 @@
 # World-model error audit v2
 
-Status: **P1 attribution and controlled development are complete; the M2-v2
-architecture is frozen and the held-out gate remains pending. Full policy
-training remains gated.**
+Status: **P1 complete. The M2-v2 architecture is frozen and its one-time
+held-out prediction and physical-gradient gate passed.**
 
 This audit is the required diagnostic stage between the completed P0 gradient-fidelity gate and any M2-v2 implementation.  It uses the frozen formal-seed-14011 M1/M2-v1 checkpoints and the matched Stage-4 evaluation protocol.  The existing episode aggregates are evidence for locating failure modes, not a substitute for the transition-level held-out audit described below.
 
@@ -102,11 +101,13 @@ results and all failed force variants are recorded in
 - Simulator contact, terrain material and boundary distance are labels/stratifiers only.  They remain unavailable to the actor and to the deployment-time contact estimator.
 - Reliability/censoring annotations may describe the audit but may not weight, mask or gate the policy BPTT objective.
 
-## P1 gate (not yet passed)
+## P1 gate (passed)
 
 The attribution, matched controlled training, causal core comparison, negative
-variant record, source freeze, and 59-test regression gate are complete. P1
-remains closed until the frozen candidate is evaluated once on held-out
-prediction and gradient benchmarks and those results are audited for leakage,
-finite gradients, and unexplained collapse. No full policy training is
-authorized before this gate passes.
+variant record, source freeze, 63-test regression gate, one-time held-out
+prediction evaluation, and four-seed physical-gradient benchmark are complete.
+The held-out candidate improves M2-v1 one-step/contact semantics and gradient
+direction/sign without numerical collapse; its tangential-force and longest
+rollout costs remain explicit. The requirement-by-requirement decision and
+machine-receipt hashes are in `P1_GATE_RESULTS.md`. P1 is closed and P2 matched
+full training is authorized for the exact frozen architecture.
