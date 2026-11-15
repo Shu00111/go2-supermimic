@@ -106,6 +106,14 @@ will be reported separately rather than mixed into the gradient comparison.
 The shared evaluator and open-loop BPTT rollout are covered by the regression
 suite; the full suite now has 53 passing tests.
 
+The isolated CPU finite-difference runner is implemented in
+`scripts/measure_physical_gradient.py`. A two-step soft-contact smoke test had
+zero replay-objective error, no saturation, terminal change, contact-mode
+change, or non-finite result. For action coordinate 0, the centered estimates
+at epsilon 0.01, 0.003, and 0.001 were respectively -6.97e-4, -6.30e-4, and
+-6.42e-4. This is an execution-path check only, not a Gate B result; the
+required 32-step, all-coordinate, phase-stratified study remains outstanding.
+
 ## Gate status and limitations
 
 P0 Gate A passes only for isolated, single-environment CPU replay. GPU replay

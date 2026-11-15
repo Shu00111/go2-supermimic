@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "status": "PASS",
+  "backend": "MuJoCo-Warp float32 CPU, isolated one-environment replay",
+  "seed": 14011,
+  "scenario": "soft_stable_stance",
+  "task": "Go2-Chase-SoftTerrain",
+  "horizon": 2,
+  "action_coordinates": "normalized 12-D policy/action-manager coordinates",
+  "future_actions": "fixed nominal deterministic sequence",
+  "generator_sequence": "frozen nominal per-step sequence",
+  "objective": "reward-only SuperMimic common objective J_R; no learned endpoint value",
+  "nominal_objective": -0.007333617657423019,
+  "replay_objective_abs_error": 0.0,
+  "rows": [
+    {
+      "epsilon": 0.01,
+      "coordinate": 0,
+      "plus_objective": -0.007341226562857628,
+      "minus_objective": -0.0073272911831736565,
+      "centered_gradient": -0.0006967689841985703,
+      "perturbation_signal": 1.3935379683971405e-05,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.003,
+      "coordinate": 0,
+      "plus_objective": -0.00733564980328083,
+      "minus_objective": -0.007331867702305317,
+      "centered_gradient": -0.0006303501625855764,
+      "perturbation_signal": 3.7821009755134583e-06,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.001,
+      "coordinate": 0,
+      "plus_objective": -0.007334261201322079,
+      "minus_objective": -0.007332976441830397,
+      "centered_gradient": -0.0006423797458410263,
+      "perturbation_signal": 1.2847594916820526e-06,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false
+      },
+      "nonfinite": false
+    }
+  ]
+}
