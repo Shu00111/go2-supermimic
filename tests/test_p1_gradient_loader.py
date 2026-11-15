@@ -1,5 +1,8 @@
 from pathlib import Path
 import importlib.util
+import os
+import subprocess
+import sys
 
 import torch
 
@@ -24,3 +27,13 @@ def test_gradient_loader_accepts_controlled_m2_v2_checkpoint(tmp_path):
   assert method == "m2_v2"
   for expected, actual in zip(model.parameters(), loaded.parameters(), strict=True):
     torch.testing.assert_close(expected, actual)
+
+
+def test_gradient_entrypoints_bind_repository_when_launched_by_absolute_path(tmp_path):
+  env = {**os.environ, "PYTHONNOUSERSITE": "1"}
+  for name in ("measure_physical_gradient.py", "measure_world_model_gradient.py"):
+    completed = subprocess.run(
+      [sys.executable, str(SCRIPT.parent / name), "--help"], cwd=tmp_path,
+      env=env, capture_output=True, text=True,
+    )
+    assert completed.returncode == 0, completed.stderr

@@ -16,6 +16,9 @@ import torch
 SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
   sys.path.insert(0, str(SCRIPT_DIR))
+REPO_ROOT = SCRIPT_DIR.parent
+if str(REPO_ROOT) not in sys.path:
+  sys.path.insert(0, str(REPO_ROOT))
 
 import go2_supermimic.env  # noqa: F401
 from go2_supermimic.diagnostics import capture_snapshot, restore_snapshot, world_model_open_loop

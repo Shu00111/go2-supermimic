@@ -35,6 +35,14 @@ def load_complete(path: Path, *, seed: int, methods: tuple[str, ...] | None = No
 
 
 def run(command: list[str], log: Path) -> None:
+  if log.exists():
+    attempt = 1
+    while True:
+      preserved = log.with_name(f"{log.stem}.failed_attempt{attempt}{log.suffix}")
+      if not preserved.exists():
+        log.rename(preserved)
+        break
+      attempt += 1
   print("RUN", " ".join(command), flush=True)
   with log.open("w", encoding="utf-8") as stream:
     completed = subprocess.run(command, cwd=REPO_ROOT, stdout=stream,
