@@ -136,8 +136,10 @@ def test_m2_v2_force_is_not_clipped_and_memory_matches_estimator_contract():
   old = torch.zeros_like(raw)
   old[..., 4] = 0.06
   decoded = model._decode_transition(raw, old)
-  # A 2-sigma normal prediction is 600 N, not clipped to the v1 150 N ceiling.
-  assert torch.all(decoded[..., 2] > 599.0)
+  # The normal range is widened to the measured 600 N range, rather than the
+  # v1 150 N ceiling, while tanh still bounds rare unstable predictions.
+  assert torch.all(decoded[..., 2] > 570.0)
+  assert torch.all(decoded[..., 2] < 600.0)
   # intrusion + retention * max(old_memory - intrusion, 0) = 0.05 m.
   torch.testing.assert_close(decoded[..., 4], torch.full_like(decoded[..., 4], 0.05),
                              atol=1e-6, rtol=1e-6)

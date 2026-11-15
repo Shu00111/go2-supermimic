@@ -235,17 +235,17 @@ class ContactStructuredWorldModelV2(ContactStructuredWorldModel):
     *,
     use_loading_memory: bool = True,
     anchor_weight: float = 0.25,
-    scales: ContactScales = ContactScales(force_n=150.0, normal_force_n=300.0),
+    scales: ContactScales = ContactScales(force_n=250.0, normal_force_n=600.0),
   ):
     if anchor_weight < 0:
       raise ValueError("anchor_weight must be non-negative")
-    estimator = PersistentContactEstimator(scales, bounded_force=False)
+    estimator = PersistentContactEstimator(scales, bounded_force=True)
     super().__init__(hidden, foot_hidden, estimator, use_loading_memory)
     self.anchor_weight = float(anchor_weight)
 
   def _decode_transition(self, raw: torch.Tensor, old: torch.Tensor) -> torch.Tensor:
     probability = raw[..., 7].sigmoid()
-    force = probability[..., None] * self.scales.tensor(raw)[:3] * raw[..., :3]
+    force = probability[..., None] * self.scales.tensor(raw)[:3] * torch.tanh(raw[..., :3])
     intrusion_proposal = self.scales.intrusion_m * raw[..., 3].sigmoid()
     intrusion = probability * intrusion_proposal
     retention = raw[..., 4].sigmoid()

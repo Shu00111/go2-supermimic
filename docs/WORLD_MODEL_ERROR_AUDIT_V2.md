@@ -74,7 +74,9 @@ This counterfactual must not be read as “oracle contact is harmful.” The tra
 
 The controlled candidate is intentionally narrow:
 
-1. remove the ±150 N `tanh` force ceiling while retaining explicit SI normalization (separate normal/tangential scales);
+1. replace the uniform ±150 N force range with measured, separately normalized
+   ±250 N tangential and ±600 N normal ranges while retaining bounded `tanh`
+   decoding for numerical stability;
 2. make transition memory use the same intrusion-plus-retention recurrence as the estimator and the intended loading-path semantics;
 3. add an auxiliary oracle-anchored contact/body path during world-model fitting while retaining the ordinary fully predicted rollout loss. Oracle labels remain training-only and never enter actor observations or deployment-time estimation;
 4. keep actor, critic, observations, rewards, termination, controller, BPTT horizon, task distribution and real-data protocol unchanged.
