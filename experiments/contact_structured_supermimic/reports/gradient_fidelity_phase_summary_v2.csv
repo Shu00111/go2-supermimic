@@ -1,0 +1,11 @@
+phase,source,seed,horizon,valid_coordinates,valid_fraction,low_signal_coordinates,epsilon_unconverged_coordinates,sign_flip_coordinates,discontinuous_coordinates,replay_objective_abs_error
+rigid stable 14011,experiments/contact_structured_supermimic/reports/physical_gradient_rigid_stable_h32_seed14011_v2.json,14011,32,8,0.6666666666666666,4,1,1,0,0.0
+rigid stable 14012,experiments/contact_structured_supermimic/reports/physical_gradient_rigid_stable_h32_seed14012_v2.json,14012,32,8,0.6666666666666666,4,2,2,0,0.0
+rigid stable 14013,experiments/contact_structured_supermimic/reports/physical_gradient_rigid_stable_h32_seed14013_v2.json,14013,32,6,0.5,6,0,0,0,0.0
+rigid stable 14014,experiments/contact_structured_supermimic/reports/physical_gradient_rigid_stable_h32_seed14014_v2.json,14014,32,7,0.5833333333333334,4,1,0,0,0.0
+rigid aerial,experiments/contact_structured_supermimic/reports/physical_gradient_rigid_aerial_h32_seed14011_v2.json,14011,32,0,0.0,12,2,2,0,0.0
+soft stable,experiments/contact_structured_supermimic/reports/physical_gradient_soft_stable_seed14011_v2.json,14011,32,0,0.0,0,12,5,0,0.0
+touchdown,experiments/contact_structured_supermimic/reports/physical_gradient_touchdown_h32_seed14011_v2.json,14011,32,0,0.0,0,12,6,12,0.0
+liftoff,experiments/contact_structured_supermimic/reports/physical_gradient_liftoff_h32_seed14011_v2.json,14011,32,0,0.0,1,11,9,12,0.0
+hard to soft,experiments/contact_structured_supermimic/reports/physical_gradient_hard_to_soft_h32_seed14011_v2.json,14011,32,0,0.0,0,12,10,12,0.0
+soft to hard,experiments/contact_structured_supermimic/reports/physical_gradient_soft_to_hard_h32_seed14011_v2.json,14011,32,0,0.0,0,12,9,12,0.0
