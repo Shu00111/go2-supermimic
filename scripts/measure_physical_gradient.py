@@ -38,6 +38,7 @@ SCENARIOS = {
   "touchdown": ("Go2-Chase-SoftTerrain", "touchdown"),
   "liftoff": ("Go2-Chase-SoftTerrain", "liftoff"),
   "aerial": ("Go2-Chase-SoftTerrain", "aerial"),
+  "rigid_aerial": ("Go2-Chase-Flat", "aerial"),
   "hard_to_soft": ("Go2-Chase-SoftTransition", "hard_to_soft"),
   "soft_to_hard": ("Go2-Chase-SoftToHard", "soft_to_hard"),
 }

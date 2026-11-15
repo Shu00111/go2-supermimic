@@ -176,6 +176,14 @@ norm ratio 0.524/0.580. M2 remains better in the aggregate, but the margin has
 shrunk and both models remain inaccurate. Additional paired states are required
 before interpreting this as a robust representation effect.
 
+The fourth rigid state again favored M2 on cosine and relative error while
+tying sign agreement. Across 29 valid pairs from four states, aggregate M1/M2
+cosine is 0.377/0.498, relative L2 error 0.968/0.868, sign agreement
+0.552/0.690, and norm ratio 0.659/0.540. The M2-minus-M1 margins are +0.122
+cosine, -0.100 relative error, and +0.138 sign agreement. This strengthens the
+rigid-stable directional result, while the phase-stratified study is still
+incomplete.
+
 ## Gate status and limitations
 
 P0 Gate A passes only for isolated, single-environment CPU replay. GPU replay

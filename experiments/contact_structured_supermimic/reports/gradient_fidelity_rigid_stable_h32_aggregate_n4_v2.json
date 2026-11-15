@@ -1,0 +1,150 @@
+{
+  "schema": 1,
+  "status": "COMPLETE",
+  "scenario": "rigid_stable_stance",
+  "horizon": 32,
+  "samples": 4,
+  "seeds": [
+    14011,
+    14012,
+    14013,
+    14014
+  ],
+  "total_coordinates": 48,
+  "valid_pairs": 29,
+  "valid_pair_fraction": 0.6041666666666666,
+  "methods": {
+    "M1": {
+      "aggregate": {
+        "pairs": 29,
+        "cosine_similarity": 0.37672650594920654,
+        "relative_l2_error": 0.9683598961096122,
+        "sign_agreement": 0.5517241379310345,
+        "physical_norm": 0.05426757462150482,
+        "model_norm": 0.03575900759298,
+        "norm_ratio": 0.6589387464316425
+      },
+      "per_sample": [
+        {
+          "source": "experiments/contact_structured_supermimic/reports/world_model_gradient_rigid_stable_h32_seed14011_v2.json",
+          "seed": 14011,
+          "pairs": 8,
+          "cosine_similarity": 0.39957652106806013,
+          "relative_l2_error": 0.9201856668535383,
+          "sign_agreement": 0.5,
+          "physical_norm": 0.040045139751363895,
+          "model_norm": 0.012796721258281617,
+          "norm_ratio": 0.3195574129029172
+        },
+        {
+          "source": "experiments/contact_structured_supermimic/reports/world_model_gradient_rigid_stable_h32_seed14012_v2.json",
+          "seed": 14012,
+          "pairs": 8,
+          "cosine_similarity": 0.23656444776245675,
+          "relative_l2_error": 1.1654307277674483,
+          "sign_agreement": 0.375,
+          "physical_norm": 0.018467093085855053,
+          "model_norm": 0.016253656400947492,
+          "norm_ratio": 0.8801415753623427
+        },
+        {
+          "source": "experiments/contact_structured_supermimic/reports/world_model_gradient_rigid_stable_h32_seed14013_v2.json",
+          "seed": 14013,
+          "pairs": 6,
+          "cosine_similarity": 0.7279217291688724,
+          "relative_l2_error": 0.6998535161246587,
+          "sign_agreement": 0.6666666666666666,
+          "physical_norm": 0.014859133482680876,
+          "model_norm": 0.012900010767938145,
+          "norm_ratio": 0.8681536364804722
+        },
+        {
+          "source": "experiments/contact_structured_supermimic/reports/world_model_gradient_rigid_stable_h32_seed14014_v2.json",
+          "seed": 14014,
+          "pairs": 7,
+          "cosine_similarity": 0.4323135605092443,
+          "relative_l2_error": 1.033336045079199,
+          "sign_agreement": 0.7142857142857143,
+          "physical_norm": 0.02792004768435336,
+          "model_norm": 0.02616025467879973,
+          "norm_ratio": 0.9369702722055223
+        }
+      ],
+      "mean_sample_cosine": 0.4490940646271584,
+      "median_sample_cosine": 0.41594504078865224,
+      "mean_sample_sign_agreement": 0.5639880952380952
+    },
+    "M2": {
+      "aggregate": {
+        "pairs": 29,
+        "cosine_similarity": 0.49849034135870696,
+        "relative_l2_error": 0.8679090101938322,
+        "sign_agreement": 0.6896551724137931,
+        "physical_norm": 0.05426757462150482,
+        "model_norm": 0.02932765418114169,
+        "norm_ratio": 0.5404268457857321
+      },
+      "per_sample": [
+        {
+          "source": "experiments/contact_structured_supermimic/reports/world_model_gradient_rigid_stable_h32_seed14011_v2.json",
+          "seed": 14011,
+          "pairs": 8,
+          "cosine_similarity": 0.724604653396762,
+          "relative_l2_error": 0.8140869030186513,
+          "sign_agreement": 0.75,
+          "physical_norm": 0.040045139751363895,
+          "model_norm": 0.011663464200416916,
+          "norm_ratio": 0.29125792225558833
+        },
+        {
+          "source": "experiments/contact_structured_supermimic/reports/world_model_gradient_rigid_stable_h32_seed14012_v2.json",
+          "seed": 14012,
+          "pairs": 8,
+          "cosine_similarity": 0.32795032948350794,
+          "relative_l2_error": 1.156147118739873,
+          "sign_agreement": 0.625,
+          "physical_norm": 0.018467093085855053,
+          "model_norm": 0.018364680627357032,
+          "norm_ratio": 0.9944543270550543
+        },
+        {
+          "source": "experiments/contact_structured_supermimic/reports/world_model_gradient_rigid_stable_h32_seed14013_v2.json",
+          "seed": 14013,
+          "pairs": 6,
+          "cosine_similarity": 0.5734996148026522,
+          "relative_l2_error": 0.9618058931940826,
+          "sign_agreement": 0.6666666666666666,
+          "physical_norm": 0.014859133482680876,
+          "model_norm": 0.016010067629272335,
+          "norm_ratio": 1.0774563434626208
+        },
+        {
+          "source": "experiments/contact_structured_supermimic/reports/world_model_gradient_rigid_stable_h32_seed14014_v2.json",
+          "seed": 14014,
+          "pairs": 7,
+          "cosine_similarity": 0.6498912445007775,
+          "relative_l2_error": 0.7972461565451623,
+          "sign_agreement": 0.7142857142857143,
+          "physical_norm": 0.02792004768435336,
+          "model_norm": 0.011423271973280427,
+          "norm_ratio": 0.40914228021473364
+        }
+      ],
+      "mean_sample_cosine": 0.5689864605459249,
+      "median_sample_cosine": 0.6116954296517149,
+      "mean_sample_sign_agreement": 0.6889880952380952
+    }
+  },
+  "M2_minus_M1": {
+    "cosine_similarity": 0.12176383540950042,
+    "relative_l2_error": -0.10045088591578,
+    "sign_agreement": 0.13793103448275867,
+    "norm_ratio": -0.11851190064591044
+  },
+  "sources": [
+    "experiments/contact_structured_supermimic/reports/world_model_gradient_rigid_stable_h32_seed14011_v2.json",
+    "experiments/contact_structured_supermimic/reports/world_model_gradient_rigid_stable_h32_seed14012_v2.json",
+    "experiments/contact_structured_supermimic/reports/world_model_gradient_rigid_stable_h32_seed14013_v2.json",
+    "experiments/contact_structured_supermimic/reports/world_model_gradient_rigid_stable_h32_seed14014_v2.json"
+  ]
+}

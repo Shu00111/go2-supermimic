@@ -1,0 +1,96 @@
+{
+  "schema": 1,
+  "status": "COMPLETE",
+  "seed": 14014,
+  "scenario": "rigid_stable_stance",
+  "task": "Go2-Chase-Flat",
+  "horizon": 32,
+  "physical_receipt": "experiments/contact_structured_supermimic/reports/physical_gradient_rigid_stable_h32_seed14014_v2.json",
+  "physical_gradient_reduction": "median across epsilon on each coordinate",
+  "physical_gradient": [
+    0.0007465481758117676,
+    0.012005369178950787,
+    -0.0032782554626464844,
+    0.00030994415283203125,
+    0.012372930534183979,
+    -0.005918741226196289,
+    -0.0005260109901428223,
+    0.008121132850646973,
+    0.013272464275360107,
+    0.0009521842002868652,
+    0.00774363661184907,
+    0.01205007266253233
+  ],
+  "physical_valid_coordinates": [
+    1,
+    4,
+    5,
+    7,
+    8,
+    10,
+    11
+  ],
+  "physical_valid_fraction": 0.5833333134651184,
+  "methods": {
+    "M1": {
+      "checkpoint": "/home/yiwei/Documents/ChatGPT/go2-supermimic-contact-validation/outputs/contact_structured_supermimic/formal_seed14011/seed14011/m1/stage3/m1-seed14011-stage3-segment7-Go2-Chase-AlternatingMaterial-Scan/2026-11-13_17-13-04_m1/model_12000.pt",
+      "checkpoint_sha256": "51aaeacc6e530fa58e686172ee5eaa684dfb04e69cfd0606866c900b0816fd05",
+      "checkpoint_method": "m1",
+      "objective": -0.6963493227958679,
+      "gradient": [
+        -0.011572355404496193,
+        0.003539829980581999,
+        -0.004571667872369289,
+        0.006434937939047813,
+        0.0030615527648478746,
+        -0.004084381274878979,
+        -0.013592968694865704,
+        0.020130418241024017,
+        -0.005699926055967808,
+        0.007646673824638128,
+        -0.005076512228697538,
+        0.013501088134944439
+      ],
+      "finite": true,
+      "comparison": {
+        "valid_coordinates": 7,
+        "cosine_similarity": 0.4323135605092443,
+        "relative_l2_error": 1.033336045079199,
+        "active_sign_agreement": 0.7142857142857143,
+        "physical_norm": 0.02792004768435336,
+        "model_norm": 0.02616025467879973,
+        "norm_ratio": 0.9369702722055223
+      }
+    },
+    "M2": {
+      "checkpoint": "/home/yiwei/Documents/ChatGPT/go2-supermimic-contact-validation/outputs/contact_structured_supermimic/formal_seed14011/seed14011/m2/stage3/m2-seed14011-stage3-segment7-Go2-Chase-AlternatingMaterial-Scan/2026-11-13_19-01-23_m2/model_12000.pt",
+      "checkpoint_sha256": "29f59646e51ed508cb652de95c2bf66c50641aebe47401d23707c1ce59c8191c",
+      "checkpoint_method": "m2",
+      "objective": -0.6010125279426575,
+      "gradient": [
+        -0.013174762018024921,
+        -0.0016044712392613292,
+        0.00651604263111949,
+        0.010656130500137806,
+        0.005884240381419659,
+        -0.0017136756796389818,
+        -0.005398829933255911,
+        0.008400538936257362,
+        0.0031277502421289682,
+        0.0048613278195261955,
+        -0.0004904338275082409,
+        0.0031246510334312916
+      ],
+      "finite": true,
+      "comparison": {
+        "valid_coordinates": 7,
+        "cosine_similarity": 0.6498912445007775,
+        "relative_l2_error": 0.7972461565451623,
+        "active_sign_agreement": 0.7142857142857143,
+        "physical_norm": 0.02792004768435336,
+        "model_norm": 0.011423271973280427,
+        "norm_ratio": 0.40914228021473364
+      }
+    }
+  }
+}
