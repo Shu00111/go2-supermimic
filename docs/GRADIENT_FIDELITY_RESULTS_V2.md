@@ -80,6 +80,32 @@ Machine receipt:
 `experiments/contact_structured_supermimic/reports/snapshot_replay_cpu_seed14011_v2.json`
 (SHA-256 `fcede2e467f76859ab8270dd0d23824a7eb354eab538a3256355a5c9f074fa06`).
 
+## Frozen common objective
+
+`go2_supermimic/diagnostics/gradient_objective.py` defines the scalar that will
+be used on both the physical trace and the World Model trace. For horizon
+`H=32`, it is
+
+\[
+J_R=\sum_{t=0}^{H-1}\gamma^t c_t
+  \left(r_{\mathrm{analytic},t}+w_{\mathrm{term}}\,\Delta t\,d(s_{t+1})\right),
+\quad c_0=1,\quad c_{t+1}=c_t(1-d(s_{t+1})).
+\]
+
+Here `gamma=0.99`, `d` is the existing smooth fall probability, and
+`r_analytic` is the existing differentiable SuperMimic reward implementation.
+Actions use normalized 12-dimensional policy/action-manager coordinates. The
+target, obstacle, and command-generator states are a frozen per-step sequence
+shared by every `+epsilon`, `-epsilon`, M1, and M2 rollout. Only the initial
+action is differentiated; later actions are fixed to the recorded nominal
+sequence. This makes the comparison an open-loop initial-action derivative.
+
+The learned endpoint value from the training objective is explicitly excluded
+from `J_R`, because it has no equivalent physical-ground-truth evaluation. It
+will be reported separately rather than mixed into the gradient comparison.
+The shared evaluator and open-loop BPTT rollout are covered by the regression
+suite; the full suite now has 53 passing tests.
+
 ## Gate status and limitations
 
 P0 Gate A passes only for isolated, single-environment CPU replay. GPU replay
@@ -89,4 +115,5 @@ claim that CPU and CUDA trajectories are numerically identical to one another.
 
 Finite-difference convergence at epsilon 0.01, 0.003, and 0.001, perturbation
 signal-to-replay-noise checks, discontinuity censoring, and paired M1/M2 World
-Model gradient comparisons remain **NOT RUN** at this checkpoint.
+Model gradient comparisons remain **NOT RUN** at this checkpoint. The common
+objective and BPTT execution path are frozen, but this is not a Gate B pass.
