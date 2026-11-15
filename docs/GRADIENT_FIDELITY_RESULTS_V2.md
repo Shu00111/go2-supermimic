@@ -142,6 +142,23 @@ within an unchanged contact topology. The required H=32 soft-stable physical
 gradient remains mathematically unusable, while shorter horizons are retained
 only to localize the failure mechanism.
 
+### First mathematically valid H=32 comparison
+
+The rigid stable-state control produced 8/12 valid physical coordinates at
+H=32. The gradient-vector norms were stable across epsilon (0.04003, 0.04008,
+and 0.03997); one inactive/near-zero coordinate changed sign and three other
+near-zero coordinates fell below the signal floor. No valid coordinate crossed
+a recorded contact or constraint-set boundary.
+
+On the eight valid coordinates, the frozen M1 checkpoint reached cosine
+similarity 0.400, relative L2 error 0.920, sign agreement 0.50, and norm ratio
+0.320. The paired frozen M2 checkpoint reached cosine similarity 0.725,
+relative L2 error 0.814, sign agreement 0.75, and norm ratio 0.291. Both models
+substantially underestimated physical gradient magnitude. M2 is directionally
+better for this one rigid state, but one state is not an aggregate result and
+does not establish the study hypothesis. The checkpoint hashes exactly match
+the frozen manifest.
+
 ## Gate status and limitations
 
 P0 Gate A passes only for isolated, single-environment CPU replay. GPU replay
