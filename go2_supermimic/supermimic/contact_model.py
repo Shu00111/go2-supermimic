@@ -243,12 +243,7 @@ class ContactStructuredWorldModelV2(ContactStructuredWorldModel):
     *,
     use_loading_memory: bool = True,
     anchor_weight: float = 0.25,
-    scales: ContactScales = ContactScales(
-      force_n=150.0,
-      normal_force_n=300.0,
-      force_limit_n=250.0,
-      normal_force_limit_n=600.0,
-    ),
+    scales: ContactScales = ContactScales(),
   ):
     if anchor_weight < 0:
       raise ValueError("anchor_weight must be non-negative")

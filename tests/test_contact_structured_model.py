@@ -126,7 +126,7 @@ def test_no_memory_ablation_masks_loading_state_in_estimation_and_transition():
   assert z1[..., 4].count_nonzero() == 0
 
 
-def test_m2_v2_force_is_not_clipped_and_memory_matches_estimator_contract():
+def test_m2_v2_preserves_v1_force_contract_and_fixes_memory_recurrence():
   model = ContactStructuredWorldModelV2((32,), (16,), anchor_weight=0.0)
   raw = torch.zeros(1, NUM_FEET, CONTACT_DIM)
   raw[..., 2] = 2.0
@@ -136,10 +136,11 @@ def test_m2_v2_force_is_not_clipped_and_memory_matches_estimator_contract():
   old = torch.zeros_like(raw)
   old[..., 4] = 0.06
   decoded = model._decode_transition(raw, old)
-  # The normal range is widened to the measured 600 N range, rather than the
-  # v1 150 N ceiling, while tanh still bounds rare unstable predictions.
-  assert torch.all(decoded[..., 2] > 570.0)
-  assert torch.all(decoded[..., 2] < 600.0)
+  # Controlled development showed that widening the force range degraded both
+  # force accuracy and rollout quality.  The frozen candidate therefore keeps
+  # the v1 150 N decoder contract while isolating the recurrence/anchor fixes.
+  assert torch.all(decoded[..., 2] > 140.0)
+  assert torch.all(decoded[..., 2] < 150.0)
   # intrusion + retention * max(old_memory - intrusion, 0) = 0.05 m.
   torch.testing.assert_close(decoded[..., 4], torch.full_like(decoded[..., 4], 0.05),
                              atol=1e-6, rtol=1e-6)
