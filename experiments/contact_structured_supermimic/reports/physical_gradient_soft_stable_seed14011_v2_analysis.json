@@ -1,0 +1,338 @@
+{
+  "schema": 1,
+  "source": "experiments/contact_structured_supermimic/reports/physical_gradient_soft_stable_seed14011_v2.json",
+  "scenario": "soft_stable_stance",
+  "horizon": 32,
+  "nominal_objective": -0.3581235706806183,
+  "replay_objective_abs_error": 0.0,
+  "valid_coordinate_fraction": 0.0,
+  "valid_coordinates": [],
+  "invalid_coordinates": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "convergence": [
+    {
+      "coordinate": 0,
+      "epsilons": [
+        0.01,
+        0.003,
+        0.001
+      ],
+      "gradients": [
+        0.19227862358093262,
+        0.47234694163004554,
+        4.6027302742004395
+      ],
+      "signals": [
+        0.0038455724716186523,
+        0.0028340816497802734,
+        0.009205460548400879
+      ],
+      "signal_noise_floor": 4.26916564322255e-06,
+      "active_at_all_epsilons": true,
+      "sign_consistent": true,
+      "relative_span": 0.9582250942101241,
+      "relative_span_limit": 0.25,
+      "epsilon_converged": false,
+      "discontinuity": false,
+      "valid": false
+    },
+    {
+      "coordinate": 1,
+      "epsilons": [
+        0.01,
+        0.003,
+        0.001
+      ],
+      "gradients": [
+        -0.5567207932472229,
+        2.025152246157328,
+        2.895548939704895
+      ],
+      "signals": [
+        0.011134415864944458,
+        0.01215091347694397,
+        0.00579109787940979
+      ],
+      "signal_noise_floor": 4.26916564322255e-06,
+      "active_at_all_epsilons": true,
+      "sign_consistent": false,
+      "relative_span": 1.1922677892309987,
+      "relative_span_limit": 0.25,
+      "epsilon_converged": false,
+      "discontinuity": false,
+      "valid": false
+    },
+    {
+      "coordinate": 2,
+      "epsilons": [
+        0.01,
+        0.003,
+        0.001
+      ],
+      "gradients": [
+        0.6914541125297546,
+        1.2383659680684407,
+        3.058880567550659
+      ],
+      "signals": [
+        0.013829082250595093,
+        0.0074301958084106445,
+        0.006117761135101318
+      ],
+      "signal_noise_floor": 4.26916564322255e-06,
+      "active_at_all_epsilons": true,
+      "sign_consistent": true,
+      "relative_span": 0.7739519091183663,
+      "relative_span_limit": 0.25,
+      "epsilon_converged": false,
+      "discontinuity": false,
+      "valid": false
+    },
+    {
+      "coordinate": 3,
+      "epsilons": [
+        0.01,
+        0.003,
+        0.001
+      ],
+      "gradients": [
+        0.7621347904205322,
+        0.4068613052368164,
+        2.6051104068756104
+      ],
+      "signals": [
+        0.015242695808410645,
+        0.0024411678314208984,
+        0.005210220813751221
+      ],
+      "signal_noise_floor": 4.26916564322255e-06,
+      "active_at_all_epsilons": true,
+      "sign_consistent": true,
+      "relative_span": 0.8438218571608342,
+      "relative_span_limit": 0.25,
+      "epsilon_converged": false,
+      "discontinuity": false,
+      "valid": false
+    },
+    {
+      "coordinate": 4,
+      "epsilons": [
+        0.01,
+        0.003,
+        0.001
+      ],
+      "gradients": [
+        0.15108734369277954,
+        1.8577377001444497,
+        7.25969672203064
+      ],
+      "signals": [
+        0.003021746873855591,
+        0.0111464262008667,
+        0.01451939344406128
+      ],
+      "signal_noise_floor": 4.26916564322255e-06,
+      "active_at_all_epsilons": true,
+      "sign_consistent": true,
+      "relative_span": 0.9791882017282785,
+      "relative_span_limit": 0.25,
+      "epsilon_converged": false,
+      "discontinuity": false,
+      "valid": false
+    },
+    {
+      "coordinate": 5,
+      "epsilons": [
+        0.01,
+        0.003,
+        0.001
+      ],
+      "gradients": [
+        -0.06393641233444214,
+        -0.9732544422149658,
+        -0.8306652307510376
+      ],
+      "signals": [
+        0.0012787282466888428,
+        0.005839526653289795,
+        0.0016613304615020752
+      ],
+      "signal_noise_floor": 4.26916564322255e-06,
+      "active_at_all_epsilons": true,
+      "sign_consistent": true,
+      "relative_span": 0.934306580518725,
+      "relative_span_limit": 0.25,
+      "epsilon_converged": false,
+      "discontinuity": false,
+      "valid": false
+    },
+    {
+      "coordinate": 6,
+      "epsilons": [
+        0.01,
+        0.003,
+        0.001
+      ],
+      "gradients": [
+        0.033064186573028564,
+        -0.904435912768046,
+        2.2179335355758667
+      ],
+      "signals": [
+        0.0006612837314605713,
+        0.005426615476608276,
+        0.004435867071151733
+      ],
+      "signal_noise_floor": 4.26916564322255e-06,
+      "active_at_all_epsilons": true,
+      "sign_consistent": false,
+      "relative_span": 1.4077831451036773,
+      "relative_span_limit": 0.25,
+      "epsilon_converged": false,
+      "discontinuity": false,
+      "valid": false
+    },
+    {
+      "coordinate": 7,
+      "epsilons": [
+        0.01,
+        0.003,
+        0.001
+      ],
+      "gradients": [
+        0.565163791179657,
+        0.09151299794514973,
+        0.9377449750900269
+      ],
+      "signals": [
+        0.01130327582359314,
+        0.0005490779876708984,
+        0.0018754899501800537
+      ],
+      "signal_noise_floor": 4.26916564322255e-06,
+      "active_at_all_epsilons": true,
+      "sign_consistent": true,
+      "relative_span": 0.9024116360246407,
+      "relative_span_limit": 0.25,
+      "epsilon_converged": false,
+      "discontinuity": false,
+      "valid": false
+    },
+    {
+      "coordinate": 8,
+      "epsilons": [
+        0.01,
+        0.003,
+        0.001
+      ],
+      "gradients": [
+        -0.29032379388809204,
+        -0.8258670568466187,
+        6.622046232223511
+      ],
+      "signals": [
+        0.005806475877761841,
+        0.004955202341079712,
+        0.013244092464447021
+      ],
+      "signal_noise_floor": 4.26916564322255e-06,
+      "active_at_all_epsilons": true,
+      "sign_consistent": false,
+      "relative_span": 1.1247147826947916,
+      "relative_span_limit": 0.25,
+      "epsilon_converged": false,
+      "discontinuity": false,
+      "valid": false
+    },
+    {
+      "coordinate": 9,
+      "epsilons": [
+        0.01,
+        0.003,
+        0.001
+      ],
+      "gradients": [
+        0.3760114312171936,
+        2.2135277589162192,
+        5.091488361358643
+      ],
+      "signals": [
+        0.007520228624343872,
+        0.013281166553497314,
+        0.010182976722717285
+      ],
+      "signal_noise_floor": 4.26916564322255e-06,
+      "active_at_all_epsilons": true,
+      "sign_consistent": true,
+      "relative_span": 0.9261490148792452,
+      "relative_span_limit": 0.25,
+      "epsilon_converged": false,
+      "discontinuity": false,
+      "valid": false
+    },
+    {
+      "coordinate": 10,
+      "epsilons": [
+        0.01,
+        0.003,
+        0.001
+      ],
+      "gradients": [
+        -0.21430402994155884,
+        1.2648006280263264,
+        7.5957924127578735
+      ],
+      "signals": [
+        0.004286080598831177,
+        0.007588803768157959,
+        0.015191584825515747
+      ],
+      "signal_noise_floor": 4.26916564322255e-06,
+      "active_at_all_epsilons": true,
+      "sign_consistent": false,
+      "relative_span": 1.0282135185239678,
+      "relative_span_limit": 0.25,
+      "epsilon_converged": false,
+      "discontinuity": false,
+      "valid": false
+    },
+    {
+      "coordinate": 11,
+      "epsilons": [
+        0.01,
+        0.003,
+        0.001
+      ],
+      "gradients": [
+        0.28331130743026733,
+        -0.761022170384725,
+        -2.3712366819381714
+      ],
+      "signals": [
+        0.005666226148605347,
+        0.00456613302230835,
+        0.004742473363876343
+      ],
+      "signal_noise_floor": 4.26916564322255e-06,
+      "active_at_all_epsilons": true,
+      "sign_consistent": false,
+      "relative_span": 1.1194782914705494,
+      "relative_span_limit": 0.25,
+      "epsilon_converged": false,
+      "discontinuity": false,
+      "valid": false
+    }
+  ]
+}

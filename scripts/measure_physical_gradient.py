@@ -15,9 +15,15 @@ import json
 from pathlib import Path
 
 import torch
+import warp as wp
 
 import go2_supermimic.env  # noqa: F401
-from go2_supermimic.diagnostics import capture_snapshot, common_objective, restore_snapshot
+from go2_supermimic.diagnostics import (
+  capture_snapshot,
+  common_objective,
+  finite_difference_convergence,
+  restore_snapshot,
+)
 from go2_supermimic.supermimic import state as st
 from go2_supermimic.supermimic.buffer import pack_generator, unpack_generator
 from go2_supermimic.supermimic.contact_labels import rigid_contact_force
@@ -72,6 +78,10 @@ def nominal_actions(horizon: int, action_dim: int, device: str) -> torch.Tensor:
   return (0.12 * torch.sin(0.37 * step + 0.71 * axis)).unsqueeze(0)
 
 
+def warp_tensor(value) -> torch.Tensor:
+  return value if torch.is_tensor(value) else wp.to_torch(value)
+
+
 def generator_sequence(env, snapshot, actions: torch.Tensor):
   """Record the nominal pre-step and post-step generator states."""
   restore_snapshot(env, snapshot)
@@ -94,6 +104,8 @@ def rollout(env, snapshot, actions, generator_before, generator_after, imaginati
   poses = [st.planar_pose(env)]
   previous = [torch.zeros_like(actions[:, 0])]
   terminal, contact, rigid, rft_contact, soft = [], [], [], [], []
+  constraints = {name: [] for name in ("ne", "nf", "nl", "nefc", "nisland")}
+  contact_set = {name: [] for name in ("worldid", "type", "geom", "dim")}
   for step in range(actions.shape[1]):
     unpack_generator(term.gen, generator_before[:, step])
     _, _, terminated, truncated, _ = env.step(actions[:, step])
@@ -101,6 +113,10 @@ def rollout(env, snapshot, actions, generator_before, generator_after, imaginati
     poses.append(st.planar_pose(env))
     terminal.append((terminated | truncated).clone())
     contact.append((st.feet_world_z(states[-1]) < 0.035).clone())
+    for name in constraints:
+      constraints[name].append(warp_tensor(getattr(env.sim.wp_data, name)).clone())
+    for name in contact_set:
+      contact_set[name].append(warp_tensor(getattr(env.sim.wp_data.contact, name)).clone())
     if "rft" in env.action_manager.active_terms:
       rft = env.action_manager.get_term("rft")
       soft.append(rft.last_soft_mask.clone())
@@ -115,6 +131,8 @@ def rollout(env, snapshot, actions, generator_before, generator_after, imaginati
   signature = {
     "terminal": torch.stack(terminal, 1),
     "contact": torch.stack(contact, 1),
+    **{f"constraint_{name}": torch.stack(value, 1) for name, value in constraints.items()},
+    **{f"contact_set_{name}": torch.stack(value, 0) for name, value in contact_set.items()},
   }
   if soft:
     signature["soft_material"] = torch.stack(soft, 1)
@@ -208,9 +226,10 @@ def main() -> None:
           "nonfinite": not bool(torch.isfinite(plus.value).all() and torch.isfinite(minus.value).all()),
         })
 
+    convergence = finite_difference_convergence(rows, float(nominal.value[0]))
     report = {
       "schema": 1,
-      "status": "PASS" if all(not row["nonfinite"] for row in rows) else "FAIL",
+      "status": "COMPLETE" if all(not row["nonfinite"] for row in rows) else "FAIL",
       "backend": "MuJoCo-Warp float32 CPU, isolated one-environment replay",
       "seed": args.seed,
       "scenario": args.scenario,
@@ -222,12 +241,18 @@ def main() -> None:
       "objective": "reward-only SuperMimic common objective J_R; no learned endpoint value",
       "nominal_objective": float(nominal.value[0]),
       "replay_objective_abs_error": abs(float(nominal.value[0]) - float(repeat.value[0])),
+      "convergence_rule": (
+        "active signal above float32/replay floor, identical signs, relative gradient span "
+        "<=0.25, no saturation, terminal/contact/constraint-set change, or non-finite value"
+      ),
+      "valid_coordinate_fraction": sum(row["valid"] for row in convergence) / len(convergence),
+      "convergence": convergence,
       "rows": rows,
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report, indent=2))
-    if report["status"] != "PASS":
+    if report["status"] == "FAIL":
       raise SystemExit("non-finite finite-difference result")
   finally:
     env.close()

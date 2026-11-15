@@ -2,7 +2,10 @@ from types import SimpleNamespace
 
 import torch
 
-from go2_supermimic.diagnostics.gradient_objective import common_objective
+from go2_supermimic.diagnostics.gradient_objective import (
+  common_objective,
+  finite_difference_convergence,
+)
 
 
 class FakeImagination:
@@ -47,3 +50,17 @@ def test_common_objective_rejects_mismatched_trace():
     assert "H+1" in str(exc)
   else:
     raise AssertionError("mismatched trace was accepted")
+
+
+def test_finite_difference_convergence_censors_sign_flip():
+  rows = []
+  for epsilon, gradient in ((0.01, 1.0), (0.003, 1.1), (0.001, -0.8)):
+    rows.append({
+      "epsilon": epsilon, "coordinate": 0, "centered_gradient": gradient,
+      "perturbation_signal": 2.0 * epsilon * abs(gradient),
+      "action_saturated": False, "nonfinite": False,
+      "branch_discontinuity": {}, "nominal_discontinuity": {},
+    })
+  result = finite_difference_convergence(rows, objective=1.0)
+  assert not result[0]["sign_consistent"]
+  assert not result[0]["valid"]

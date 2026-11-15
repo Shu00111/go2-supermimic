@@ -30,6 +30,53 @@ def _generator_at(sequence: Mapping[str, torch.Tensor], step: int) -> dict[str, 
   return {name: value[:, step] for name, value in sequence.items()}
 
 
+def finite_difference_convergence(
+  rows: list[dict], objective: float, relative_span_limit: float = 0.25
+) -> list[dict]:
+  """Classify epsilon agreement without smoothing or repairing measurements."""
+  epsilons = sorted({row["epsilon"] for row in rows}, reverse=True)
+  noise_floor = max(
+    1.0e-9,
+    100.0 * torch.finfo(torch.float32).eps * max(1.0e-3, abs(objective)),
+  )
+  result = []
+  for coordinate in sorted({row["coordinate"] for row in rows}):
+    selected = [next(row for row in rows
+                     if row["coordinate"] == coordinate and row["epsilon"] == epsilon)
+                for epsilon in epsilons]
+    gradients = [row["centered_gradient"] for row in selected]
+    signals = [row["perturbation_signal"] for row in selected]
+    scale = max(abs(value) for value in gradients)
+    active = min(signals) > noise_floor
+    sign_consistent = (all(value >= 0.0 for value in gradients)
+                       or all(value <= 0.0 for value in gradients))
+    relative_span = ((max(gradients) - min(gradients)) / max(scale, 1.0e-12)
+                     if active else 0.0)
+    discontinuity = any(
+      any(row.get(key, {}).values()) for row in selected
+      for key in ("branch_discontinuity", "nominal_discontinuity")
+    )
+    valid = (
+      active and sign_consistent and relative_span <= relative_span_limit and not discontinuity
+      and not any(row["action_saturated"] or row["nonfinite"] for row in selected)
+    )
+    result.append({
+      "coordinate": coordinate,
+      "epsilons": epsilons,
+      "gradients": gradients,
+      "signals": signals,
+      "signal_noise_floor": noise_floor,
+      "active_at_all_epsilons": active,
+      "sign_consistent": sign_consistent,
+      "relative_span": relative_span,
+      "relative_span_limit": relative_span_limit,
+      "epsilon_converged": sign_consistent and relative_span <= relative_span_limit,
+      "discontinuity": discontinuity,
+      "valid": valid,
+    })
+  return result
+
+
 def common_objective(
   imagination,
   states: torch.Tensor,

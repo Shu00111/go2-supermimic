@@ -1,0 +1,154 @@
+{
+  "schema": 1,
+  "status": "COMPLETE",
+  "backend": "MuJoCo-Warp float32 CPU, isolated one-environment replay",
+  "seed": 14011,
+  "scenario": "rigid_stable_stance",
+  "task": "Go2-Chase-Flat",
+  "horizon": 2,
+  "action_coordinates": "normalized 12-D policy/action-manager coordinates",
+  "future_actions": "fixed nominal deterministic sequence",
+  "generator_sequence": "frozen nominal per-step sequence",
+  "objective": "reward-only SuperMimic common objective J_R; no learned endpoint value",
+  "nominal_objective": 0.04683547466993332,
+  "replay_objective_abs_error": 0.0,
+  "convergence_rule": "active signal above float32/replay floor, identical signs, relative gradient span <=0.25, no saturation, terminal/contact/constraint-set change, or non-finite value",
+  "valid_coordinate_fraction": 1.0,
+  "convergence": [
+    {
+      "coordinate": 0,
+      "epsilons": [
+        0.01,
+        0.003,
+        0.001
+      ],
+      "gradients": [
+        -0.0007079914212226868,
+        -0.0007071842749913534,
+        -0.0007040798664093018
+      ],
+      "signals": [
+        1.4159828424453735e-05,
+        4.24310564994812e-06,
+        1.4081597328186035e-06
+      ],
+      "signal_noise_floor": 1.1920928955078125e-05,
+      "active": true,
+      "sign_consistent": true,
+      "relative_span": 0.0055248618784530384,
+      "epsilon_converged": true,
+      "discontinuity": false,
+      "valid": true
+    }
+  ],
+  "rows": [
+    {
+      "epsilon": 0.01,
+      "coordinate": 0,
+      "plus_objective": 0.04682809114456177,
+      "minus_objective": 0.04684225097298622,
+      "centered_gradient": -0.0007079914212226868,
+      "perturbation_signal": 1.4159828424453735e-05,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "constraint_ne": false,
+        "constraint_nf": false,
+        "constraint_nl": false,
+        "constraint_nefc": false,
+        "constraint_nisland": false,
+        "contact_set_worldid": false,
+        "contact_set_type": false,
+        "contact_set_geom": false,
+        "contact_set_dim": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "constraint_ne": false,
+        "constraint_nf": false,
+        "constraint_nl": false,
+        "constraint_nefc": false,
+        "constraint_nisland": false,
+        "contact_set_worldid": false,
+        "contact_set_type": false,
+        "contact_set_geom": false,
+        "contact_set_dim": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.003,
+      "coordinate": 0,
+      "plus_objective": 0.04683332145214081,
+      "minus_objective": 0.046837564557790756,
+      "centered_gradient": -0.0007071842749913534,
+      "perturbation_signal": 4.24310564994812e-06,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "constraint_ne": false,
+        "constraint_nf": false,
+        "constraint_nl": false,
+        "constraint_nefc": false,
+        "constraint_nisland": false,
+        "contact_set_worldid": false,
+        "contact_set_type": false,
+        "contact_set_geom": false,
+        "contact_set_dim": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "constraint_ne": false,
+        "constraint_nf": false,
+        "constraint_nl": false,
+        "constraint_nefc": false,
+        "constraint_nisland": false,
+        "contact_set_worldid": false,
+        "contact_set_type": false,
+        "contact_set_geom": false,
+        "contact_set_dim": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.001,
+      "coordinate": 0,
+      "plus_objective": 0.04683476686477661,
+      "minus_objective": 0.04683617502450943,
+      "centered_gradient": -0.0007040798664093018,
+      "perturbation_signal": 1.4081597328186035e-06,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "constraint_ne": false,
+        "constraint_nf": false,
+        "constraint_nl": false,
+        "constraint_nefc": false,
+        "constraint_nisland": false,
+        "contact_set_worldid": false,
+        "contact_set_type": false,
+        "contact_set_geom": false,
+        "contact_set_dim": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "constraint_ne": false,
+        "constraint_nf": false,
+        "constraint_nl": false,
+        "constraint_nefc": false,
+        "constraint_nisland": false,
+        "contact_set_worldid": false,
+        "contact_set_type": false,
+        "contact_set_geom": false,
+        "contact_set_dim": false
+      },
+      "nonfinite": false
+    }
+  ]
+}

@@ -11,6 +11,7 @@ logs/
 videos/
 checkpoints/
 outputs/
+*.log
 /experiments/contact_structured_supermimic/benchmarks/
 /experiments/contact_structured_supermimic/pilots/
 *.pt

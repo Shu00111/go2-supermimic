@@ -1,0 +1,881 @@
+{
+  "schema": 1,
+  "status": "PASS",
+  "backend": "MuJoCo-Warp float32 CPU, isolated one-environment replay",
+  "seed": 14011,
+  "scenario": "soft_stable_stance",
+  "task": "Go2-Chase-SoftTerrain",
+  "horizon": 32,
+  "action_coordinates": "normalized 12-D policy/action-manager coordinates",
+  "future_actions": "fixed nominal deterministic sequence",
+  "generator_sequence": "frozen nominal per-step sequence",
+  "objective": "reward-only SuperMimic common objective J_R; no learned endpoint value",
+  "nominal_objective": -0.3581235706806183,
+  "replay_objective_abs_error": 0.0,
+  "rows": [
+    {
+      "epsilon": 0.01,
+      "coordinate": 0,
+      "plus_objective": -0.34170401096343994,
+      "minus_objective": -0.3455495834350586,
+      "centered_gradient": 0.19227862358093262,
+      "perturbation_signal": 0.0038455724716186523,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.01,
+      "coordinate": 1,
+      "plus_objective": -0.3567713797092438,
+      "minus_objective": -0.3456369638442993,
+      "centered_gradient": -0.5567207932472229,
+      "perturbation_signal": 0.011134415864944458,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.01,
+      "coordinate": 2,
+      "plus_objective": -0.34107697010040283,
+      "minus_objective": -0.3549060523509979,
+      "centered_gradient": 0.6914541125297546,
+      "perturbation_signal": 0.013829082250595093,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.01,
+      "coordinate": 3,
+      "plus_objective": -0.3485996127128601,
+      "minus_objective": -0.36384230852127075,
+      "centered_gradient": 0.7621347904205322,
+      "perturbation_signal": 0.015242695808410645,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.01,
+      "coordinate": 4,
+      "plus_objective": -0.35846561193466187,
+      "minus_objective": -0.36148735880851746,
+      "centered_gradient": 0.15108734369277954,
+      "perturbation_signal": 0.003021746873855591,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.01,
+      "coordinate": 5,
+      "plus_objective": -0.3579511046409607,
+      "minus_objective": -0.35667237639427185,
+      "centered_gradient": -0.06393641233444214,
+      "perturbation_signal": 0.0012787282466888428,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.01,
+      "coordinate": 6,
+      "plus_objective": -0.3471027910709381,
+      "minus_objective": -0.3477640748023987,
+      "centered_gradient": 0.033064186573028564,
+      "perturbation_signal": 0.0006612837314605713,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.01,
+      "coordinate": 7,
+      "plus_objective": -0.3507768213748932,
+      "minus_objective": -0.36208009719848633,
+      "centered_gradient": 0.565163791179657,
+      "perturbation_signal": 0.01130327582359314,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.01,
+      "coordinate": 8,
+      "plus_objective": -0.3494340181350708,
+      "minus_objective": -0.34362754225730896,
+      "centered_gradient": -0.29032379388809204,
+      "perturbation_signal": 0.005806475877761841,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.01,
+      "coordinate": 9,
+      "plus_objective": -0.34845975041389465,
+      "minus_objective": -0.3559799790382385,
+      "centered_gradient": 0.3760114312171936,
+      "perturbation_signal": 0.007520228624343872,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.01,
+      "coordinate": 10,
+      "plus_objective": -0.345961332321167,
+      "minus_objective": -0.3416752517223358,
+      "centered_gradient": -0.21430402994155884,
+      "perturbation_signal": 0.004286080598831177,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.01,
+      "coordinate": 11,
+      "plus_objective": -0.34820929169654846,
+      "minus_objective": -0.3538755178451538,
+      "centered_gradient": 0.28331130743026733,
+      "perturbation_signal": 0.005666226148605347,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.003,
+      "coordinate": 0,
+      "plus_objective": -0.34284070134162903,
+      "minus_objective": -0.3456747829914093,
+      "centered_gradient": 0.47234694163004554,
+      "perturbation_signal": 0.0028340816497802734,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.003,
+      "coordinate": 1,
+      "plus_objective": -0.33515140414237976,
+      "minus_objective": -0.34730231761932373,
+      "centered_gradient": 2.025152246157328,
+      "perturbation_signal": 0.01215091347694397,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.003,
+      "coordinate": 2,
+      "plus_objective": -0.3509480059146881,
+      "minus_objective": -0.35837820172309875,
+      "centered_gradient": 1.2383659680684407,
+      "perturbation_signal": 0.0074301958084106445,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.003,
+      "coordinate": 3,
+      "plus_objective": -0.3431011140346527,
+      "minus_objective": -0.3455422818660736,
+      "centered_gradient": 0.4068613052368164,
+      "perturbation_signal": 0.0024411678314208984,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.003,
+      "coordinate": 4,
+      "plus_objective": -0.34708279371261597,
+      "minus_objective": -0.35822921991348267,
+      "centered_gradient": 1.8577377001444497,
+      "perturbation_signal": 0.0111464262008667,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.003,
+      "coordinate": 5,
+      "plus_objective": -0.3514917492866516,
+      "minus_objective": -0.3456522226333618,
+      "centered_gradient": -0.9732544422149658,
+      "perturbation_signal": 0.005839526653289795,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.003,
+      "coordinate": 6,
+      "plus_objective": -0.34877973794937134,
+      "minus_objective": -0.34335312247276306,
+      "centered_gradient": -0.904435912768046,
+      "perturbation_signal": 0.005426615476608276,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.003,
+      "coordinate": 7,
+      "plus_objective": -0.3482530117034912,
+      "minus_objective": -0.3488020896911621,
+      "centered_gradient": 0.09151299794514973,
+      "perturbation_signal": 0.0005490779876708984,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.003,
+      "coordinate": 8,
+      "plus_objective": -0.3528102934360504,
+      "minus_objective": -0.3478550910949707,
+      "centered_gradient": -0.8258670568466187,
+      "perturbation_signal": 0.004955202341079712,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.003,
+      "coordinate": 9,
+      "plus_objective": -0.33987656235694885,
+      "minus_objective": -0.35315772891044617,
+      "centered_gradient": 2.2135277589162192,
+      "perturbation_signal": 0.013281166553497314,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.003,
+      "coordinate": 10,
+      "plus_objective": -0.34116894006729126,
+      "minus_objective": -0.3487577438354492,
+      "centered_gradient": 1.2648006280263264,
+      "perturbation_signal": 0.007588803768157959,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.003,
+      "coordinate": 11,
+      "plus_objective": -0.34346941113471985,
+      "minus_objective": -0.3389032781124115,
+      "centered_gradient": -0.761022170384725,
+      "perturbation_signal": 0.00456613302230835,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.001,
+      "coordinate": 0,
+      "plus_objective": -0.34639397263526917,
+      "minus_objective": -0.35559943318367004,
+      "centered_gradient": 4.6027302742004395,
+      "perturbation_signal": 0.009205460548400879,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.001,
+      "coordinate": 1,
+      "plus_objective": -0.35557103157043457,
+      "minus_objective": -0.36136212944984436,
+      "centered_gradient": 2.895548939704895,
+      "perturbation_signal": 0.00579109787940979,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.001,
+      "coordinate": 2,
+      "plus_objective": -0.3593299686908722,
+      "minus_objective": -0.3654477298259735,
+      "centered_gradient": 3.058880567550659,
+      "perturbation_signal": 0.006117761135101318,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.001,
+      "coordinate": 3,
+      "plus_objective": -0.3484845459461212,
+      "minus_objective": -0.35369476675987244,
+      "centered_gradient": 2.6051104068756104,
+      "perturbation_signal": 0.005210220813751221,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.001,
+      "coordinate": 4,
+      "plus_objective": -0.35130247473716736,
+      "minus_objective": -0.36582186818122864,
+      "centered_gradient": 7.25969672203064,
+      "perturbation_signal": 0.01451939344406128,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.001,
+      "coordinate": 5,
+      "plus_objective": -0.35511550307273865,
+      "minus_objective": -0.3534541726112366,
+      "centered_gradient": -0.8306652307510376,
+      "perturbation_signal": 0.0016613304615020752,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.001,
+      "coordinate": 6,
+      "plus_objective": -0.33830857276916504,
+      "minus_objective": -0.3427444398403168,
+      "centered_gradient": 2.2179335355758667,
+      "perturbation_signal": 0.004435867071151733,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.001,
+      "coordinate": 7,
+      "plus_objective": -0.3506392538547516,
+      "minus_objective": -0.35251474380493164,
+      "centered_gradient": 0.9377449750900269,
+      "perturbation_signal": 0.0018754899501800537,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.001,
+      "coordinate": 8,
+      "plus_objective": -0.3367116451263428,
+      "minus_objective": -0.3499557375907898,
+      "centered_gradient": 6.622046232223511,
+      "perturbation_signal": 0.013244092464447021,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.001,
+      "coordinate": 9,
+      "plus_objective": -0.35105082392692566,
+      "minus_objective": -0.36123380064964294,
+      "centered_gradient": 5.091488361358643,
+      "perturbation_signal": 0.010182976722717285,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.001,
+      "coordinate": 10,
+      "plus_objective": -0.34236225485801697,
+      "minus_objective": -0.3575538396835327,
+      "centered_gradient": 7.5957924127578735,
+      "perturbation_signal": 0.015191584825515747,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    },
+    {
+      "epsilon": 0.001,
+      "coordinate": 11,
+      "plus_objective": -0.35544803738594055,
+      "minus_objective": -0.3507055640220642,
+      "centered_gradient": -2.3712366819381714,
+      "perturbation_signal": 0.004742473363876343,
+      "action_saturated": false,
+      "branch_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nominal_discontinuity": {
+        "terminal": false,
+        "contact": false,
+        "soft_material": false,
+        "rigid_contact": false,
+        "rft_contact": false
+      },
+      "nonfinite": false
+    }
+  ]
+}

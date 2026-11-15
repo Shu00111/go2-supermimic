@@ -114,6 +114,24 @@ at epsilon 0.01, 0.003, and 0.001 were respectively -6.97e-4, -6.30e-4, and
 -6.42e-4. This is an execution-path check only, not a Gate B result; the
 required 32-step, all-coordinate, phase-stratified study remains outstanding.
 
+The first 32-step/all-coordinate soft-stable measurement completed with zero
+replay-objective error, no saturation, non-finite value, terminal change, or
+coarse foot/material-mode change. It did **not** pass the epsilon-convergence
+check: 0/12 coordinates were valid. Gradient norms at epsilon 0.01, 0.003, and
+0.001 were 1.45, 4.36, and 15.43, and the corresponding gradient-vector cosine
+similarities were 0.171 (0.01 vs 0.003), 0.631 (0.003 vs 0.001), and 0.126
+(0.01 vs 0.001). Five coordinates changed sign across epsilon. These values
+must not be used as physical gradient truth.
+
+This is evidence of a nonsmooth or numerically ill-conditioned 32-step contact
+trajectory, not replay noise. The runner now additionally records MuJoCo
+constraint counts and complete active contact-set identity, and applies an
+explicit epsilon-agreement censor. A rigid two-step control check converged on
+the tested coordinate (relative span 0.0055), showing that the measurement path
+can recover a stable local derivative away from the problematic long-horizon
+soft-contact rollout. Shorter-horizon localization is in progress before any
+M1/M2 comparison is attempted.
+
 ## Gate status and limitations
 
 P0 Gate A passes only for isolated, single-environment CPU replay. GPU replay
