@@ -1,7 +1,8 @@
 # World-model error audit v2
 
-Status: **P1 attribution complete on the development split; M2-v2 controlled
-development is in progress and full policy training remains gated.**
+Status: **P1 attribution and controlled development are complete; the M2-v2
+architecture is frozen and the held-out gate remains pending. Full policy
+training remains gated.**
 
 This audit is the required diagnostic stage between the completed P0 gradient-fidelity gate and any M2-v2 implementation.  It uses the frozen formal-seed-14011 M1/M2-v1 checkpoints and the matched Stage-4 evaluation protocol.  The existing episode aggregates are evidence for locating failure modes, not a substitute for the transition-level held-out audit described below.
 
@@ -74,14 +75,24 @@ This counterfactual must not be read as “oracle contact is harmful.” The tra
 
 The controlled candidate is intentionally narrow:
 
-1. replace the uniform ±150 N force range with measured, separately normalized
-   ±250 N tangential and ±600 N normal ranges while retaining bounded `tanh`
-   decoding for numerical stability;
-2. make transition memory use the same intrusion-plus-retention recurrence as the estimator and the intended loading-path semantics;
-3. add an auxiliary oracle-anchored contact/body path during world-model fitting while retaining the ordinary fully predicted rollout loss. Oracle labels remain training-only and never enter actor observations or deployment-time estimation;
-4. keep actor, critic, observations, rewards, termination, controller, BPTT horizon, task distribution and real-data protocol unchanged.
+1. make transition memory use the same intrusion-plus-retention recurrence as
+   the estimator and the intended loading-path semantics;
+2. add an auxiliary oracle-anchored contact/body path during world-model
+   fitting while retaining the ordinary fully predicted rollout loss. Oracle
+   labels remain training-only and never enter actor observations or
+   deployment-time estimation;
+3. keep the original bounded ±150 N force decoder and normalization after
+   three controlled force-range variants degraded force accuracy without a
+   compensating rollout benefit;
+4. keep actor, critic, observations, rewards, termination, controller, BPTT
+   horizon, task distribution and real-data protocol unchanged.
 
-The auxiliary path directly tests the diagnosed semantic-drift mechanism. A core-only variant (items 1–2) and the anchored candidate (items 1–3) will be compared so any improvement is not attributed to a bundle of untested changes.
+The auxiliary path directly tests the diagnosed semantic-drift mechanism. A
+core-only variant applies the corrected recurrence without the anchor. Its
+near-identity to M2-v1 attributes the development change to the anchor. Full
+results and all failed force variants are recorded in
+`M2_V2_DEVELOPMENT_RESULTS.md`; the frozen graph is documented in
+`M2_V2_ARCHITECTURE.md`.
 
 ## Split and leakage contract
 
@@ -93,4 +104,9 @@ The auxiliary path directly tests the diagnosed semantic-drift mechanism. A core
 
 ## P1 gate (not yet passed)
 
-The attribution and design-rationale portions are complete. P1 remains closed until M1, M2-v1, the M2-v2 core variant and the anchored M2-v2 candidate are trained on the matched train partition, selected on the development partition, and the frozen candidate is evaluated once on held-out prediction and gradient benchmarks. No full policy training is authorized before this gate passes.
+The attribution, matched controlled training, causal core comparison, negative
+variant record, source freeze, and 59-test regression gate are complete. P1
+remains closed until the frozen candidate is evaluated once on held-out
+prediction and gradient benchmarks and those results are audited for leakage,
+finite gradients, and unexplained collapse. No full policy training is
+authorized before this gate passes.
