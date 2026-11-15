@@ -14,7 +14,11 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def main() -> None:
   ap = argparse.ArgumentParser()
-  ap.add_argument("--method", choices=("m1", "m2", "m3"), required=True)
+  ap.add_argument(
+    "--method",
+    choices=("m1", "m2", "m2_nomemory", "m2_v2", "m2_v2_nomemory", "m3"),
+    required=True,
+  )
   ap.add_argument("--through-stage", type=int, choices=(1, 2, 3), default=3)
   args = ap.parse_args()
   output = Path(os.environ["OUTPUT_ROOT"]).resolve()

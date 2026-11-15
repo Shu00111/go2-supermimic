@@ -23,7 +23,11 @@ def load(path: Path) -> dict:
 
 def main() -> None:
   parser = argparse.ArgumentParser()
-  parser.add_argument("--method", choices=("m1", "m2", "m2_nomemory", "m3"), required=True)
+  parser.add_argument(
+    "--method",
+    choices=("m1", "m2", "m2_nomemory", "m2_v2", "m2_v2_nomemory", "m3"),
+    required=True,
+  )
   parser.add_argument("--dry-run", action="store_true")
   args = parser.parse_args()
   cfg = load(ROOT / "configs/common.json") | load(ROOT / f"configs/methods/{args.method}.json")

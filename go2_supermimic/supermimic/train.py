@@ -512,7 +512,10 @@ class Trainer:
       "s": b.s[e, idx], "pose": b.pose[e, idx], "a": b.a[e, idx[:, :k]],
       "a_prev": b.a_prev[e, idx[:, :k]], "xi": self.xi[env], "valid": valid,
       "relief": b.relief[e, idx[:, :k]],
-      "contact_initial": b.contact[e, idx[:, 0]],
+      # One initial contact vector per sampled window.  Reusing ``e`` here
+      # would broadcast (B, 1) against (B,) into (B, B), which only surfaced
+      # when uniform and prioritized sub-batches had different sizes.
+      "contact_initial": b.contact[env, idx[:, 0]],
       "contact": b.contact[e, idx[:, 1:k + 1]],
     }
 

@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "status": "FROZEN_BEFORE_P2",
+  "seeds": [14011, 24017, 34019],
+  "methods": ["m1", "m2", "m2_v2", "m2_v2_nomemory", "m3"],
+  "num_envs": 1024,
+  "stage_iterations": {"stage1": 4000, "stage2": 4000, "stage3": 4000},
+  "total_iterations_per_method": 12000,
+  "environment_transitions_per_method": 12288000,
+  "total_method_seed_runs": 15,
+  "checkpoint_selection": "final Stage-3 checkpoint; no Stage-4 selection",
+  "execution": "one GPU, sequential, restart-safe; preserve failed attempts",
+  "p1_gate": "docs/P1_GATE_RESULTS.md",
+  "model_source_freeze": "e8b6d9555cf0df3621c0a7994ab8fb9adcbaf005"
+}

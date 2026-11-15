@@ -175,3 +175,17 @@ def test_m2_v2_anchored_loss_is_finite_and_requires_oracle_initial_only_for_trai
       assert "anchoring requires" in str(exc)
     else:
       raise AssertionError("anchored training accepted missing initial contact labels")
+
+
+def test_window_gather_has_one_initial_contact_vector_per_sample():
+  from go2_supermimic.supermimic.buffer import ReplayBuffer
+  from go2_supermimic.supermimic.train import Trainer
+
+  trainer = Trainer.__new__(Trainer)
+  trainer.cfg = SimpleNamespace(wm_window=2)
+  trainer.buf = ReplayBuffer(4, 8, obs_dim=1, device="cpu")
+  trainer.xi = torch.zeros(4, st.CONTEXT_DIM)
+  env = torch.tensor([0, 2, 3])
+  idx = torch.tensor([[0, 1, 2], [1, 2, 3], [2, 3, 4]])
+  gathered = trainer._gather(env, idx, torch.ones(3, 2))
+  assert gathered["contact_initial"].shape == (3, NUM_FEET * CONTACT_DIM)

@@ -14,6 +14,32 @@ def test_shared_contract_differs_only_in_world_model_method_and_capacity():
   assert all({k: v for k, v in c.items() if k not in ignored} == baseline for c in configs[1:])
 
 
+def test_formal_v2_contract_is_complete_and_full_budget():
+  import json
+  from pathlib import Path
+
+  root = Path(__file__).resolve().parents[1]
+  contract = json.loads((root / "configs/formal_v2.json").read_text())
+  assert contract["seeds"] == [14011, 24017, 34019]
+  assert contract["methods"] == ["m1", "m2", "m2_v2", "m2_v2_nomemory", "m3"]
+  assert contract["num_envs"] == 1024
+  assert contract["stage_iterations"] == {"stage1": 4000, "stage2": 4000, "stage3": 4000}
+  assert contract["environment_transitions_per_method"] == 12_288_000
+  for method in contract["methods"]:
+    cfg = json.loads((root / f"configs/methods/{method}.json").read_text())
+    assert cfg["method"] == method
+
+
+def test_training_launcher_binds_the_current_checkout_before_package_import():
+  from pathlib import Path
+
+  root = Path(__file__).resolve().parents[1]
+  text = (root / "scripts/train.py").read_text()
+  assert text.index('sys.path.insert(0, str(ROOT))') < text.index(
+    'from go2_supermimic.supermimic.train import main'
+  )
+
+
 def test_new_tasks_register_with_shared_action_interface_and_sim2real_contract():
   import go2_supermimic.env  # noqa: F401
   from mjlab.tasks.registry import list_tasks, load_env_cfg

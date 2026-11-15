@@ -10,6 +10,14 @@ terrain recipe with the MoE-CTS and flat-policy data drivers):
 Every TrainCfg field (go2_supermimic/supermimic/train.py) is a flag.
 """
 
+from pathlib import Path
+import sys
+
+# Editable installs on research hosts may point at an older checkout.  Formal
+# runs must import the source tree containing this launcher.
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
 import torch
 
 from go2_supermimic.supermimic.train import main
