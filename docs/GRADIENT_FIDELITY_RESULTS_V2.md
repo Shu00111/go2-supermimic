@@ -209,6 +209,12 @@ the gradient norm rose from 0.155 at epsilon 0.01 to 1.74 at epsilon 0.001.
 This required transition stratum is therefore reported as nonsmooth, with no
 ordinary M1/M2 gradient comparison.
 
+The reverse soft-to-hard H=32 transition was also fully censored: all 12
+coordinates crossed constraint/contact-set boundaries, nine changed sign, and
+the gradient norm increased from 0.390 to 3.66 as epsilon decreased from 0.01
+to 0.001. Both transition directions therefore fail the ordinary local-gradient
+criterion rather than providing evidence for either World Model.
+
 ## Gate status and limitations
 
 P0 Gate A passes only for isolated, single-environment CPU replay. GPU replay
