@@ -38,8 +38,11 @@ def main() -> None:
     raise SystemExit("all inputs must have the same scenario and horizon")
 
   physical_parts = []
-  model_parts = {"M1": [], "M2": []}
-  sample_metrics = {"M1": [], "M2": []}
+  method_names = tuple(reports[0]["methods"])
+  if not method_names or any(tuple(report["methods"]) != method_names for report in reports):
+    raise SystemExit("all inputs must contain the same ordered method set")
+  model_parts = {method: [] for method in method_names}
+  sample_metrics = {method: [] for method in method_names}
   valid_count = 0
   for path, report in zip(args.inputs, reports, strict=True):
     valid = report["physical_valid_coordinates"]
@@ -65,7 +68,6 @@ def main() -> None:
       "median_sample_cosine": median(row["cosine_similarity"] for row in per_sample),
       "mean_sample_sign_agreement": mean(row["sign_agreement"] for row in per_sample),
     }
-  m1, m2 = methods["M1"]["aggregate"], methods["M2"]["aggregate"]
   scenario, horizon = identity.pop()
   summary = {
     "schema": 1,
@@ -78,14 +80,24 @@ def main() -> None:
     "valid_pairs": valid_count,
     "valid_pair_fraction": valid_count / (12 * len(reports)),
     "methods": methods,
-    "M2_minus_M1": {
-      "cosine_similarity": m2["cosine_similarity"] - m1["cosine_similarity"],
-      "relative_l2_error": m2["relative_l2_error"] - m1["relative_l2_error"],
-      "sign_agreement": m2["sign_agreement"] - m1["sign_agreement"],
-      "norm_ratio": m2["norm_ratio"] - m1["norm_ratio"],
-    },
     "sources": [str(path) for path in args.inputs],
   }
+  if "M1" in methods:
+    baseline = methods["M1"]["aggregate"]
+    summary["method_minus_M1"] = {
+      method: {
+        "cosine_similarity": values["aggregate"]["cosine_similarity"]
+        - baseline["cosine_similarity"],
+        "relative_l2_error": values["aggregate"]["relative_l2_error"]
+        - baseline["relative_l2_error"],
+        "sign_agreement": values["aggregate"]["sign_agreement"]
+        - baseline["sign_agreement"],
+        "norm_ratio": values["aggregate"]["norm_ratio"] - baseline["norm_ratio"],
+      }
+      for method, values in methods.items() if method != "M1"
+    }
+  if "M1" in methods and "M2" in methods:
+    summary["M2_minus_M1"] = summary["method_minus_M1"]["M2"]
   args.output.parent.mkdir(parents=True, exist_ok=True)
   args.output.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
   print(json.dumps(summary, indent=2))

@@ -9,13 +9,21 @@ import hashlib
 import json
 from pathlib import Path
 from statistics import median
+import sys
 
 import torch
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+  sys.path.insert(0, str(SCRIPT_DIR))
 
 import go2_supermimic.env  # noqa: F401
 from go2_supermimic.diagnostics import capture_snapshot, restore_snapshot, world_model_open_loop
 from go2_supermimic.supermimic import state as st
-from go2_supermimic.supermimic.contact_model import ContactStructuredWorldModel
+from go2_supermimic.supermimic.contact_model import (
+  ContactStructuredWorldModel,
+  ContactStructuredWorldModelV2,
+)
 from go2_supermimic.supermimic.imagine import ImagineCfg, Imagination, RewardWeights
 from go2_supermimic.supermimic.world_model import WorldModel
 from mjlab.envs import ManagerBasedRlEnv
@@ -43,13 +51,21 @@ def load_world_model(path: Path, device: str):
   checkpoint = torch.load(path, map_location="cpu", weights_only=False, mmap=True)
   cfg = checkpoint["cfg"]
   method = cfg.get("method")
-  hidden = tuple(cfg["wm_hidden"])
+  hidden = tuple(cfg.get("wm_hidden", cfg.get("hidden", ())))
+  if not hidden:
+    raise ValueError(f"checkpoint {path} does not record world-model hidden widths")
   if method == "m1":
     model = WorldModel(hidden)
   elif method in {"m2", "m2_nomemory"}:
     model = ContactStructuredWorldModel(hidden, use_loading_memory=method == "m2")
+  elif method in {"m2_v2", "m2_v2_core", "m2_v2_nomemory"}:
+    model = ContactStructuredWorldModelV2(
+      hidden,
+      use_loading_memory=method != "m2_v2_nomemory",
+      anchor_weight=0.0 if method == "m2_v2_core" else 0.25,
+    )
   else:
-    raise ValueError(f"checkpoint method {method!r} is not M1/M2")
+    raise ValueError(f"checkpoint method {method!r} is not a supported world model")
   model.load_state_dict(checkpoint["world_model"])
   model.to(device).eval()
   for parameter in model.parameters():
@@ -94,8 +110,12 @@ def main() -> None:
   parser.add_argument("--seed", type=int, default=14011)
   parser.add_argument("--horizon", type=int, default=32)
   parser.add_argument("--physical", type=Path, required=True)
-  parser.add_argument("--m1", type=Path, required=True)
-  parser.add_argument("--m2", type=Path, required=True)
+  parser.add_argument("--m1", type=Path)
+  parser.add_argument("--m2", type=Path)
+  parser.add_argument(
+    "--model", action="append", default=[], metavar="LABEL=CHECKPOINT",
+    help="repeatable frozen candidate; labels must be unique",
+  )
   parser.add_argument("--device", default="cuda:0")
   parser.add_argument("--output", type=Path, required=True)
   args = parser.parse_args()
@@ -106,6 +126,22 @@ def main() -> None:
     raise SystemExit("physical receipt scenario/horizon mismatch")
   if "convergence" not in physical_report:
     raise SystemExit("physical receipt lacks epsilon-convergence classification")
+
+  model_specs = []
+  if args.m1 is not None:
+    model_specs.append(("M1", args.m1))
+  if args.m2 is not None:
+    model_specs.append(("M2", args.m2))
+  for spec in args.model:
+    if "=" not in spec:
+      raise SystemExit(f"invalid --model {spec!r}; expected LABEL=CHECKPOINT")
+    label, path = spec.split("=", 1)
+    if not label or not path:
+      raise SystemExit(f"invalid --model {spec!r}; expected LABEL=CHECKPOINT")
+    model_specs.append((label, Path(path)))
+  labels = [label for label, _ in model_specs]
+  if not labels or len(labels) != len(set(labels)):
+    raise SystemExit("at least one uniquely labeled model is required")
 
   torch.manual_seed(args.seed)
   task, mode = SCENARIOS[args.scenario]
@@ -160,7 +196,7 @@ def main() -> None:
     valid[coordinate] = row["valid"]
 
   methods = {}
-  for label, path in (("M1", args.m1), ("M2", args.m2)):
+  for label, path in model_specs:
     method, model = load_world_model(path, args.device)
     objective, gradient = bptt_gradient(
       model, imagination, initial_state, initial_pose, actions,
@@ -179,13 +215,14 @@ def main() -> None:
     torch.cuda.empty_cache()
 
   report = {
-    "schema": 1,
+    "schema": 2,
     "status": "COMPLETE" if all(row["finite"] for row in methods.values()) else "FAIL",
     "seed": args.seed,
     "scenario": args.scenario,
     "task": task,
     "horizon": args.horizon,
     "physical_receipt": str(args.physical),
+    "physical_receipt_sha256": sha256(args.physical),
     "physical_gradient_reduction": "median across epsilon on each coordinate",
     "physical_gradient": physical.tolist(),
     "physical_valid_coordinates": torch.where(valid)[0].tolist(),
