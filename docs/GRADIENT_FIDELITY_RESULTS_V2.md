@@ -159,6 +159,15 @@ better for this one rigid state, but one state is not an aggregate result and
 does not establish the study hypothesis. The checkpoint hashes exactly match
 the frozen manifest.
 
+A second independently reset rigid state reproduced the same 8/12 valid
+coordinate set. On the 16 concatenated valid pairs, M1 scored cosine 0.302,
+relative L2 error 0.968, sign agreement 0.438, and norm ratio 0.469. M2 scored
+cosine 0.469, relative L2 error 0.884, sign agreement 0.688, and norm ratio
+0.493. The paired M2-minus-M1 differences were +0.166 cosine, -0.084 relative
+error, and +0.25 sign agreement. This small rigid-only sample consistently
+favors M2 directionally, but phase coverage and sample count remain
+insufficient for Gate B.
+
 ## Gate status and limitations
 
 P0 Gate A passes only for isolated, single-environment CPU replay. GPU replay
