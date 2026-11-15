@@ -203,6 +203,12 @@ coordinates crossed a constraint/contact-set boundary, nine changed sign, and
 none passed epsilon convergence. This phase is recorded as a nonsmooth-event
 failure rather than forced into an ordinary-gradient comparison.
 
+The hard-to-soft H=32 transition was fully censored as well: every coordinate
+crossed contact/constraint or rigid/RFT mode boundaries, ten changed sign, and
+the gradient norm rose from 0.155 at epsilon 0.01 to 1.74 at epsilon 0.001.
+This required transition stratum is therefore reported as nonsmooth, with no
+ordinary M1/M2 gradient comparison.
+
 ## Gate status and limitations
 
 P0 Gate A passes only for isolated, single-environment CPU replay. GPU replay
