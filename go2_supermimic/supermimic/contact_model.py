@@ -30,6 +30,8 @@ class ContactScales:
 
   force_n: float = 150.0
   normal_force_n: float | None = None
+  force_limit_n: float | None = None
+  normal_force_limit_n: float | None = None
   intrusion_m: float = 0.08
   memory_m: float = 0.08
   tangential_velocity_mps: float = 1.0
@@ -41,6 +43,12 @@ class ContactScales:
       self.memory_m, self.tangential_velocity_mps,
       self.tangential_velocity_mps, 1.0,
     ])
+
+  def force_limit_tensor(self, ref: torch.Tensor) -> torch.Tensor:
+    tangent = self.force_n if self.force_limit_n is None else self.force_limit_n
+    normal_scale = self.force_n if self.normal_force_n is None else self.normal_force_n
+    normal = normal_scale if self.normal_force_limit_n is None else self.normal_force_limit_n
+    return ref.new_tensor([tangent, tangent, normal])
 
 
 def per_foot_observables(s: torch.Tensor, action: torch.Tensor) -> torch.Tensor:
@@ -101,7 +109,7 @@ class PersistentContactEstimator(nn.Module):
     # Soft contact gating keeps the BPTT path differentiable at touchdown.
     memory = probability * (intrusion + retention * F.relu(old_memory - intrusion))
     force_code = torch.tanh(raw[..., :3]) if self.bounded_force else raw[..., :3]
-    force = probability[..., None] * self.scales.tensor(raw)[:3] * force_code
+    force = probability[..., None] * self.scales.force_limit_tensor(raw) * force_code
     tangent = probability[..., None] * self.scales.tangential_velocity_mps * torch.tanh(
       raw[..., 5:7]
     )
@@ -235,7 +243,12 @@ class ContactStructuredWorldModelV2(ContactStructuredWorldModel):
     *,
     use_loading_memory: bool = True,
     anchor_weight: float = 0.25,
-    scales: ContactScales = ContactScales(force_n=250.0, normal_force_n=600.0),
+    scales: ContactScales = ContactScales(
+      force_n=150.0,
+      normal_force_n=300.0,
+      force_limit_n=250.0,
+      normal_force_limit_n=600.0,
+    ),
   ):
     if anchor_weight < 0:
       raise ValueError("anchor_weight must be non-negative")
@@ -245,7 +258,9 @@ class ContactStructuredWorldModelV2(ContactStructuredWorldModel):
 
   def _decode_transition(self, raw: torch.Tensor, old: torch.Tensor) -> torch.Tensor:
     probability = raw[..., 7].sigmoid()
-    force = probability[..., None] * self.scales.tensor(raw)[:3] * torch.tanh(raw[..., :3])
+    force = probability[..., None] * self.scales.force_limit_tensor(raw) * torch.tanh(
+      raw[..., :3]
+    )
     intrusion_proposal = self.scales.intrusion_m * raw[..., 3].sigmoid()
     intrusion = probability * intrusion_proposal
     retention = raw[..., 4].sigmoid()
