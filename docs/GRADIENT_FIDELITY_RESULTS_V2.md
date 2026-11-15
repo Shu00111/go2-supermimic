@@ -168,6 +168,14 @@ error, and +0.25 sign agreement. This small rigid-only sample consistently
 favors M2 directionally, but phase coverage and sample count remain
 insufficient for Gate B.
 
+The third rigid state favored M1 on cosine/error while tying M2 on sign
+agreement, so the apparent M2 advantage is not sample-uniform. Across all 22
+valid coordinate pairs from three states, M1/M2 aggregate cosine was
+0.366/0.466, relative L2 error 0.944/0.892, sign agreement 0.500/0.682, and
+norm ratio 0.524/0.580. M2 remains better in the aggregate, but the margin has
+shrunk and both models remain inaccurate. Additional paired states are required
+before interpreting this as a robust representation effect.
+
 ## Gate status and limitations
 
 P0 Gate A passes only for isolated, single-environment CPU replay. GPU replay
