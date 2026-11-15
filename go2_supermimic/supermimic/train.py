@@ -24,7 +24,10 @@ from go2_supermimic.supermimic import state as st
 from go2_supermimic.supermimic.buffer import ReplayBuffer, WindowArchive, pack_generator
 from go2_supermimic.supermimic.imagine import ImagineCfg, Imagination, RewardWeights
 from go2_supermimic.supermimic.world_model import RunningNorm, WorldModel, mlp
-from go2_supermimic.supermimic.contact_model import ContactStructuredWorldModel
+from go2_supermimic.supermimic.contact_model import (
+  ContactStructuredWorldModel,
+  ContactStructuredWorldModelV2,
+)
 from go2_supermimic.supermimic.contact_labels import oracle_contact_state
 from go2_supermimic.target import terrain as tr
 
@@ -32,7 +35,7 @@ from go2_supermimic.target import terrain as tr
 @dataclass(kw_only=True)
 class TrainCfg:
   method: str = "m1"
-  """m1 vanilla, m2 contact-structured, m2_nomemory ablation, or m3 generic."""
+  """m1/m3 generic; m2 v1; m2_v2/core/nomemory controlled candidates."""
   task: str = "Go2-Chase-Terrain"
   device: str = "cuda:0"
   """Torch/Warp device. Keep cuda:0 for released training; cpu is useful for smoke tests."""
@@ -267,6 +270,16 @@ class Trainer:
       ).to(self.dev)
     elif cfg.method == "m3":
       self.wm = WorldModel(cfg.wm_hidden).to(self.dev)
+    elif cfg.method == "m2_v2":
+      self.wm = ContactStructuredWorldModelV2(cfg.wm_hidden).to(self.dev)
+    elif cfg.method == "m2_v2_core":
+      self.wm = ContactStructuredWorldModelV2(
+        cfg.wm_hidden, anchor_weight=0.0
+      ).to(self.dev)
+    elif cfg.method == "m2_v2_nomemory":
+      self.wm = ContactStructuredWorldModelV2(
+        cfg.wm_hidden, use_loading_memory=False
+      ).to(self.dev)
     elif cfg.method == "m1":
       self.wm = WorldModel(cfg.wm_hidden).to(self.dev)
     else:
@@ -499,6 +512,7 @@ class Trainer:
       "s": b.s[e, idx], "pose": b.pose[e, idx], "a": b.a[e, idx[:, :k]],
       "a_prev": b.a_prev[e, idx[:, :k]], "xi": self.xi[env], "valid": valid,
       "relief": b.relief[e, idx[:, :k]],
+      "contact_initial": b.contact[e, idx[:, 0]],
       "contact": b.contact[e, idx[:, 1:k + 1]],
     }
 
@@ -554,7 +568,8 @@ class Trainer:
         w["s"][:, 0], w["a"], w["a_prev"], w["xi"], w["relief"].float(),
         w["s"][:, 1:], pose_tgt, w["valid"],
       )
-      loss = (self.wm.loss(*args, contact_targets=w["contact"])
+      loss = (self.wm.loss(*args, contact_targets=w["contact"],
+                           contact_initial=w["contact_initial"])
               if isinstance(self.wm, ContactStructuredWorldModel) else self.wm.loss(*args))
       self.opt_wm.zero_grad(set_to_none=True)
       loss.backward()

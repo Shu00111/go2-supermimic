@@ -1,0 +1,2491 @@
+{
+  "schema": 1,
+  "source": "/home/yiwei/Documents/ChatGPT/go2-supermimic-v2/outputs/contact_structured_supermimic/p1_audit_v2/reports/world_model_error_audit_dev_v2.json",
+  "split": "dev",
+  "aggregate": [
+    {
+      "model": "M1",
+      "family": "world_model",
+      "metric": "autoregressive_state_mse",
+      "stratum": "horizon_1",
+      "n": 15321,
+      "weighted_mean": 0.2272895896041332,
+      "conditions": 5
+    },
+    {
+      "model": "M1",
+      "family": "world_model",
+      "metric": "autoregressive_state_mse",
+      "stratum": "horizon_16",
+      "n": 14744,
+      "weighted_mean": 4.620860924280784,
+      "conditions": 5
+    },
+    {
+      "model": "M1",
+      "family": "world_model",
+      "metric": "autoregressive_state_mse",
+      "stratum": "horizon_2",
+      "n": 15282,
+      "weighted_mean": 0.47006147460125414,
+      "conditions": 5
+    },
+    {
+      "model": "M1",
+      "family": "world_model",
+      "metric": "autoregressive_state_mse",
+      "stratum": "horizon_32",
+      "n": 14141,
+      "weighted_mean": 10.466143902677553,
+      "conditions": 5
+    },
+    {
+      "model": "M1",
+      "family": "world_model",
+      "metric": "autoregressive_state_mse",
+      "stratum": "horizon_4",
+      "n": 15204,
+      "weighted_mean": 1.0573813332652957,
+      "conditions": 5
+    },
+    {
+      "model": "M1",
+      "family": "world_model",
+      "metric": "autoregressive_state_mse",
+      "stratum": "horizon_8",
+      "n": 15048,
+      "weighted_mean": 2.129668513633279,
+      "conditions": 5
+    },
+    {
+      "model": "M1",
+      "family": "world_model",
+      "metric": "one_step_common_normalized_mse",
+      "stratum": "all",
+      "n": 15351,
+      "weighted_mean": 0.21987950947793578,
+      "conditions": 5
+    },
+    {
+      "model": "M1",
+      "family": "world_model_component",
+      "metric": "one_step_common_normalized_mse",
+      "stratum": "base_pose_velocity",
+      "n": 15351,
+      "weighted_mean": 0.2664799469947023,
+      "conditions": 5
+    },
+    {
+      "model": "M1",
+      "family": "world_model_component",
+      "metric": "one_step_common_normalized_mse",
+      "stratum": "joints",
+      "n": 15351,
+      "weighted_mean": 0.17368884853815206,
+      "conditions": 5
+    },
+    {
+      "model": "M1",
+      "family": "world_model_component",
+      "metric": "one_step_common_normalized_mse",
+      "stratum": "limbs",
+      "n": 15351,
+      "weighted_mean": 0.1487201385508341,
+      "conditions": 5
+    },
+    {
+      "model": "M1",
+      "family": "world_model_component",
+      "metric": "one_step_common_normalized_mse",
+      "stratum": "soil_state",
+      "n": 15351,
+      "weighted_mean": 0.602942970561863,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "contact_propagation",
+      "metric": "contact_incorrect",
+      "stratum": "horizon_1",
+      "n": 61284,
+      "weighted_mean": 0.30825337771685923,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "contact_propagation",
+      "metric": "contact_incorrect",
+      "stratum": "horizon_16",
+      "n": 58976,
+      "weighted_mean": 0.28586204557786216,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "contact_propagation",
+      "metric": "contact_incorrect",
+      "stratum": "horizon_2",
+      "n": 61128,
+      "weighted_mean": 0.1655378877110326,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "contact_propagation",
+      "metric": "contact_incorrect",
+      "stratum": "horizon_32",
+      "n": 56564,
+      "weighted_mean": 0.3360618060957499,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "contact_propagation",
+      "metric": "contact_incorrect",
+      "stratum": "horizon_4",
+      "n": 60816,
+      "weighted_mean": 0.18603656932386214,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "contact_propagation",
+      "metric": "contact_incorrect",
+      "stratum": "horizon_8",
+      "n": 60192,
+      "weighted_mean": 0.22645866560340244,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "contact_propagation",
+      "metric": "loading_memory_absolute_error_m",
+      "stratum": "horizon_1",
+      "n": 61284,
+      "weighted_mean": 0.012025762870732594,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "contact_propagation",
+      "metric": "loading_memory_absolute_error_m",
+      "stratum": "horizon_16",
+      "n": 58976,
+      "weighted_mean": 0.010700089236975081,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "contact_propagation",
+      "metric": "loading_memory_absolute_error_m",
+      "stratum": "horizon_2",
+      "n": 61128,
+      "weighted_mean": 0.008196307730486144,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "contact_propagation",
+      "metric": "loading_memory_absolute_error_m",
+      "stratum": "horizon_32",
+      "n": 56564,
+      "weighted_mean": 0.01130326542480253,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "contact_propagation",
+      "metric": "loading_memory_absolute_error_m",
+      "stratum": "horizon_4",
+      "n": 60816,
+      "weighted_mean": 0.008765075903081811,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "contact_propagation",
+      "metric": "loading_memory_absolute_error_m",
+      "stratum": "horizon_8",
+      "n": 60192,
+      "weighted_mean": 0.009698401896526971,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "contact_propagation",
+      "metric": "normal_absolute_error_n",
+      "stratum": "horizon_1",
+      "n": 61284,
+      "weighted_mean": 42.824911480655494,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "contact_propagation",
+      "metric": "normal_absolute_error_n",
+      "stratum": "horizon_16",
+      "n": 58976,
+      "weighted_mean": 42.06098712373778,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "contact_propagation",
+      "metric": "normal_absolute_error_n",
+      "stratum": "horizon_2",
+      "n": 61128,
+      "weighted_mean": 37.23293307962783,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "contact_propagation",
+      "metric": "normal_absolute_error_n",
+      "stratum": "horizon_32",
+      "n": 56564,
+      "weighted_mean": 42.9653714943603,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "contact_propagation",
+      "metric": "normal_absolute_error_n",
+      "stratum": "horizon_4",
+      "n": 60816,
+      "weighted_mean": 39.09737268885248,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "contact_propagation",
+      "metric": "normal_absolute_error_n",
+      "stratum": "horizon_8",
+      "n": 60192,
+      "weighted_mean": 40.157152915415146,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "contact_propagation",
+      "metric": "tangential_vector_error_n",
+      "stratum": "horizon_1",
+      "n": 61284,
+      "weighted_mean": 26.346739262639836,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "contact_propagation",
+      "metric": "tangential_vector_error_n",
+      "stratum": "horizon_16",
+      "n": 58976,
+      "weighted_mean": 29.864846174384915,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "contact_propagation",
+      "metric": "tangential_vector_error_n",
+      "stratum": "horizon_2",
+      "n": 61128,
+      "weighted_mean": 28.54275169781692,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "contact_propagation",
+      "metric": "tangential_vector_error_n",
+      "stratum": "horizon_32",
+      "n": 56564,
+      "weighted_mean": 29.19915631645576,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "contact_propagation",
+      "metric": "tangential_vector_error_n",
+      "stratum": "horizon_4",
+      "n": 60816,
+      "weighted_mean": 28.592939518705244,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "contact_propagation",
+      "metric": "tangential_vector_error_n",
+      "stratum": "horizon_8",
+      "n": 60192,
+      "weighted_mean": 29.403267084855074,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "world_model",
+      "metric": "autoregressive_state_mse",
+      "stratum": "horizon_1",
+      "n": 15321,
+      "weighted_mean": 0.3690898726805466,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "world_model",
+      "metric": "autoregressive_state_mse",
+      "stratum": "horizon_16",
+      "n": 14744,
+      "weighted_mean": 7.979444990643036,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "world_model",
+      "metric": "autoregressive_state_mse",
+      "stratum": "horizon_2",
+      "n": 15282,
+      "weighted_mean": 0.8087758311331213,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "world_model",
+      "metric": "autoregressive_state_mse",
+      "stratum": "horizon_32",
+      "n": 14141,
+      "weighted_mean": 26.233639570533043,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "world_model",
+      "metric": "autoregressive_state_mse",
+      "stratum": "horizon_4",
+      "n": 15204,
+      "weighted_mean": 1.7854669155081073,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "world_model",
+      "metric": "autoregressive_state_mse",
+      "stratum": "horizon_8",
+      "n": 15048,
+      "weighted_mean": 3.4647003941897427,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "world_model",
+      "metric": "one_step_common_normalized_mse",
+      "stratum": "all",
+      "n": 15351,
+      "weighted_mean": 0.35756392506699936,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "world_model_component",
+      "metric": "one_step_common_normalized_mse",
+      "stratum": "base_pose_velocity",
+      "n": 15351,
+      "weighted_mean": 0.4279636617776745,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "world_model_component",
+      "metric": "one_step_common_normalized_mse",
+      "stratum": "joints",
+      "n": 15351,
+      "weighted_mean": 0.3360448821263539,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "world_model_component",
+      "metric": "one_step_common_normalized_mse",
+      "stratum": "limbs",
+      "n": 15351,
+      "weighted_mean": 0.26462366961696976,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1",
+      "family": "world_model_component",
+      "metric": "one_step_common_normalized_mse",
+      "stratum": "soil_state",
+      "n": 15351,
+      "weighted_mean": 0.7259526721087598,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "all",
+      "n": 61404,
+      "weighted_mean": 0.3805126701843528,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "far_boundary",
+      "n": 42403,
+      "weighted_mean": 0.4084380822111643,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "flight",
+      "n": 38074,
+      "weighted_mean": 0.00478016494195514,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "force_tail_p95",
+      "n": 1150,
+      "weighted_mean": 0.991304347826087,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "near_boundary",
+      "n": 19001,
+      "weighted_mean": 0.318193779274775,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "rigid_material",
+      "n": 31877,
+      "weighted_mean": 0.2599366314270477,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "soft_material",
+      "n": 29527,
+      "weighted_mean": 0.5106851356385681,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "soil_strength_high",
+      "n": 12264,
+      "weighted_mean": 0.4892367906066536,
+      "conditions": 1
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "soil_strength_low",
+      "n": 17263,
+      "weighted_mean": 0.5259224931935353,
+      "conditions": 3
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "stance",
+      "n": 23330,
+      "weighted_mean": 0.9936990998714103,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "all",
+      "n": 61404,
+      "weighted_mean": 47.086463054990986,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "far_boundary",
+      "n": 42403,
+      "weighted_mean": 42.32225786887268,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "flight",
+      "n": 38074,
+      "weighted_mean": 21.247896563199514,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "force_tail_p95",
+      "n": 1150,
+      "weighted_mean": 310.1058937246903,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "near_boundary",
+      "n": 19001,
+      "weighted_mean": 57.71835571890206,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "rigid_material",
+      "n": 31877,
+      "weighted_mean": 58.238762012588076,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "soft_material",
+      "n": 29527,
+      "weighted_mean": 35.046572992630345,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "soil_strength_high",
+      "n": 12264,
+      "weighted_mean": 39.80687799733843,
+      "conditions": 1
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "soil_strength_low",
+      "n": 17263,
+      "weighted_mean": 31.664751722993547,
+      "conditions": 3
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "stance",
+      "n": 23330,
+      "weighted_mean": 89.25438335539683,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "all",
+      "n": 61404,
+      "weighted_mean": 15.557380328301932,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "far_boundary",
+      "n": 42403,
+      "weighted_mean": 13.475722749042394,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "flight",
+      "n": 38074,
+      "weighted_mean": 17.812894663716317,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "force_tail_p95",
+      "n": 1150,
+      "weighted_mean": -7.841053600311279,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "near_boundary",
+      "n": 19001,
+      "weighted_mean": 20.20284774229815,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "rigid_material",
+      "n": 31877,
+      "weighted_mean": 38.206124758796115,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "soft_material",
+      "n": 29527,
+      "weighted_mean": -8.893936304300878,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "soil_strength_high",
+      "n": 12264,
+      "weighted_mean": -13.503311432317563,
+      "conditions": 1
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "soil_strength_low",
+      "n": 17263,
+      "weighted_mean": -5.6193388085008085,
+      "conditions": 3
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "stance",
+      "n": 23330,
+      "weighted_mean": 11.876435072983998,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "all",
+      "n": 61404,
+      "weighted_mean": 58.11698503060866,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "far_boundary",
+      "n": 42403,
+      "weighted_mean": 54.76298753837059,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "flight",
+      "n": 38074,
+      "weighted_mean": 48.14688466604301,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "force_tail_p95",
+      "n": 1150,
+      "weighted_mean": 195.8440516865772,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "near_boundary",
+      "n": 19001,
+      "weighted_mean": 65.60183086311069,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "rigid_material",
+      "n": 31877,
+      "weighted_mean": 62.99742324727652,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "soft_material",
+      "n": 29527,
+      "weighted_mean": 52.8481216502205,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "soil_strength_high",
+      "n": 12264,
+      "weighted_mean": 54.265648338314335,
+      "conditions": 1
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "soil_strength_low",
+      "n": 17263,
+      "weighted_mean": 51.84108073596557,
+      "conditions": 3
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "stance",
+      "n": 23330,
+      "weighted_mean": 74.38794950898297,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "all",
+      "n": 61404,
+      "weighted_mean": 0.010164208692531509,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "far_boundary",
+      "n": 42403,
+      "weighted_mean": 0.012550104894657596,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "flight",
+      "n": 38074,
+      "weighted_mean": 0.0024130738073982303,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "force_tail_p95",
+      "n": 1150,
+      "weighted_mean": 0.013947777991618395,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "near_boundary",
+      "n": 19001,
+      "weighted_mean": 0.004839796469029985,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "rigid_material",
+      "n": 31877,
+      "weighted_mean": 0.0023025270772897713,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "soft_material",
+      "n": 29527,
+      "weighted_mean": 0.01865158718845256,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "soil_strength_high",
+      "n": 12264,
+      "weighted_mean": 0.01672451294277053,
+      "conditions": 1
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "soil_strength_low",
+      "n": 17263,
+      "weighted_mean": 0.020020621455326477,
+      "conditions": 3
+    },
+    {
+      "model": "M2-v1/initial-estimator",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "stance",
+      "n": 23330,
+      "weighted_mean": 0.02281387477125266,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "all",
+      "n": 61404,
+      "weighted_mean": 0.4862875382711224,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "far_boundary",
+      "n": 42403,
+      "weighted_mean": 0.4966158054854609,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "flight",
+      "n": 32507,
+      "weighted_mean": 0.4669148183468176,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "force_tail_p95",
+      "n": 1152,
+      "weighted_mean": 0.5512152777777778,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "near_boundary",
+      "n": 19001,
+      "weighted_mean": 0.46323877690647863,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "onset",
+      "n": 5567,
+      "weighted_mean": 0.5164361415484102,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "release",
+      "n": 5522,
+      "weighted_mean": 0.5746106483158276,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "rigid_material",
+      "n": 31877,
+      "weighted_mean": 0.47378987985067605,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "soft_material",
+      "n": 29527,
+      "weighted_mean": 0.49977986249872997,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "soil_strength_high",
+      "n": 12264,
+      "weighted_mean": 0.5108447488584474,
+      "conditions": 1
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "soil_strength_low",
+      "n": 17263,
+      "weighted_mean": 0.491919133406708,
+      "conditions": 3
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "stance",
+      "n": 17808,
+      "weighted_mean": 0.48483827493261455,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "all",
+      "n": 61404,
+      "weighted_mean": 81.43261009721057,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "far_boundary",
+      "n": 42403,
+      "weighted_mean": 79.57235029777999,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "flight",
+      "n": 32507,
+      "weighted_mean": 60.212155573336396,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "force_tail_p95",
+      "n": 1152,
+      "weighted_mean": 312.9647762388405,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "near_boundary",
+      "n": 19001,
+      "weighted_mean": 85.58400193318002,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "onset",
+      "n": 5567,
+      "weighted_mean": 140.46629732309094,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "release",
+      "n": 5522,
+      "weighted_mean": 63.534352040632356,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "rigid_material",
+      "n": 31877,
+      "weighted_mean": 91.53989837109334,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "soft_material",
+      "n": 29527,
+      "weighted_mean": 70.52090121020682,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "soil_strength_high",
+      "n": 12264,
+      "weighted_mean": 73.75586980801559,
+      "conditions": 1
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "soil_strength_low",
+      "n": 17263,
+      "weighted_mean": 68.22271115728861,
+      "conditions": 3
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "stance",
+      "n": 17808,
+      "weighted_mean": 107.26408805147429,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "all",
+      "n": 61404,
+      "weighted_mean": 51.565834700409454,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "far_boundary",
+      "n": 42403,
+      "weighted_mean": 52.98921017038648,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "flight",
+      "n": 32507,
+      "weighted_mean": 57.23424568000853,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "force_tail_p95",
+      "n": 1152,
+      "weighted_mean": 25.7402892201725,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "near_boundary",
+      "n": 19001,
+      "weighted_mean": 48.38940240455998,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "onset",
+      "n": 5567,
+      "weighted_mean": 102.79635189450714,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "release",
+      "n": 5522,
+      "weighted_mean": 57.556561768485764,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "rigid_material",
+      "n": 31877,
+      "weighted_mean": 70.9360853656579,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "soft_material",
+      "n": 29527,
+      "weighted_mean": 30.65394116377772,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "soil_strength_high",
+      "n": 12264,
+      "weighted_mean": 25.61580855023571,
+      "conditions": 1
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "soil_strength_low",
+      "n": 17263,
+      "weighted_mean": 34.23313703775555,
+      "conditions": 3
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "stance",
+      "n": 17808,
+      "weighted_mean": 23.345702186747822,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "all",
+      "n": 61404,
+      "weighted_mean": 66.63275401434439,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "far_boundary",
+      "n": 42403,
+      "weighted_mean": 68.0144653215324,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "flight",
+      "n": 32507,
+      "weighted_mean": 59.45143755994583,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "force_tail_p95",
+      "n": 1152,
+      "weighted_mean": 189.42751580409498,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "near_boundary",
+      "n": 19001,
+      "weighted_mean": 63.549300271978545,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "onset",
+      "n": 5567,
+      "weighted_mean": 94.42703791760614,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "release",
+      "n": 5522,
+      "weighted_mean": 53.345136917726386,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "rigid_material",
+      "n": 31877,
+      "weighted_mean": 64.31136953388382,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "soft_material",
+      "n": 29527,
+      "weighted_mean": 69.13889324567982,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "soil_strength_high",
+      "n": 12264,
+      "weighted_mean": 71.10033232063923,
+      "conditions": 1
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "soil_strength_low",
+      "n": 17263,
+      "weighted_mean": 67.74544547789311,
+      "conditions": 3
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "stance",
+      "n": 17808,
+      "weighted_mean": 75.17310088660408,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "all",
+      "n": 61404,
+      "weighted_mean": 0.03081051505208901,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "far_boundary",
+      "n": 42403,
+      "weighted_mean": 0.033045840116365945,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "flight",
+      "n": 32507,
+      "weighted_mean": 0.03074186307978122,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "force_tail_p95",
+      "n": 1152,
+      "weighted_mean": 0.027831667527444166,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "near_boundary",
+      "n": 19001,
+      "weighted_mean": 0.025822120299153116,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "onset",
+      "n": 5567,
+      "weighted_mean": 0.030413997469948453,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "release",
+      "n": 5522,
+      "weighted_mean": 0.030573080281906546,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "rigid_material",
+      "n": 31877,
+      "weighted_mean": 0.02764344083309267,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "soft_material",
+      "n": 29527,
+      "weighted_mean": 0.0342296509236285,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "soil_strength_high",
+      "n": 12264,
+      "weighted_mean": 0.034336834031100466,
+      "conditions": 1
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "soil_strength_low",
+      "n": 17263,
+      "weighted_mean": 0.034153505779097634,
+      "conditions": 3
+    },
+    {
+      "model": "M2-v1/oracle-current",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "stance",
+      "n": 17808,
+      "weighted_mean": 0.03113341475135526,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current-contact",
+      "family": "world_model",
+      "metric": "one_step_common_normalized_mse",
+      "stratum": "all",
+      "n": 15351,
+      "weighted_mean": 0.731595911238733,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current-contact",
+      "family": "world_model_component",
+      "metric": "one_step_common_normalized_mse",
+      "stratum": "base_pose_velocity",
+      "n": 15351,
+      "weighted_mean": 0.5207317062213087,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current-contact",
+      "family": "world_model_component",
+      "metric": "one_step_common_normalized_mse",
+      "stratum": "joints",
+      "n": 15351,
+      "weighted_mean": 1.1837523816277535,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current-contact",
+      "family": "world_model_component",
+      "metric": "one_step_common_normalized_mse",
+      "stratum": "limbs",
+      "n": 15351,
+      "weighted_mean": 0.34616720869881923,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-current-contact",
+      "family": "world_model_component",
+      "metric": "one_step_common_normalized_mse",
+      "stratum": "soil_state",
+      "n": 15351,
+      "weighted_mean": 1.4522100916657963,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-next-contact",
+      "family": "world_model",
+      "metric": "one_step_common_normalized_mse",
+      "stratum": "all",
+      "n": 15351,
+      "weighted_mean": 2.0888097450558423,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-next-contact",
+      "family": "world_model_component",
+      "metric": "one_step_common_normalized_mse",
+      "stratum": "base_pose_velocity",
+      "n": 15351,
+      "weighted_mean": 1.11072456026812,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-next-contact",
+      "family": "world_model_component",
+      "metric": "one_step_common_normalized_mse",
+      "stratum": "joints",
+      "n": 15351,
+      "weighted_mean": 4.287945602323832,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-next-contact",
+      "family": "world_model_component",
+      "metric": "one_step_common_normalized_mse",
+      "stratum": "limbs",
+      "n": 15351,
+      "weighted_mean": 0.6824290725457075,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/oracle-next-contact",
+      "family": "world_model_component",
+      "metric": "one_step_common_normalized_mse",
+      "stratum": "soil_state",
+      "n": 15351,
+      "weighted_mean": 3.4095039394573172,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "all",
+      "n": 61404,
+      "weighted_mean": 0.30822096280372613,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "far_boundary",
+      "n": 42403,
+      "weighted_mean": 0.2877862415395137,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "flight",
+      "n": 32507,
+      "weighted_mean": 0.17719260466976344,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "force_tail_p95",
+      "n": 1152,
+      "weighted_mean": 0.4131944444444444,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "near_boundary",
+      "n": 19001,
+      "weighted_mean": 0.3538234829745803,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "onset",
+      "n": 5567,
+      "weighted_mean": 0.5194898509071313,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "release",
+      "n": 5522,
+      "weighted_mean": 0.281238681637088,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "rigid_material",
+      "n": 31877,
+      "weighted_mean": 0.3140822536625153,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "soft_material",
+      "n": 29527,
+      "weighted_mean": 0.30189318251092223,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "soil_strength_high",
+      "n": 12264,
+      "weighted_mean": 0.27674494455316373,
+      "conditions": 1
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "soil_strength_low",
+      "n": 17263,
+      "weighted_mean": 0.3197590221861785,
+      "conditions": 3
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "stance",
+      "n": 17808,
+      "weighted_mean": 0.4897237196765499,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "all",
+      "n": 61404,
+      "weighted_mean": 42.82389880761733,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "far_boundary",
+      "n": 42403,
+      "weighted_mean": 39.52405855040615,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "flight",
+      "n": 32507,
+      "weighted_mean": 12.638315760243792,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "force_tail_p95",
+      "n": 1152,
+      "weighted_mean": 303.48494857880803,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "near_boundary",
+      "n": 19001,
+      "weighted_mean": 50.18788630440831,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "onset",
+      "n": 5567,
+      "weighted_mean": 105.18281327484326,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "release",
+      "n": 5522,
+      "weighted_mean": 14.449007640115456,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "rigid_material",
+      "n": 31877,
+      "weighted_mean": 46.76649787457923,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "soft_material",
+      "n": 29527,
+      "weighted_mean": 38.56751548193085,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "soil_strength_high",
+      "n": 12264,
+      "weighted_mean": 42.505985949545384,
+      "conditions": 1
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "soil_strength_low",
+      "n": 17263,
+      "weighted_mean": 35.76954283437105,
+      "conditions": 3
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "stance",
+      "n": 17808,
+      "weighted_mean": 87.22960524904086,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "all",
+      "n": 61404,
+      "weighted_mean": -12.876513001353405,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "far_boundary",
+      "n": 42403,
+      "weighted_mean": -15.679445962387431,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "flight",
+      "n": 32507,
+      "weighted_mean": -10.598703281944207,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "force_tail_p95",
+      "n": 1152,
+      "weighted_mean": -32.0366970234447,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "near_boundary",
+      "n": 19001,
+      "weighted_mean": -6.621433460975225,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "onset",
+      "n": 5567,
+      "weighted_mean": 35.38356012669119,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "release",
+      "n": 5522,
+      "weighted_mean": -11.238480096208644,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "rigid_material",
+      "n": 31877,
+      "weighted_mean": 9.380603740705663,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "soft_material",
+      "n": 29527,
+      "weighted_mean": -36.905033013092385,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "soil_strength_high",
+      "n": 12264,
+      "weighted_mean": -41.22619905740974,
+      "conditions": 1
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "soil_strength_low",
+      "n": 17263,
+      "weighted_mean": -33.83518534075803,
+      "conditions": 3
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "stance",
+      "n": 17808,
+      "weighted_mean": -32.62908517986129,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "all",
+      "n": 61404,
+      "weighted_mean": 26.339153266566765,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "far_boundary",
+      "n": 42403,
+      "weighted_mean": 21.83350301310259,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "flight",
+      "n": 32507,
+      "weighted_mean": 10.092918447199564,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "force_tail_p95",
+      "n": 1152,
+      "weighted_mean": 187.66643565313683,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "near_boundary",
+      "n": 19001,
+      "weighted_mean": 36.39404972978668,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "onset",
+      "n": 5567,
+      "weighted_mean": 62.38044696985117,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "release",
+      "n": 5522,
+      "weighted_mean": 12.21879971176939,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "rigid_material",
+      "n": 31877,
+      "weighted_mean": 32.00598455101512,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "soft_material",
+      "n": 29527,
+      "weighted_mean": 20.22130923045202,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "soil_strength_high",
+      "n": 12264,
+      "weighted_mean": 21.02723153411341,
+      "conditions": 1
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "soil_strength_low",
+      "n": 17263,
+      "weighted_mean": 19.64876499526096,
+      "conditions": 3
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "stance",
+      "n": 17808,
+      "weighted_mean": 49.10684562711127,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "all",
+      "n": 61404,
+      "weighted_mean": 0.012025131822721375,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "far_boundary",
+      "n": 42403,
+      "weighted_mean": 0.012875533373166643,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "flight",
+      "n": 32507,
+      "weighted_mean": 0.006715899454415053,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "force_tail_p95",
+      "n": 1152,
+      "weighted_mean": 0.016489689985980424,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "near_boundary",
+      "n": 19001,
+      "weighted_mean": 0.010127359234777013,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "onset",
+      "n": 5567,
+      "weighted_mean": 0.012605998258438007,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "release",
+      "n": 5522,
+      "weighted_mean": 0.009094929053540802,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "rigid_material",
+      "n": 31877,
+      "weighted_mean": 0.008830624019310973,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "soft_material",
+      "n": 29527,
+      "weighted_mean": 0.01547388466755198,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "soil_strength_high",
+      "n": 12264,
+      "weighted_mean": 0.013715700863556427,
+      "conditions": 1
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "soil_strength_low",
+      "n": 17263,
+      "weighted_mean": 0.016722935595675795,
+      "conditions": 3
+    },
+    {
+      "model": "M2-v1/predicted-current",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "stance",
+      "n": 17808,
+      "weighted_mean": 0.022443714080151413,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "all",
+      "n": 61404,
+      "weighted_mean": 0.3805615269363559,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "far_boundary",
+      "n": 42403,
+      "weighted_mean": 0.40789566775935665,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "flight",
+      "n": 38074,
+      "weighted_mean": 0.005988338498713033,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "force_tail_p95",
+      "n": 1150,
+      "weighted_mean": 0.9869565217391304,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "near_boundary",
+      "n": 19001,
+      "weighted_mean": 0.31956212830903635,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "rigid_material",
+      "n": 31877,
+      "weighted_mean": 0.26084637826646173,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "soft_material",
+      "n": 29527,
+      "weighted_mean": 0.509804585633488,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "soil_strength_high",
+      "n": 12264,
+      "weighted_mean": 0.4883398564905414,
+      "conditions": 1
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "soil_strength_low",
+      "n": 17263,
+      "weighted_mean": 0.5250535828071599,
+      "conditions": 3
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_classification",
+      "metric": "incorrect",
+      "stratum": "stance",
+      "n": 23330,
+      "weighted_mean": 0.9918559794256322,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "all",
+      "n": 61404,
+      "weighted_mean": 47.16486308413896,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "far_boundary",
+      "n": 42403,
+      "weighted_mean": 42.398538367416,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "flight",
+      "n": 38074,
+      "weighted_mean": 21.224679250440218,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "force_tail_p95",
+      "n": 1150,
+      "weighted_mean": 310.26380490261573,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "near_boundary",
+      "n": 19001,
+      "weighted_mean": 57.8014857336418,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "rigid_material",
+      "n": 31877,
+      "weighted_mean": 58.13394655549535,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "soft_material",
+      "n": 29527,
+      "weighted_mean": 35.32277029393244,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "soil_strength_high",
+      "n": 12264,
+      "weighted_mean": 39.99307165423493,
+      "conditions": 1
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "soil_strength_low",
+      "n": 17263,
+      "weighted_mean": 32.00488951522946,
+      "conditions": 3
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_force",
+      "metric": "normal_absolute_error_n",
+      "stratum": "stance",
+      "n": 23330,
+      "weighted_mean": 89.49862044737282,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "all",
+      "n": 61404,
+      "weighted_mean": 14.743615149915934,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "far_boundary",
+      "n": 42403,
+      "weighted_mean": 12.633993693701589,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "flight",
+      "n": 38074,
+      "weighted_mean": 17.055823300288996,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "force_tail_p95",
+      "n": 1150,
+      "weighted_mean": -9.672398344122845,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "near_boundary",
+      "n": 19001,
+      "weighted_mean": 19.451487293900826,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "rigid_material",
+      "n": 31877,
+      "weighted_mean": 37.51125801870596,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "soft_material",
+      "n": 29527,
+      "weighted_mean": -9.836062830522977,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "soil_strength_high",
+      "n": 12264,
+      "weighted_mean": -14.58814129313207,
+      "conditions": 1
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "soil_strength_low",
+      "n": 17263,
+      "weighted_mean": -6.460085870235778,
+      "conditions": 3
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_force",
+      "metric": "normal_signed_error_n",
+      "stratum": "stance",
+      "n": 23330,
+      "weighted_mean": 10.970146949431411,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "all",
+      "n": 61404,
+      "weighted_mean": 59.997904679142884,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "far_boundary",
+      "n": 42403,
+      "weighted_mean": 56.70222274232883,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "flight",
+      "n": 38074,
+      "weighted_mean": 50.33894456202176,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "force_tail_p95",
+      "n": 1150,
+      "weighted_mean": 196.5041993613865,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "near_boundary",
+      "n": 19001,
+      "weighted_mean": 67.35261238751227,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "rigid_material",
+      "n": 31877,
+      "weighted_mean": 64.69722221565728,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "soft_material",
+      "n": 29527,
+      "weighted_mean": 54.92457704303121,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "soil_strength_high",
+      "n": 12264,
+      "weighted_mean": 56.343906580439516,
+      "conditions": 1
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "soil_strength_low",
+      "n": 17263,
+      "weighted_mean": 53.91625534652566,
+      "conditions": 3
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "contact_force",
+      "metric": "tangential_vector_error_n",
+      "stratum": "stance",
+      "n": 23330,
+      "weighted_mean": 75.76109574212059,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "all",
+      "n": 61404,
+      "weighted_mean": 0.010172411761422489,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "far_boundary",
+      "n": 42403,
+      "weighted_mean": 0.012563187420150414,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "flight",
+      "n": 38074,
+      "weighted_mean": 0.002413954485258051,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "force_tail_p95",
+      "n": 1150,
+      "weighted_mean": 0.013942545813725978,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "near_boundary",
+      "n": 19001,
+      "weighted_mean": 0.004837110447963183,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "rigid_material",
+      "n": 31877,
+      "weighted_mean": 0.002295420301688231,
+      "conditions": 5
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "soft_material",
+      "n": 29527,
+      "weighted_mean": 0.01867631858439634,
+      "conditions": 4
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "soil_strength_high",
+      "n": 12264,
+      "weighted_mean": 0.016752933590513892,
+      "conditions": 1
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "soil_strength_low",
+      "n": 17263,
+      "weighted_mean": 0.02004273192883093,
+      "conditions": 3
+    },
+    {
+      "model": "M2-v1/recurrent-estimator",
+      "family": "loading_memory",
+      "metric": "absolute_error_m",
+      "stratum": "stance",
+      "n": 23330,
+      "weighted_mean": 0.022834027806543998,
+      "conditions": 5
+    }
+  ]
+}

@@ -112,7 +112,8 @@ def common_scales(datasets: dict[str, dict]) -> tuple[torch.Tensor, torch.Tensor
 
 def contact_rows(rows: list[dict], condition: str, split: str, label: str,
                  pred: torch.Tensor, target: torch.Tensor, current: torch.Tensor,
-                 boundary: torch.Tensor, soft: torch.Tensor) -> None:
+                 boundary: torch.Tensor, soft: torch.Tensor,
+                 strength: torch.Tensor) -> None:
   c0 = current[..., 7] >= 0.5
   c1 = target[..., 7] >= 0.5
   phases = {
@@ -122,12 +123,20 @@ def contact_rows(rows: list[dict], condition: str, split: str, label: str,
     "release": c0 & ~c1,
     "flight": ~c0 & ~c1,
   }
+  if strength.ndim == soft.ndim - 1:
+    strength = strength[..., None].expand_as(soft)
+  elif strength.shape != soft.shape:
+    raise ValueError(
+      f"soil strength shape {tuple(strength.shape)} is incompatible with {tuple(soft.shape)}"
+    )
   strata = dict(phases)
   strata.update({
     "near_boundary": boundary.abs() < 0.08,
     "far_boundary": boundary.abs() >= 0.08,
     "soft_material": soft,
     "rigid_material": ~soft,
+    "soil_strength_low": soft & (strength < 0.8),
+    "soil_strength_high": soft & (strength >= 0.8),
   })
   force_target = target[..., :3]
   force_error = pred[..., :3] - force_target
@@ -162,6 +171,26 @@ def normalized_error(pred_s, pred_pose, target_s, target_pose, state_scale, pose
   ], -1).square().mean(-1)
 
 
+def component_error(pred_s, pred_pose, target_s, target_pose, state_scale, pose_scale,
+                    component: str):
+  if component == "base_pose_velocity":
+    slices = (st.Z, st.GRAV, st.V_YAW, st.W_B)
+    parts = [(pred_s[:, sl] - target_s[:, sl]) / state_scale[sl] for sl in slices]
+    parts.append((pred_pose - target_pose) / pose_scale)
+  elif component == "joints":
+    parts = [(pred_s[:, sl] - target_s[:, sl]) / state_scale[sl]
+             for sl in (st.Q, st.QD)]
+  elif component == "limbs":
+    parts = [(pred_s[:, sl] - target_s[:, sl]) / state_scale[sl]
+             for sl in (st.HIPS, st.KNEES, st.FEET)]
+  elif component == "soil_state":
+    parts = [(pred_s[:, sl] - target_s[:, sl]) / state_scale[sl]
+             for sl in (st.SOIL_MEMORY, st.SOIL_DISTANCE)]
+  else:
+    raise ValueError(f"unknown state component {component}")
+  return torch.cat(parts, -1).square().mean(-1)
+
+
 @torch.inference_mode()
 def analyze_one_step(rows: list[dict], condition: str, split: str, data: dict,
                      models: dict[str, torch.nn.Module], state_scale: torch.Tensor,
@@ -170,10 +199,11 @@ def analyze_one_step(rows: list[dict], condition: str, split: str, data: dict,
   valid = ~data["done"][ids]
   flat = {name: value[ids][valid] for name, value in data.items()
           if name not in {"done", "episode"}}
-  output: dict[str, list[torch.Tensor]] = {name: [] for name in (
-    "m1_error", "m2_error", "body_oracle_error", "body_oracle_current_error",
-    "z0_est", "z1_est", "z1_oracle_current",
-  )}
+  output: dict[str, list[torch.Tensor]] = {}
+  components = ("base_pose_velocity", "joints", "limbs", "soil_state")
+
+  def keep(name: str, value: torch.Tensor) -> None:
+    output.setdefault(name, []).append(value.detach().cpu())
   for lo in range(0, flat["state"].shape[0], batch_size):
     batch = {name: value[lo:lo + batch_size].to(device) for name, value in flat.items()}
     s, a, ap = batch["state"], batch["action"], batch["previous_action"]
@@ -187,17 +217,21 @@ def analyze_one_step(rows: list[dict], condition: str, split: str, data: dict,
       m2, s, batch["next_contact"], a, ap, xi, relief
     )
     oc_s, oc_pose, z1_oc = m2.step(s, batch["contact"], a, ap, xi, relief)
-    output["m1_error"].append(normalized_error(
-      m1_s, m1_pose, target_s, target_pose, state_scale, pose_scale).cpu())
-    output["m2_error"].append(normalized_error(
-      m2_s, m2_pose, target_s, target_pose, state_scale, pose_scale).cpu())
-    output["body_oracle_error"].append(normalized_error(
-      oracle_s, oracle_pose, target_s, target_pose, state_scale, pose_scale).cpu())
-    output["body_oracle_current_error"].append(normalized_error(
-      oc_s, oc_pose, target_s, target_pose, state_scale, pose_scale).cpu())
-    output["z0_est"].append(z0_est.cpu())
-    output["z1_est"].append(z1_est.cpu())
-    output["z1_oracle_current"].append(z1_oc.cpu())
+    paths = {
+      "m1": (m1_s, m1_pose),
+      "m2": (m2_s, m2_pose),
+      "body_oracle": (oracle_s, oracle_pose),
+      "body_oracle_current": (oc_s, oc_pose),
+    }
+    for key, (pred_s, pred_pose) in paths.items():
+      keep(f"{key}_error", normalized_error(
+        pred_s, pred_pose, target_s, target_pose, state_scale, pose_scale))
+      for component in components:
+        keep(f"{key}_{component}", component_error(
+          pred_s, pred_pose, target_s, target_pose, state_scale, pose_scale, component))
+    keep("z0_est", z0_est)
+    keep("z1_est", z1_est)
+    keep("z1_oracle_current", z1_oc)
   output = {name: torch.cat(values) for name, values in output.items()}
   for model, key in (("M1", "m1_error"), ("M2-v1", "m2_error"),
                      ("M2-v1/oracle-next-contact", "body_oracle_error"),
@@ -205,13 +239,23 @@ def analyze_one_step(rows: list[dict], condition: str, split: str, data: dict,
     append_row(rows, condition=condition, split=split, model=model,
                family="world_model", metric="one_step_common_normalized_mse",
                stratum="all", values=output[key])
+  for model, key in (("M1", "m1"), ("M2-v1", "m2"),
+                     ("M2-v1/oracle-next-contact", "body_oracle"),
+                     ("M2-v1/oracle-current-contact", "body_oracle_current")):
+    for component in components:
+      append_row(rows, condition=condition, split=split, model=model,
+                 family="world_model_component", metric="one_step_common_normalized_mse",
+                 stratum=component, values=output[f"{key}_{component}"])
   # Contact-estimator and transition attributions use identical physical samples.
   contact_rows(rows, condition, split, "M2-v1/initial-estimator", output["z0_est"],
-               flat["contact"], flat["contact"], flat["boundary_distance"], flat["soft_mask"])
+               flat["contact"], flat["contact"], flat["boundary_distance"],
+               flat["soft_mask"], flat["soil_strength"])
   contact_rows(rows, condition, split, "M2-v1/predicted-current", output["z1_est"],
-               flat["next_contact"], flat["contact"], flat["boundary_distance"], flat["soft_mask"])
+               flat["next_contact"], flat["contact"], flat["boundary_distance"],
+               flat["soft_mask"], flat["soil_strength"])
   contact_rows(rows, condition, split, "M2-v1/oracle-current", output["z1_oracle_current"],
-               flat["next_contact"], flat["contact"], flat["boundary_distance"], flat["soft_mask"])
+               flat["next_contact"], flat["contact"], flat["boundary_distance"],
+               flat["soft_mask"], flat["soil_strength"])
 
 
 @torch.inference_mode()
@@ -231,7 +275,8 @@ def analyze_recurrent_estimator(rows: list[dict], condition: str, split: str, da
   valid = ~data["done"][ids]
   contact_rows(rows, condition, split, "M2-v1/recurrent-estimator", pred[valid],
                data["contact"][ids][valid], data["contact"][ids][valid],
-               data["boundary_distance"][ids][valid], data["soft_mask"][ids][valid])
+               data["boundary_distance"][ids][valid], data["soft_mask"][ids][valid],
+               data["soil_strength"][ids][valid])
 
 
 @torch.inference_mode()
@@ -250,6 +295,7 @@ def analyze_horizons(rows: list[dict], condition: str, split: str, data: dict,
     env_index, time_index = valid_window.nonzero(as_tuple=True)
     for label, model in models.items():
       errors = []
+      contact_normal, contact_tangent, contact_memory, contact_incorrect = [], [], [], []
       for lo in range(0, env_index.numel(), batch_size):
         ei = env_index[lo:lo + batch_size]
         ti = time_index[lo:lo + batch_size]
@@ -271,9 +317,29 @@ def analyze_horizons(rows: list[dict], condition: str, split: str, data: dict,
             state, _ = model(state, a, ap, xi, relief)
         target = selected["next_state"][ei, ti + horizon - 1].to(device)
         errors.append(((state - target) / state_scale).square().mean(-1).cpu())
+        if isinstance(model, ContactStructuredWorldModel):
+          target_contact = selected["next_contact"][ei, ti + horizon - 1].to(device)
+          contact_normal.append((z[..., 2] - target_contact[..., 2]).abs().cpu())
+          contact_tangent.append(
+            (z[..., :2] - target_contact[..., :2]).norm(dim=-1).cpu()
+          )
+          contact_memory.append((z[..., 4] - target_contact[..., 4]).abs().cpu())
+          contact_incorrect.append(
+            ((z[..., 7] >= 0.5) != (target_contact[..., 7] >= 0.5)).float().cpu()
+          )
       append_row(rows, condition=condition, split=split, model=label,
                  family="world_model", metric="autoregressive_state_mse",
                  stratum=f"horizon_{horizon}", values=torch.cat(errors))
+      if contact_normal:
+        for metric, values in (
+          ("normal_absolute_error_n", contact_normal),
+          ("tangential_vector_error_n", contact_tangent),
+          ("loading_memory_absolute_error_m", contact_memory),
+          ("contact_incorrect", contact_incorrect),
+        ):
+          append_row(rows, condition=condition, split=split, model=label,
+                     family="contact_propagation", metric=metric,
+                     stratum=f"horizon_{horizon}", values=torch.cat(values))
 
 
 def main() -> None:

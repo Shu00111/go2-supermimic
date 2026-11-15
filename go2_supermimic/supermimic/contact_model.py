@@ -29,13 +29,15 @@ class ContactScales:
   """Fixed SI label scales; values are not learned from held-out data."""
 
   force_n: float = 150.0
+  normal_force_n: float | None = None
   intrusion_m: float = 0.08
   memory_m: float = 0.08
   tangential_velocity_mps: float = 1.0
 
   def tensor(self, ref: torch.Tensor) -> torch.Tensor:
+    normal = self.force_n if self.normal_force_n is None else self.normal_force_n
     return ref.new_tensor([
-      self.force_n, self.force_n, self.force_n, self.intrusion_m,
+      self.force_n, self.force_n, normal, self.intrusion_m,
       self.memory_m, self.tangential_velocity_mps,
       self.tangential_velocity_mps, 1.0,
     ])
@@ -68,9 +70,10 @@ def normalize_contact(z: torch.Tensor, scales: ContactScales = ContactScales()) 
 class PersistentContactEstimator(nn.Module):
   """Shared per-foot recurrent estimator with differentiable loading memory."""
 
-  def __init__(self, scales: ContactScales = ContactScales()):
+  def __init__(self, scales: ContactScales = ContactScales(), *, bounded_force: bool = True):
     super().__init__()
     self.scales = scales
+    self.bounded_force = bounded_force
     self.gru = nn.GRUCell(21, ESTIMATOR_HIDDEN)
     # force(3), intrusion proposal, retention, tangential velocity(2), contact logit
     self.head = nn.Linear(ESTIMATOR_HIDDEN, 8)
@@ -97,7 +100,8 @@ class PersistentContactEstimator(nn.Module):
     retention = raw[..., 4].sigmoid()
     # Soft contact gating keeps the BPTT path differentiable at touchdown.
     memory = probability * (intrusion + retention * F.relu(old_memory - intrusion))
-    force = probability[..., None] * self.scales.force_n * torch.tanh(raw[..., :3])
+    force_code = torch.tanh(raw[..., :3]) if self.bounded_force else raw[..., :3]
+    force = probability[..., None] * self.scales.tensor(raw)[:3] * force_code
     tangent = probability[..., None] * self.scales.tangential_velocity_mps * torch.tanh(
       raw[..., 5:7]
     )
@@ -188,7 +192,9 @@ class ContactStructuredWorldModel(nn.Module):
     self.out_norm.update(torch.cat([s_next - s, pose_delta], -1))
 
   def loss(self, s0, actions, actions_prev, xi, reliefs, s_targets, pose_targets, valid,
-           contact_targets: torch.Tensor | None = None):
+           contact_targets: torch.Tensor | None = None,
+           contact_initial: torch.Tensor | None = None):
+    del contact_initial  # M2-v1 intentionally preserves the historical objective.
     z, _ = self.initial_contact(s0, actions_prev[:, 0])
     s = s0
     scale = self.out_norm.std()
@@ -211,6 +217,125 @@ class ContactStructuredWorldModel(nn.Module):
         contact_total = contact_total + ((physical + classification) * valid[:, j]).sum()
       s = s_pred
     return body_total / denom + contact_total / denom
+
+
+class ContactStructuredWorldModelV2(ContactStructuredWorldModel):
+  """M2-v2: physically anchored contact channels with stable loading memory.
+
+  The ordinary predicted-contact rollout remains the primary path. During
+  world-model fitting, an auxiliary teacher-forced path makes the contact
+  transition and body predictor numerically compatible with their physical SI
+  labels. Oracle values are never used by ``forward``/``step`` or policy input.
+  """
+
+  def __init__(
+    self,
+    hidden: tuple[int, ...] = (1024, 1024, 1024),
+    foot_hidden: tuple[int, ...] = (128, 128),
+    *,
+    use_loading_memory: bool = True,
+    anchor_weight: float = 0.25,
+    scales: ContactScales = ContactScales(force_n=150.0, normal_force_n=300.0),
+  ):
+    if anchor_weight < 0:
+      raise ValueError("anchor_weight must be non-negative")
+    estimator = PersistentContactEstimator(scales, bounded_force=False)
+    super().__init__(hidden, foot_hidden, estimator, use_loading_memory)
+    self.anchor_weight = float(anchor_weight)
+
+  def _decode_transition(self, raw: torch.Tensor, old: torch.Tensor) -> torch.Tensor:
+    probability = raw[..., 7].sigmoid()
+    force = probability[..., None] * self.scales.tensor(raw)[:3] * raw[..., :3]
+    intrusion_proposal = self.scales.intrusion_m * raw[..., 3].sigmoid()
+    intrusion = probability * intrusion_proposal
+    retention = raw[..., 4].sigmoid()
+    # Loading memory is the retained maximum intrusion along the current
+    # contact path. Contact probability differentiably resets it at release.
+    memory = probability * (
+      intrusion_proposal + retention * F.relu(old[..., 4] - intrusion_proposal)
+    )
+    tangent = probability[..., None] * self.scales.tangential_velocity_mps * torch.tanh(
+      raw[..., 5:7]
+    )
+    return torch.cat([force, intrusion[..., None], memory[..., None], tangent,
+                      probability[..., None]], -1)
+
+  def _predict_contact(self, s, z, a, xi):
+    z = self._memory_contract(z)
+    local = per_foot_observables(s, a)
+    xi_foot = xi[:, None].expand(-1, NUM_FEET, -1)
+    raw = self.contact_transition(torch.cat([local, normalize_contact(z, self.scales), xi_foot], -1))
+    return self._memory_contract(self._decode_transition(raw, z))
+
+  def _predict_body(self, s, z_next, a, a_prev, xi, relief):
+    base = self._base_inputs(s, a, a_prev, xi, relief)
+    y = self.out_norm.unnormalize(self.body(torch.cat([
+      self.in_norm(base), normalize_contact(z_next, self.scales).reshape(s.shape[0], -1)
+    ], -1)))
+    return s + y[:, :st.STATE_DIM], y[:, st.STATE_DIM:]
+
+  def step(self, s, z, a, a_prev, xi, relief):
+    z_next = self._predict_contact(s, z, a, xi)
+    s_next, pose_delta = self._predict_body(s, z_next, a, a_prev, xi, relief)
+    return s_next, pose_delta, z_next
+
+  def _contact_loss(self, pred: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
+    physical = F.smooth_l1_loss(
+      normalize_contact(pred, self.scales)[..., :7],
+      normalize_contact(target, self.scales)[..., :7], reduction="none",
+    ).mean((-1, -2))
+    classification = F.binary_cross_entropy(
+      pred[..., 7].clamp(1e-6, 1 - 1e-6), target[..., 7], reduction="none"
+    ).mean(-1)
+    return physical + classification
+
+  def loss(self, s0, actions, actions_prev, xi, reliefs, s_targets, pose_targets, valid,
+           contact_targets: torch.Tensor | None = None,
+           contact_initial: torch.Tensor | None = None):
+    z, _ = self.initial_contact(s0, actions_prev[:, 0])
+    s = s0
+    scale = self.out_norm.std()
+    denom = valid.sum().clamp_min(1.0)
+    body_total = s.new_zeros(())
+    contact_total = s.new_zeros(())
+    anchor_total = s.new_zeros(())
+    if self.anchor_weight and (contact_targets is None or contact_initial is None):
+      raise ValueError("M2-v2 anchoring requires initial and next oracle contact labels")
+    oracle_current = (
+      self._memory_contract(contact_initial.reshape(-1, NUM_FEET, CONTACT_DIM))
+      if contact_initial is not None else None
+    )
+    for j in range(actions.shape[1]):
+      s_pred, pose_pred, z = self.step(
+        s, z, actions[:, j], actions_prev[:, j], xi, reliefs[:, j]
+      )
+      err = torch.cat([s_pred - s_targets[:, j], pose_pred - pose_targets[:, j]], -1)
+      weight = valid[:, j]
+      body_total = body_total + ((err / scale) ** 2).mean(-1).mul(weight).sum()
+      target = None
+      if contact_targets is not None:
+        target = self._memory_contract(
+          contact_targets[:, j].reshape(-1, NUM_FEET, CONTACT_DIM)
+        )
+        contact_total = contact_total + (self._contact_loss(z, target) * weight).sum()
+      if self.anchor_weight:
+        teacher_s = s0 if j == 0 else s_targets[:, j - 1]
+        oracle_transition = self._predict_contact(
+          teacher_s, oracle_current, actions[:, j], xi
+        )
+        oracle_body, oracle_pose = self._predict_body(
+          teacher_s, target, actions[:, j], actions_prev[:, j], xi, reliefs[:, j]
+        )
+        oracle_err = torch.cat([
+          oracle_body - s_targets[:, j], oracle_pose - pose_targets[:, j]
+        ], -1)
+        auxiliary = ((oracle_err / scale) ** 2).mean(-1) + self._contact_loss(
+          oracle_transition, target
+        )
+        anchor_total = anchor_total + (auxiliary * weight).sum()
+        oracle_current = target
+      s = s_pred
+    return (body_total + contact_total + self.anchor_weight * anchor_total) / denom
 
 
 def count_parameters(module: nn.Module) -> int:

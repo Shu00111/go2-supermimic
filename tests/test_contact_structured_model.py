@@ -7,6 +7,7 @@ from go2_supermimic.supermimic.contact_model import (
   ESTIMATOR_STATE_DIM,
   NUM_FEET,
   ContactStructuredWorldModel,
+  ContactStructuredWorldModelV2,
   PersistentContactEstimator,
   per_foot_observables,
 )
@@ -123,3 +124,51 @@ def test_no_memory_ablation_masks_loading_state_in_estimation_and_transition():
   z[..., 4] = 100.0  # stale/external memory must not leak into the A1 path
   _, _, z1 = model.step(s, z, a, a, xi, relief)
   assert z1[..., 4].count_nonzero() == 0
+
+
+def test_m2_v2_force_is_not_clipped_and_memory_matches_estimator_contract():
+  model = ContactStructuredWorldModelV2((32,), (16,), anchor_weight=0.0)
+  raw = torch.zeros(1, NUM_FEET, CONTACT_DIM)
+  raw[..., 2] = 2.0
+  raw[..., 3] = 0.0  # intrusion proposal = 0.04 m
+  raw[..., 4] = 0.0  # retention = 0.5
+  raw[..., 7] = 20.0  # contact probability ~= 1
+  old = torch.zeros_like(raw)
+  old[..., 4] = 0.06
+  decoded = model._decode_transition(raw, old)
+  # A 2-sigma normal prediction is 600 N, not clipped to the v1 150 N ceiling.
+  assert torch.all(decoded[..., 2] > 599.0)
+  # intrusion + retention * max(old_memory - intrusion, 0) = 0.05 m.
+  torch.testing.assert_close(decoded[..., 4], torch.full_like(decoded[..., 4], 0.05),
+                             atol=1e-6, rtol=1e-6)
+
+
+def test_m2_v2_anchored_loss_is_finite_and_requires_oracle_initial_only_for_training():
+  s, a, xi, relief = batch(2)
+  k = 3
+  model = ContactStructuredWorldModelV2((32, 32), (16,))
+  actions = a[:, None].expand(-1, k, -1).clone()
+  targets = s[:, None].expand(-1, k, -1).clone()
+  poses = torch.zeros(2, k, st.POSE_DELTA_DIM)
+  contacts = torch.zeros(2, k, NUM_FEET, CONTACT_DIM)
+  initial = torch.zeros(2, NUM_FEET, CONTACT_DIM)
+  valid = torch.ones(2, k)
+  with torch.no_grad():
+    # Deployment path has no oracle argument.
+    state, pose = model(s, a, a, xi, relief)
+    assert state.shape == s.shape and pose.shape == (2, st.POSE_DELTA_DIM)
+  loss = model.loss(
+    s, actions, actions, xi, relief[:, None].expand(-1, k, -1),
+    targets, poses, valid, contacts, initial,
+  )
+  loss.backward()
+  assert torch.isfinite(loss)
+  assert any(p.grad is not None and torch.isfinite(p.grad).all() for p in model.parameters())
+  with torch.no_grad():
+    try:
+      model.loss(s, actions, actions, xi, relief[:, None].expand(-1, k, -1),
+                 targets, poses, valid, contacts, None)
+    except ValueError as exc:
+      assert "anchoring requires" in str(exc)
+    else:
+      raise AssertionError("anchored training accepted missing initial contact labels")

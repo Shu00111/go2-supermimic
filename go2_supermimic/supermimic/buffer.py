@@ -108,7 +108,9 @@ class ReplayBuffer:
     self.ptr, self.size = int(state["ptr"]), int(state["size"])
 
 
-WINDOW_KEYS = ("s", "pose", "a", "a_prev", "xi", "valid", "relief", "contact")
+WINDOW_KEYS = (
+  "s", "pose", "a", "a_prev", "xi", "valid", "relief", "contact_initial", "contact"
+)
 
 
 class WindowArchive:
@@ -123,6 +125,7 @@ class WindowArchive:
       "s": z(k + 1, st.STATE_DIM), "pose": z(k + 1, 3), "a": z(k, st.NUM_JOINTS),
       "a_prev": z(k, st.NUM_JOINTS), "xi": z(context_dim), "valid": z(k),
       "relief": torch.zeros(capacity, k, SCAN_POINTS, device=device, dtype=torch.float16),
+      "contact_initial": z(CONTACT_STATE_DIM),
       "contact": z(k, CONTACT_STATE_DIM),
     }
     self.ptr = 0
@@ -144,13 +147,17 @@ class WindowArchive:
     return {k: v[idx] for k, v in self.data.items()}
 
   def state_dict(self) -> dict:
-    return {"schema": 1, "capacity": self.cap, "ptr": self.ptr, "size": self.size,
+    return {"schema": 2, "capacity": self.cap, "ptr": self.ptr, "size": self.size,
             "data": self.data}
 
   def load_state_dict(self, state: dict) -> None:
-    if state.get("schema") != 1 or state.get("capacity") != self.cap:
+    schema = state.get("schema")
+    if schema not in (1, 2) or state.get("capacity") != self.cap:
       raise ValueError("window-archive schema or capacity mismatch")
     for name, target in self.data.items():
+      if name == "contact_initial" and schema == 1:
+        target.zero_()
+        continue
       source = state["data"][name]
       if target.shape != source.shape:
         raise ValueError(f"window-archive {name} shape mismatch")

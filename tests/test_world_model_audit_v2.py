@@ -34,7 +34,7 @@ def synthetic_data(environments=10, steps=4):
     "next_contact": torch.randn(environments, steps, 4, 8),
     "done": torch.zeros(environments, steps, dtype=torch.bool),
     "episode": torch.zeros(environments, steps, dtype=torch.int32),
-    "soil_strength": torch.ones(environments, steps),
+    "soil_strength": torch.ones(environments, steps, 4),
     "boundary_distance": torch.randn(environments, steps, 4),
     "soft_mask": torch.rand(environments, steps, 4) > 0.5,
   }
