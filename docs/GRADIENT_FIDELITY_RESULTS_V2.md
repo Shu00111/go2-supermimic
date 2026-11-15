@@ -184,6 +184,13 @@ cosine, -0.100 relative error, and +0.138 sign agreement. This strengthens the
 rigid-stable directional result, while the phase-stratified study is still
 incomplete.
 
+The first rigid aerial H=32 sample had zero replay error and no detected
+contact/constraint discontinuity, but all 12 coordinates were censored: the
+smallest-epsilon objective signals were below the conservative float32 signal
+floor, and two coordinates also changed sign. No M1/M2 score is reported for
+this sample; near-zero physical gradients are not converted into misleading
+cosine or relative-error values.
+
 ## Gate status and limitations
 
 P0 Gate A passes only for isolated, single-environment CPU replay. GPU replay
