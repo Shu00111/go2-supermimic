@@ -14,6 +14,7 @@ import hashlib
 import json
 import subprocess
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -111,8 +112,9 @@ def main() -> None:
     "boundary_distance", "soft_mask",
   )}
 
+  started = time.monotonic()
   with torch.inference_mode():
-    for _ in range(args.steps):
+    for step in range(args.steps):
       s0 = st.robot_state(env, field=field)
       pose0 = st.planar_pose(env)
       relief = tr.relief(pose0[:, :2], pose0[:, 2], field, term.obstacle_layout)
@@ -147,6 +149,17 @@ def main() -> None:
       previous_action = torch.where(done[:, None], torch.zeros_like(action), action)
       episode = episode + done.to(episode.dtype)
       obs = obs_next
+      if (step + 1) % 64 == 0 or step + 1 == args.steps:
+        elapsed = time.monotonic() - started
+        print(json.dumps({
+          "event": "collection_progress",
+          "condition": args.condition,
+          "step": step + 1,
+          "steps": args.steps,
+          "elapsed_s": round(elapsed, 3),
+          "environment_steps_per_s": round(args.num_envs * (step + 1) / elapsed, 3),
+          "completed_episodes": int(episode.sum().item()),
+        }), flush=True)
 
   env.close()
   # Environment-major layout keeps each complete trajectory contiguous.
