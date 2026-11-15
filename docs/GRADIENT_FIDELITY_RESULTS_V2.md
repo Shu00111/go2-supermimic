@@ -191,6 +191,13 @@ floor, and two coordinates also changed sign. No M1/M2 score is reported for
 this sample; near-zero physical gradients are not converted into misleading
 cosine or relative-error values.
 
+The soft-terrain touchdown H=32 sample was also fully censored, for the
+opposite reason: every coordinate crossed a MuJoCo constraint/contact-set
+boundary between at least one paired branch, all coordinates failed epsilon
+convergence, and six changed sign. The gradient norms grew from 1.50 at
+epsilon 0.01 to 6.86 at epsilon 0.001. This is an explicitly nonsmooth contact
+event, so no ordinary local derivative or M1/M2 fidelity score is claimed.
+
 ## Gate status and limitations
 
 P0 Gate A passes only for isolated, single-environment CPU replay. GPU replay
