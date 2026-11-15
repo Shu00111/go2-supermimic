@@ -198,6 +198,11 @@ convergence, and six changed sign. The gradient norms grew from 1.50 at
 epsilon 0.01 to 6.86 at epsilon 0.001. This is an explicitly nonsmooth contact
 event, so no ordinary local derivative or M1/M2 fidelity score is claimed.
 
+The soft-terrain liftoff H=32 sample was likewise fully censored: all 12
+coordinates crossed a constraint/contact-set boundary, nine changed sign, and
+none passed epsilon convergence. This phase is recorded as a nonsmooth-event
+failure rather than forced into an ordinary-gradient comparison.
+
 ## Gate status and limitations
 
 P0 Gate A passes only for isolated, single-environment CPU replay. GPU replay
