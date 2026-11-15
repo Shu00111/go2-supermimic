@@ -104,7 +104,7 @@ The learned endpoint value from the training objective is explicitly excluded
 from `J_R`, because it has no equivalent physical-ground-truth evaluation. It
 will be reported separately rather than mixed into the gradient comparison.
 The shared evaluator and open-loop BPTT rollout are covered by the regression
-suite; the full suite now has 53 passing tests.
+suite; the full suite now has 54 passing tests.
 
 The isolated CPU finite-difference runner is implemented in
 `scripts/measure_physical_gradient.py`. A two-step soft-contact smoke test had
@@ -132,6 +132,16 @@ can recover a stable local derivative away from the problematic long-horizon
 soft-contact rollout. Shorter-horizon localization is in progress before any
 M1/M2 comparison is attempted.
 
+The localization sweep found a monotonic loss of usable soft-contact
+coordinates as the horizon grows: 5/12 at H=2, 2/12 at H=4, 0/12 at H=8, and
+0/12 at H=32. Sign flips increased from 0 at H=2 to 3 at H=4 and 8 at H=8.
+No tested branch changed the recorded terminal, coarse foot/material mode,
+MuJoCo constraint counts, or complete contact-set identity. Thus the censor is
+not hiding an obvious discrete contact transition; sensitivity is accumulating
+within an unchanged contact topology. The required H=32 soft-stable physical
+gradient remains mathematically unusable, while shorter horizons are retained
+only to localize the failure mechanism.
+
 ## Gate status and limitations
 
 P0 Gate A passes only for isolated, single-environment CPU replay. GPU replay
@@ -139,7 +149,8 @@ remains useful for training but cannot define physical gradient truth around
 mixed contact. This backend choice is a measured engineering constraint, not a
 claim that CPU and CUDA trajectories are numerically identical to one another.
 
-Finite-difference convergence at epsilon 0.01, 0.003, and 0.001, perturbation
-signal-to-replay-noise checks, discontinuity censoring, and paired M1/M2 World
-Model gradient comparisons remain **NOT RUN** at this checkpoint. The common
-objective and BPTT execution path are frozen, but this is not a Gate B pass.
+Finite-difference convergence at epsilon 0.01, 0.003, and 0.001 is now
+characterized for one soft-stable state, including replay-noise and
+discontinuity censoring. Phase-stratified sampling and paired M1/M2 World Model
+gradient comparisons remain **NOT RUN** at this checkpoint. This is not a Gate
+B pass.
