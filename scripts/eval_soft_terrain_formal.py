@@ -28,7 +28,10 @@ import go2_supermimic.env  # noqa: F401
 from go2_supermimic.supermimic import state as st
 from go2_supermimic.supermimic.train import Actor
 from go2_supermimic.supermimic.contact_labels import oracle_contact_state
-from go2_supermimic.supermimic.contact_model import ContactStructuredWorldModel
+from go2_supermimic.supermimic.contact_model import (
+  ContactStructuredWorldModel,
+  ContactStructuredWorldModelV2,
+)
 from go2_supermimic.supermimic.world_model import WorldModel
 from go2_supermimic.target import terrain as tr
 from mjlab.envs import ManagerBasedRlEnv
@@ -104,7 +107,10 @@ def stats(values: list[float]) -> dict[str, float | int | None]:
 def main() -> None:
   parser = argparse.ArgumentParser()
   parser.add_argument(
-    "--method", choices=("B0", "B1", "M1", "M2", "A0", "A1", "A2", "A3"),
+    "--method", choices=(
+      "B0", "B1", "M1", "M2", "M2_V1", "M2_V2", "M2_V2_NOMEMORY", "M3",
+      "A0", "A1", "A2", "A3",
+    ),
     required=True,
   )
   parser.add_argument("--condition", choices=tuple(CONDITIONS), required=True)
@@ -165,6 +171,11 @@ def main() -> None:
     wm = ContactStructuredWorldModel(
       tuple(wm_ckpt["cfg"]["wm_hidden"]),
       use_loading_memory=checkpoint_method == "m2",
+    ).to(dev)
+  elif checkpoint_method in {"m2_v2", "m2_v2_nomemory"}:
+    wm = ContactStructuredWorldModelV2(
+      tuple(wm_ckpt["cfg"]["wm_hidden"]),
+      use_loading_memory=checkpoint_method == "m2_v2",
     ).to(dev)
   else:
     wm = WorldModel(tuple(wm_ckpt["cfg"]["wm_hidden"])).to(dev)

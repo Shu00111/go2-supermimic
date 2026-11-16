@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "training_seeds": [
+    14011
+  ],
+  "evaluation_seeds": [
+    90101,
+    90103,
+    90107
+  ],
+  "episodes_per_method_condition": 384,
+  "methods": [
+    "M1",
+    "M2_V1",
+    "M2_V2",
+    "M2_V2_NOMEMORY",
+    "M3"
+  ],
+  "conditions": [
+    "rigid_rough_ood",
+    "soft_strength_ood",
+    "hard_to_soft_ood",
+    "soft_to_hard_ood",
+    "initial_state_ood",
+    "command_ood"
+  ],
+  "aggregate": "/home/yiwei/Documents/ChatGPT/go2-supermimic-v2/outputs/contact_structured_supermimic/formal_v2/evaluation/stage4_seed14011_v2/aggregate.csv",
+  "per_evaluation_seed": "/home/yiwei/Documents/ChatGPT/go2-supermimic-v2/outputs/contact_structured_supermimic/formal_v2/evaluation/stage4_seed14011_v2/per_evaluation_seed.csv",
+  "paired_vs_m1": "/home/yiwei/Documents/ChatGPT/go2-supermimic-v2/outputs/contact_structured_supermimic/formal_v2/evaluation/stage4_seed14011_v2/paired_vs_m1.csv",
+  "paired_all_methods": "/home/yiwei/Documents/ChatGPT/go2-supermimic-v2/outputs/contact_structured_supermimic/formal_v2/evaluation/stage4_seed14011_v2/paired_all_methods.csv",
+  "overview_figure": "/home/yiwei/Documents/ChatGPT/go2-supermimic-v2/outputs/contact_structured_supermimic/formal_v2/evaluation/stage4_seed14011_v2/stage4_v2_comparison.png",
+  "contact_figure": "/home/yiwei/Documents/ChatGPT/go2-supermimic-v2/outputs/contact_structured_supermimic/formal_v2/evaluation/stage4_seed14011_v2/stage4_v2_contact_diagnostics.png",
+  "inference_limit": "Intervals and paired tests quantify episode/evaluation-seed variation for one training seed; they do not estimate across-training-seed uncertainty."
+}

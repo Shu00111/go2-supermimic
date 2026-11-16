@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "manifest": "experiments/held_out_manifest.json",
+  "manifest_version": "rss2027-stage4-v1",
+  "scope_decision": "User accepted the currently complete training scope on 2026-11-16; Stage 4 uses the one training seed with complete matched coverage of all methods.",
+  "training_seeds": [
+    14011
+  ],
+  "evaluation_seeds": [
+    90101,
+    90103,
+    90107
+  ],
+  "episodes_per_method_condition_seed": 128,
+  "checkpoint_selection": "final Stage-3 model_12000; no Stage-4 selection",
+  "methods": {
+    "M1": {
+      "checkpoint": "/home/yiwei/Documents/ChatGPT/go2-supermimic-v2/outputs/contact_structured_supermimic/formal_v2/training/seed14011/m1/stage3/m1-seed14011-stage3-segment7-Go2-Chase-AlternatingMaterial-Scan/2026-11-16_02-58-25_m1/model_12000.pt",
+      "sha256": "b3a76b694c7ddad1e5897ceeaa01040b3b2587a11143f36fd7a324813f658179"
+    },
+    "M2_V1": {
+      "checkpoint": "/home/yiwei/Documents/ChatGPT/go2-supermimic-v2/outputs/contact_structured_supermimic/formal_v2/training/seed14011/m2/stage3/m2-seed14011-stage3-segment7-Go2-Chase-AlternatingMaterial-Scan/2026-11-16_04-43-08_m2/model_12000.pt",
+      "sha256": "9c6c4436aa59f435ef70f5b38b5176fd36b14ec8f3b3b27502818020de7cc9f3"
+    },
+    "M2_V2": {
+      "checkpoint": "/home/yiwei/Documents/ChatGPT/go2-supermimic-v2/outputs/contact_structured_supermimic/formal_v2/training/seed14011/m2_v2/stage3/m2_v2-seed14011-stage3-segment7-Go2-Chase-AlternatingMaterial-Scan/2026-11-16_06-47-20_m2-v2/model_12000.pt",
+      "sha256": "3d322d8f7ffe68f50f5b6f5573dd48af8dc8dd15220b4446802691469f117c19"
+    },
+    "M2_V2_NOMEMORY": {
+      "checkpoint": "/home/yiwei/Documents/ChatGPT/go2-supermimic-v2/outputs/contact_structured_supermimic/formal_v2/training/seed14011/m2_v2_nomemory/stage3/m2_v2_nomemory-seed14011-stage3-segment7-Go2-Chase-AlternatingMaterial-Scan/2026-11-16_08-54-13_m2-v2-no-memory/model_12000.pt",
+      "sha256": "023b0eed06eb5d8bfb31f3e76c504ea6cd0ea3ae861e3839e4cfc3c49326cbee"
+    },
+    "M3": {
+      "checkpoint": "/home/yiwei/Documents/ChatGPT/go2-supermimic-v2/outputs/contact_structured_supermimic/formal_v2/training/seed14011/m3/stage3/m3-seed14011-stage3-segment7-Go2-Chase-AlternatingMaterial-Scan/2026-11-16_10-32-05_m3-capacity/model_12000.pt",
+      "sha256": "ce0fd2f4158b4fc381fe98a21fdcfcd781db1d583b5c6323812746ab236d5455"
+    }
+  },
+  "conditions": {
+    "rigid_rough_ood": {
+      "task": "Go2-Chase-Terrain",
+      "soil_scale": null
+    },
+    "soft_strength_ood": {
+      "task": "Go2-Chase-RoughSoftTerrain",
+      "soil_scale": 1.2
+    },
+    "hard_to_soft_ood": {
+      "task": "Go2-Chase-SoftTransition-Scan",
+      "soil_scale": 0.2
+    },
+    "soft_to_hard_ood": {
+      "task": "Go2-Chase-SoftToHard-Scan",
+      "soil_scale": 1.2
+    },
+    "initial_state_ood": {
+      "task": "Go2-Chase-AlternatingMaterial-Scan",
+      "soil_scale": 1.2
+    },
+    "command_ood": {
+      "task": "Go2-Chase-AlternatingMaterial-Scan",
+      "soil_scale": 0.2
+    }
+  },
+  "limitations": [
+    "Across-training-seed uncertainty cannot be estimated from one complete seed.",
+    "Incomplete seed24017 methods are preserved but excluded from formal comparisons."
+  ]
+}
