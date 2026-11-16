@@ -88,7 +88,10 @@ diagnosis, not a population-level performance claim.
   across-training-seed uncertainty unavailable.
 - Checkpoint/source hashes and raw artifacts: **RECORDED**.
 - Representative videos: **NOT RUN**; no claim relies on fabricated media.
-- GitHub publication: **pending final test, commit, and push**.
+- Regression suite: **COMPLETE**, 66 tests passed (one upstream deprecation
+  warning).
+- GitHub publication: **COMPLETE** on
+  `research/contact-structured-supermimic-v2`.
 
 ## Artifact index
 
