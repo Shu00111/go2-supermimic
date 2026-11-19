@@ -17,3 +17,5 @@ outputs/
 *.pt
 !weights/*.pt
 *.mp4
+handoff/
+*.tar.zst
