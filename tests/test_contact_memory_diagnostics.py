@@ -12,6 +12,7 @@ from go2_supermimic.supermimic.contact_model import (
   CONTACT_DIM, NUM_FEET, ContactStructuredWorldModelV2,
 )
 from go2_supermimic.target.terrain import SCAN_POINTS
+from scripts.run_exact_actor_bptt import MemoryIntervention
 
 
 def test_backward_only_memory_cut_preserves_forward_and_other_channel_gradients():
@@ -62,3 +63,22 @@ def test_detach_loading_memory_keeps_values_and_shape():
   detached = detach_loading_memory(z)
   torch.testing.assert_close(detached, z)
   assert detached.shape == z.shape
+
+
+def test_actor_bptt_memory_intervention_is_forward_exact_and_resets_counter():
+  torch.manual_seed(9)
+  model = ContactStructuredWorldModelV2((16,), (8,), anchor_weight=0.0)
+  wrapped = MemoryIntervention(model, 1)
+  s = torch.randn(1, st.STATE_DIM) * 0.01
+  a = torch.randn(1, st.NUM_JOINTS) * 0.01
+  xi = torch.zeros(1, st.CONTEXT_DIM)
+  relief = torch.zeros(1, SCAN_POINTS)
+  z, _ = wrapped.initial_contact(s, a)
+  assert wrapped.step_index == 0
+  regular = model.step(s, z, a, a, xi, relief)
+  intervened = wrapped.step(s, z, a, a, xi, relief)
+  for left, right in zip(regular, intervened):
+    torch.testing.assert_close(left, right, rtol=0, atol=0)
+  assert wrapped.step_index == 1
+  wrapped.initial_contact(s, a)
+  assert wrapped.step_index == 0

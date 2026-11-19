@@ -76,7 +76,8 @@ def safe_cosine(a: torch.Tensor, b: torch.Tensor, eps: float = 1e-15) -> float:
   denom = a.norm() * b.norm()
   if not torch.isfinite(denom) or denom <= eps:
     return float("nan")
-  return float(torch.dot(a, b) / denom)
+  # Roundoff in float32 can otherwise report impossible values such as 1.00002.
+  return float((torch.dot(a, b) / denom).clamp(-1.0, 1.0))
 
 
 @dataclass(frozen=True)
