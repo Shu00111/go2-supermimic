@@ -1,0 +1,4 @@
+method,phase,sample,spectral_norm,jvp_vjp_relative_error,precision,nonfinite_count,evidence_class
+M1,synthetic_smooth_stance,0,1.0531970831421593,2.453148978021157e-16,float64,0,UNTRAINED_MODEL_SMOKE_TEST
+M2-v2,synthetic_smooth_stance,0,57.79418649618502,4.531582494555e-16,float64,0,UNTRAINED_MODEL_SMOKE_TEST
+No-Memory,synthetic_smooth_stance,0,40.655498788535155,5.130458383332963e-16,float64,0,UNTRAINED_MODEL_SMOKE_TEST

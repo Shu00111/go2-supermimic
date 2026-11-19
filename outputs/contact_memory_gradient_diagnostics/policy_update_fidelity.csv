@@ -1,0 +1,2 @@
+status,reason
+BLOCKED — REQUIRES VALIDATED LINUX BACKEND,"no frozen checkpoint bytes, paired snapshots, or validated full-state restore adapter"
