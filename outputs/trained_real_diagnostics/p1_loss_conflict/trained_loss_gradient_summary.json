@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "status": "PASS",
+  "horizon": 4,
+  "conditions": [
+    "rigid_rough",
+    "soft_rough"
+  ],
+  "partitions": [
+    "train",
+    "development"
+  ],
+  "trajectories_per_stratum": 2,
+  "transitions_per_stratum": 8,
+  "dtype": "float64",
+  "device": "cpu",
+  "runtime_seconds": 12.333606055006385,
+  "negative_cosine_frequency_off_diagonal": 0.30357142857142855,
+  "minimum_off_diagonal_cosine": -0.514898102899764,
+  "maximum_decomposition_error": 1.4210854715202004e-14,
+  "exact_objective_receipts": [
+    {
+      "condition": "rigid_rough",
+      "partition": "train",
+      "exact_loss": 56.29839019638306,
+      "decomposition_error": 7.105427357601002e-15,
+      "trajectories": 2,
+      "transitions": 8
+    },
+    {
+      "condition": "rigid_rough",
+      "partition": "development",
+      "exact_loss": 78.61033477937103,
+      "decomposition_error": 1.4210854715202004e-14,
+      "trajectories": 2,
+      "transitions": 8
+    },
+    {
+      "condition": "soft_rough",
+      "partition": "train",
+      "exact_loss": 72.58209343278016,
+      "decomposition_error": 0.0,
+      "trajectories": 2,
+      "transitions": 8
+    },
+    {
+      "condition": "soft_rough",
+      "partition": "development",
+      "exact_loss": 76.46061232487273,
+      "decomposition_error": 1.4210854715202004e-14,
+      "trajectories": 2,
+      "transitions": 8
+    }
+  ],
+  "evidence_class": "final-checkpoint local optimization landscape; not historical training gradients"
+}

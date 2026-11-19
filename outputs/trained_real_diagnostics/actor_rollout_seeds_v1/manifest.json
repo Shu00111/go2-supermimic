@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "status": "PASS",
+  "criterion": "bitwise equality for every replay tensor",
+  "checkpoint_sha256": {
+    "m1": "b3a76b694c7ddad1e5897ceeaa01040b3b2587a11143f36fd7a324813f658179",
+    "m2_v2": "3d322d8f7ffe68f50f5b6f5573dd48af8dc8dd15220b4446802691469f117c19",
+    "m2_v2_nomemory": "023b0eed06eb5d8bfb31f3e76c504ea6cd0ea3ae861e3839e4cfc3c49326cbee"
+  },
+  "files": [
+    {
+      "scenario": "rigid_stable_stance",
+      "task": "Go2-Chase-Flat-Scan",
+      "seed": 82001,
+      "horizon": 8,
+      "path": "rigid_stable_stance_seed82001.pt",
+      "sha256": "6e3c60b1422d7ea2c14c62d3afd92c4591dc088bec2199adac54b0c9ed40b757",
+      "size_bytes": 61134,
+      "status": "PASS",
+      "bitwise_exact": true,
+      "max_abs_error": {
+        "qpos": 0.0,
+        "qvel": 0.0,
+        "state": 0.0,
+        "pose": 0.0,
+        "observation": 0.0,
+        "generator": 0.0,
+        "reward": 0.0,
+        "terminated": 0.0,
+        "truncated": 0.0
+      },
+      "observation_width": 735,
+      "physical_frames": 8,
+      "finite_rewards": true
+    },
+    {
+      "scenario": "soft_stable_stance",
+      "task": "Go2-Chase-SoftTerrain-Scan",
+      "seed": 82011,
+      "horizon": 8,
+      "path": "soft_stable_stance_seed82011.pt",
+      "sha256": "492bcdfb608097ffd38d1b1258c29a1db1889678b60c2b63114c036dfae761ec",
+      "size_bytes": 64973,
+      "status": "PASS",
+      "bitwise_exact": true,
+      "max_abs_error": {
+        "qpos": 0.0,
+        "qvel": 0.0,
+        "state": 0.0,
+        "pose": 0.0,
+        "observation": 0.0,
+        "generator": 0.0,
+        "reward": 0.0,
+        "terminated": 0.0,
+        "truncated": 0.0,
+        "rft_plastic_depth": 0.0,
+        "rft_plastic_position": 0.0,
+        "rft_plastic_surface_z": 0.0,
+        "rft_signed_distance": 0.0,
+        "rft_soft_mask": 0.0,
+        "rft_force": 0.0
+      },
+      "observation_width": 735,
+      "physical_frames": 8,
+      "finite_rewards": true
+    }
+  ]
+}
