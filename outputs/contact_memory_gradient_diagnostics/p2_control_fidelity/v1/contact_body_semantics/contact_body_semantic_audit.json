@@ -1,0 +1,148 @@
+{
+  "schema": 1,
+  "status": "PASS",
+  "source_sha": "c17bb8d2aac4e71cfd41887c9a73420c340f19f2",
+  "checkpoint_sha256": "3d322d8f7ffe68f50f5b6f5573dd48af8dc8dd15220b4446802691469f117c19",
+  "dataset_sha256": {
+    "rigid_rough": "474807cbef7a82c8ce53066478c3b844d11561be16fc17a8bf8e8595e5e792ee",
+    "soft_rough": "eefefdc166781ed87b002c6ab0b7fdc64ab97681d4f0e9d5adf58f87a422afa3"
+  },
+  "split": "development only",
+  "stride": 16,
+  "rows": [
+    {
+      "condition": "rigid_rough",
+      "variant": "native_predicted",
+      "development_samples": 192,
+      "normalized_state_rmse": 3.0816075801849365,
+      "contact_semantic_rmse_train_std": 68.26026916503906,
+      "contact_input_z_rms_vs_train_labels": 68.25305938720703,
+      "action_jacobian_frobenius": 132.3935546875,
+      "action_jacobian_cosine_vs_native": 1.0,
+      "action_jacobian_relative_change_vs_native": 0.0
+    },
+    {
+      "condition": "rigid_rough",
+      "variant": "oracle_next_label",
+      "development_samples": 192,
+      "normalized_state_rmse": 3.0153160095214844,
+      "contact_semantic_rmse_train_std": 0.0,
+      "contact_input_z_rms_vs_train_labels": 1.0170351266860962,
+      "action_jacobian_frobenius": 129.38616943359375,
+      "action_jacobian_cosine_vs_native": 0.9917078614234924,
+      "action_jacobian_relative_change_vs_native": 0.12952274084091187
+    },
+    {
+      "condition": "rigid_rough",
+      "variant": "memory_zero",
+      "development_samples": 192,
+      "normalized_state_rmse": 3.062566041946411,
+      "contact_semantic_rmse_train_std": 48.25988006591797,
+      "contact_input_z_rms_vs_train_labels": 48.24967956542969,
+      "action_jacobian_frobenius": 131.8243408203125,
+      "action_jacobian_cosine_vs_native": 0.999980628490448,
+      "action_jacobian_relative_change_vs_native": 0.010475890710949898
+    },
+    {
+      "condition": "rigid_rough",
+      "variant": "memory_plus_train_std",
+      "development_samples": 192,
+      "normalized_state_rmse": 3.0817806720733643,
+      "contact_semantic_rmse_train_std": 68.43907928466797,
+      "contact_input_z_rms_vs_train_labels": 68.43189239501953,
+      "action_jacobian_frobenius": 132.3990020751953,
+      "action_jacobian_cosine_vs_native": 1.0,
+      "action_jacobian_relative_change_vs_native": 6.497127469629049e-05
+    },
+    {
+      "condition": "rigid_rough",
+      "variant": "force_zero",
+      "development_samples": 192,
+      "normalized_state_rmse": 3.041748285293579,
+      "contact_semantic_rmse_train_std": 68.25875091552734,
+      "contact_input_z_rms_vs_train_labels": 68.25150299072266,
+      "action_jacobian_frobenius": 131.07940673828125,
+      "action_jacobian_cosine_vs_native": 0.9995298981666565,
+      "action_jacobian_relative_change_vs_native": 0.03292063996195793
+    },
+    {
+      "condition": "rigid_rough",
+      "variant": "probability_intrusion_zero",
+      "development_samples": 192,
+      "normalized_state_rmse": 3.036046266555786,
+      "contact_semantic_rmse_train_std": 48.28786087036133,
+      "contact_input_z_rms_vs_train_labels": 48.2775993347168,
+      "action_jacobian_frobenius": 131.4107208251953,
+      "action_jacobian_cosine_vs_native": 0.9988119602203369,
+      "action_jacobian_relative_change_vs_native": 0.04967716708779335
+    },
+    {
+      "condition": "soft_rough",
+      "variant": "native_predicted",
+      "development_samples": 192,
+      "normalized_state_rmse": 3.0471339225769043,
+      "contact_semantic_rmse_train_std": 1.4936352968215942,
+      "contact_input_z_rms_vs_train_labels": 1.117311954498291,
+      "action_jacobian_frobenius": 150.22787475585938,
+      "action_jacobian_cosine_vs_native": 1.0,
+      "action_jacobian_relative_change_vs_native": 0.0
+    },
+    {
+      "condition": "soft_rough",
+      "variant": "oracle_next_label",
+      "development_samples": 192,
+      "normalized_state_rmse": 3.044464349746704,
+      "contact_semantic_rmse_train_std": 0.0,
+      "contact_input_z_rms_vs_train_labels": 1.0065703392028809,
+      "action_jacobian_frobenius": 147.0247344970703,
+      "action_jacobian_cosine_vs_native": 0.9871552586555481,
+      "action_jacobian_relative_change_vs_native": 0.16013891994953156
+    },
+    {
+      "condition": "soft_rough",
+      "variant": "memory_zero",
+      "development_samples": 192,
+      "normalized_state_rmse": 3.01936674118042,
+      "contact_semantic_rmse_train_std": 1.5101478099822998,
+      "contact_input_z_rms_vs_train_labels": 1.1399465799331665,
+      "action_jacobian_frobenius": 149.53866577148438,
+      "action_jacobian_cosine_vs_native": 0.9999774694442749,
+      "action_jacobian_relative_change_vs_native": 0.010673378594219685
+    },
+    {
+      "condition": "soft_rough",
+      "variant": "memory_plus_train_std",
+      "development_samples": 192,
+      "normalized_state_rmse": 3.0896871089935303,
+      "contact_semantic_rmse_train_std": 1.5206063985824585,
+      "contact_input_z_rms_vs_train_labels": 1.1526694297790527,
+      "action_jacobian_frobenius": 151.30810546875,
+      "action_jacobian_cosine_vs_native": 0.9999865889549255,
+      "action_jacobian_relative_change_vs_native": 0.011297500692307949
+    },
+    {
+      "condition": "soft_rough",
+      "variant": "force_zero",
+      "development_samples": 192,
+      "normalized_state_rmse": 2.99524188041687,
+      "contact_semantic_rmse_train_std": 1.090668797492981,
+      "contact_input_z_rms_vs_train_labels": 0.43808048963546753,
+      "action_jacobian_frobenius": 148.48953247070312,
+      "action_jacobian_cosine_vs_native": 0.999510645866394,
+      "action_jacobian_relative_change_vs_native": 0.033909719437360764
+    },
+    {
+      "condition": "soft_rough",
+      "variant": "probability_intrusion_zero",
+      "development_samples": 192,
+      "normalized_state_rmse": 2.943312644958496,
+      "contact_semantic_rmse_train_std": 1.525230884552002,
+      "contact_input_z_rms_vs_train_labels": 1.1616476774215698,
+      "action_jacobian_frobenius": 149.22076416015625,
+      "action_jacobian_cosine_vs_native": 0.9987580180168152,
+      "action_jacobian_relative_change_vs_native": 0.05059642344713211
+    }
+  ],
+  "runtime_seconds": 19.129459057934582,
+  "interpretation_scope": "causal input interventions on a frozen network, not physical interventions"
+}

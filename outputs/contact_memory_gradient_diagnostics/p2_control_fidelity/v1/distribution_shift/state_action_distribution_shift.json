@@ -1,0 +1,108 @@
+{
+  "schema": 1,
+  "status": "PARTIAL",
+  "source_sha": "c17bb8d2aac4e71cfd41887c9a73420c340f19f2",
+  "rows": [
+    {
+      "source": "final_replay_m1",
+      "sample_count": 8192,
+      "state_z_rms_vs_m1_replay": 1.0,
+      "state_z_l2_mean_vs_m1_replay": 8.490928649902344,
+      "state_feature_coverage_m1_1_99pct": 0.9804937839508057,
+      "action_z_rms_vs_m1_replay": 1.0,
+      "action_rms": 2.038196086883545,
+      "action_unit_exceedance_fraction": 0.5789082646369934,
+      "action_saturation_fraction": 0.0,
+      "static_state_fraction_speed_lt_0_1": 0.0037841796875,
+      "base_speed_mean": 1.489476203918457,
+      "contact_code_rms": 36.909584045410156
+    },
+    {
+      "source": "final_replay_m2_v2",
+      "sample_count": 8192,
+      "state_z_rms_vs_m1_replay": 1.8420945405960083,
+      "state_z_l2_mean_vs_m1_replay": 15.692001342773438,
+      "state_feature_coverage_m1_1_99pct": 0.8568334579467773,
+      "action_z_rms_vs_m1_replay": 1.404544472694397,
+      "action_rms": 2.2870309352874756,
+      "action_unit_exceedance_fraction": 0.68701171875,
+      "action_saturation_fraction": 0.0,
+      "static_state_fraction_speed_lt_0_1": 0.6934814453125,
+      "base_speed_mean": 0.12257816642522812,
+      "contact_code_rms": 12.737828254699707
+    },
+    {
+      "source": "final_replay_m2_v2_nomemory",
+      "sample_count": 8192,
+      "state_z_rms_vs_m1_replay": 0.9841153025627136,
+      "state_z_l2_mean_vs_m1_replay": 8.215910911560059,
+      "state_feature_coverage_m1_1_99pct": 0.9760304093360901,
+      "action_z_rms_vs_m1_replay": 0.8653024435043335,
+      "action_rms": 1.7985022068023682,
+      "action_unit_exceedance_fraction": 0.4791056215763092,
+      "action_saturation_fraction": 0.0,
+      "static_state_fraction_speed_lt_0_1": 0.009521484375,
+      "base_speed_mean": 1.1395682096481323,
+      "contact_code_rms": 31.9816951751709
+    },
+    {
+      "source": "fixed_policy_development_rigid_rough",
+      "sample_count": 3072,
+      "state_z_rms_vs_m1_replay": 1.2281577587127686,
+      "state_z_l2_mean_vs_m1_replay": 10.230841636657715,
+      "state_feature_coverage_m1_1_99pct": 0.9496653079986572,
+      "action_z_rms_vs_m1_replay": 1.2610112428665161,
+      "action_rms": 2.3742456436157227,
+      "action_unit_exceedance_fraction": 0.6353081464767456,
+      "action_saturation_fraction": 0.0,
+      "static_state_fraction_speed_lt_0_1": 0.078125,
+      "base_speed_mean": 1.239583969116211,
+      "contact_code_rms": 50.390586853027344
+    },
+    {
+      "source": "fixed_policy_development_soft_rough",
+      "sample_count": 3072,
+      "state_z_rms_vs_m1_replay": 2.045311689376831,
+      "state_z_l2_mean_vs_m1_replay": 18.052595138549805,
+      "state_feature_coverage_m1_1_99pct": 0.9330804347991943,
+      "action_z_rms_vs_m1_replay": 1.0010950565338135,
+      "action_rms": 1.9886138439178467,
+      "action_unit_exceedance_fraction": 0.5908745527267456,
+      "action_saturation_fraction": 0.0,
+      "static_state_fraction_speed_lt_0_1": 0.001953125,
+      "base_speed_mean": 2.2751986980438232,
+      "contact_code_rms": 24.182960510253906
+    }
+  ],
+  "checkpoint_provenance": {
+    "m1": {
+      "size_per_environment": 1000,
+      "num_environments": 1024,
+      "sample_count": 8192,
+      "checkpoint_sha256": "b3a76b694c7ddad1e5897ceeaa01040b3b2587a11143f36fd7a324813f658179"
+    },
+    "m2_v2": {
+      "size_per_environment": 1000,
+      "num_environments": 1024,
+      "sample_count": 8192,
+      "checkpoint_sha256": "3d322d8f7ffe68f50f5b6f5573dd48af8dc8dd15220b4446802691469f117c19"
+    },
+    "m2_v2_nomemory": {
+      "size_per_environment": 1000,
+      "num_environments": 1024,
+      "sample_count": 8192,
+      "checkpoint_sha256": "023b0eed06eb5d8bfb31f3e76c504ea6cd0ea3ae861e3839e4cfc3c49326cbee"
+    }
+  },
+  "dataset_sha256": {
+    "rigid_rough": "474807cbef7a82c8ce53066478c3b844d11561be16fc17a8bf8e8595e5e792ee",
+    "soft_rough": "eefefdc166781ed87b002c6ab0b7fdc64ab97681d4f0e9d5adf58f87a422afa3"
+  },
+  "reference": "deterministic sample of M1 final replay buffer",
+  "action_contract": "JointPositionActionCfg.clip=None; saturation is zero by definition; unit exceedance is reported separately",
+  "limitations": [
+    "Final replay buffers cover only their retained ring windows, not full training history.",
+    "Historical final-evaluation raw trajectories were not preserved; aggregate evaluation cannot yield feature distances.",
+    "Distances are complementary diagnostics, not definitive OOD tests."
+  ]
+}

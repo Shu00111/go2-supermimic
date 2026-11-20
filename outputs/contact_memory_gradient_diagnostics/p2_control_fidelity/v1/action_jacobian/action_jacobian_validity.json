@@ -1,0 +1,253 @@
+{
+  "schema": 1,
+  "status": "PASS",
+  "source_sha": "c17bb8d2aac4e71cfd41887c9a73420c340f19f2",
+  "criterion": "VALID requires exact replay, branch consistency, finite unsaturated action, signal above floor, and <=25% vector derivative change from epsilon 3e-3 to 1e-3",
+  "epsilons": [
+    0.01,
+    0.003,
+    0.001
+  ],
+  "coordinates": [
+    {
+      "scenario": "rigid_stable_stance",
+      "seed": 82001,
+      "action_coordinate": 0,
+      "status": "VALID",
+      "relative_change_3e-3_to_1e-3": 0.007202588953077793,
+      "relative_change_limit": 0.25,
+      "minimum_signal": 0.001153392717242241,
+      "signal_noise_floor": 1e-07
+    },
+    {
+      "scenario": "rigid_stable_stance",
+      "seed": 82001,
+      "action_coordinate": 1,
+      "status": "VALID",
+      "relative_change_3e-3_to_1e-3": 0.04713497683405876,
+      "relative_change_limit": 0.25,
+      "minimum_signal": 0.0002432403271086514,
+      "signal_noise_floor": 1e-07
+    },
+    {
+      "scenario": "rigid_stable_stance",
+      "seed": 82001,
+      "action_coordinate": 2,
+      "status": "VALID",
+      "relative_change_3e-3_to_1e-3": 0.015256750397384167,
+      "relative_change_limit": 0.25,
+      "minimum_signal": 0.0008977887337096035,
+      "signal_noise_floor": 1e-07
+    },
+    {
+      "scenario": "rigid_stable_stance",
+      "seed": 82001,
+      "action_coordinate": 3,
+      "status": "VALID",
+      "relative_change_3e-3_to_1e-3": 0.012996358796954155,
+      "relative_change_limit": 0.25,
+      "minimum_signal": 0.0012733900221064687,
+      "signal_noise_floor": 1e-07
+    },
+    {
+      "scenario": "rigid_stable_stance",
+      "seed": 82001,
+      "action_coordinate": 4,
+      "status": "VALID",
+      "relative_change_3e-3_to_1e-3": 0.02278718538582325,
+      "relative_change_limit": 0.25,
+      "minimum_signal": 0.0006587554235011339,
+      "signal_noise_floor": 1e-07
+    },
+    {
+      "scenario": "rigid_stable_stance",
+      "seed": 82001,
+      "action_coordinate": 5,
+      "status": "VALID",
+      "relative_change_3e-3_to_1e-3": 0.010799682699143887,
+      "relative_change_limit": 0.25,
+      "minimum_signal": 0.0016689109615981579,
+      "signal_noise_floor": 1e-07
+    },
+    {
+      "scenario": "rigid_stable_stance",
+      "seed": 82001,
+      "action_coordinate": 6,
+      "status": "VALID",
+      "relative_change_3e-3_to_1e-3": 0.01238202303647995,
+      "relative_change_limit": 0.25,
+      "minimum_signal": 0.0011734566651284695,
+      "signal_noise_floor": 1e-07
+    },
+    {
+      "scenario": "rigid_stable_stance",
+      "seed": 82001,
+      "action_coordinate": 7,
+      "status": "VALID",
+      "relative_change_3e-3_to_1e-3": 0.019958794116973877,
+      "relative_change_limit": 0.25,
+      "minimum_signal": 0.00047074788017198443,
+      "signal_noise_floor": 1e-07
+    },
+    {
+      "scenario": "rigid_stable_stance",
+      "seed": 82001,
+      "action_coordinate": 8,
+      "status": "VALID",
+      "relative_change_3e-3_to_1e-3": 0.016878638416528702,
+      "relative_change_limit": 0.25,
+      "minimum_signal": 0.0008882430847734213,
+      "signal_noise_floor": 1e-07
+    },
+    {
+      "scenario": "rigid_stable_stance",
+      "seed": 82001,
+      "action_coordinate": 9,
+      "status": "VALID",
+      "relative_change_3e-3_to_1e-3": 0.014501611702144146,
+      "relative_change_limit": 0.25,
+      "minimum_signal": 0.0011731103295460343,
+      "signal_noise_floor": 1e-07
+    },
+    {
+      "scenario": "rigid_stable_stance",
+      "seed": 82001,
+      "action_coordinate": 10,
+      "status": "VALID",
+      "relative_change_3e-3_to_1e-3": 0.022708434611558914,
+      "relative_change_limit": 0.25,
+      "minimum_signal": 0.00048344008973799646,
+      "signal_noise_floor": 1e-07
+    },
+    {
+      "scenario": "rigid_stable_stance",
+      "seed": 82001,
+      "action_coordinate": 11,
+      "status": "VALID",
+      "relative_change_3e-3_to_1e-3": 0.010881454683840275,
+      "relative_change_limit": 0.25,
+      "minimum_signal": 0.0008930518524721265,
+      "signal_noise_floor": 1e-07
+    },
+    {
+      "scenario": "soft_stable_stance",
+      "seed": 82011,
+      "action_coordinate": 0,
+      "status": "VALID",
+      "relative_change_3e-3_to_1e-3": 0.011204731650650501,
+      "relative_change_limit": 0.25,
+      "minimum_signal": 0.0015868695918470621,
+      "signal_noise_floor": 1e-07
+    },
+    {
+      "scenario": "soft_stable_stance",
+      "seed": 82011,
+      "action_coordinate": 1,
+      "status": "VALID",
+      "relative_change_3e-3_to_1e-3": 0.026214081794023514,
+      "relative_change_limit": 0.25,
+      "minimum_signal": 0.0009843383450061083,
+      "signal_noise_floor": 1e-07
+    },
+    {
+      "scenario": "soft_stable_stance",
+      "seed": 82011,
+      "action_coordinate": 2,
+      "status": "VALID",
+      "relative_change_3e-3_to_1e-3": 0.0124258017167449,
+      "relative_change_limit": 0.25,
+      "minimum_signal": 0.0016416377620771527,
+      "signal_noise_floor": 1e-07
+    },
+    {
+      "scenario": "soft_stable_stance",
+      "seed": 82011,
+      "action_coordinate": 3,
+      "status": "VALID",
+      "relative_change_3e-3_to_1e-3": 0.013159296475350857,
+      "relative_change_limit": 0.25,
+      "minimum_signal": 0.0016662179259583354,
+      "signal_noise_floor": 1e-07
+    },
+    {
+      "scenario": "soft_stable_stance",
+      "seed": 82011,
+      "action_coordinate": 4,
+      "status": "VALID",
+      "relative_change_3e-3_to_1e-3": 0.029323264956474304,
+      "relative_change_limit": 0.25,
+      "minimum_signal": 0.0008907426963560283,
+      "signal_noise_floor": 1e-07
+    },
+    {
+      "scenario": "soft_stable_stance",
+      "seed": 82011,
+      "action_coordinate": 5,
+      "status": "VALID",
+      "relative_change_3e-3_to_1e-3": 0.015135316178202629,
+      "relative_change_limit": 0.25,
+      "minimum_signal": 0.0015067794593051076,
+      "signal_noise_floor": 1e-07
+    },
+    {
+      "scenario": "soft_stable_stance",
+      "seed": 82011,
+      "action_coordinate": 6,
+      "status": "VALID",
+      "relative_change_3e-3_to_1e-3": 0.01230592466890812,
+      "relative_change_limit": 0.25,
+      "minimum_signal": 0.0017314516007900238,
+      "signal_noise_floor": 1e-07
+    },
+    {
+      "scenario": "soft_stable_stance",
+      "seed": 82011,
+      "action_coordinate": 7,
+      "status": "VALID",
+      "relative_change_3e-3_to_1e-3": 0.02320968173444271,
+      "relative_change_limit": 0.25,
+      "minimum_signal": 0.0007795073324814439,
+      "signal_noise_floor": 1e-07
+    },
+    {
+      "scenario": "soft_stable_stance",
+      "seed": 82011,
+      "action_coordinate": 8,
+      "status": "VALID",
+      "relative_change_3e-3_to_1e-3": 0.01988726668059826,
+      "relative_change_limit": 0.25,
+      "minimum_signal": 0.0011620355071499944,
+      "signal_noise_floor": 1e-07
+    },
+    {
+      "scenario": "soft_stable_stance",
+      "seed": 82011,
+      "action_coordinate": 9,
+      "status": "VALID",
+      "relative_change_3e-3_to_1e-3": 0.012987726368010044,
+      "relative_change_limit": 0.25,
+      "minimum_signal": 0.0014843810349702835,
+      "signal_noise_floor": 1e-07
+    },
+    {
+      "scenario": "soft_stable_stance",
+      "seed": 82011,
+      "action_coordinate": 10,
+      "status": "VALID",
+      "relative_change_3e-3_to_1e-3": 0.018848175182938576,
+      "relative_change_limit": 0.25,
+      "minimum_signal": 0.0010878267930820584,
+      "signal_noise_floor": 1e-07
+    },
+    {
+      "scenario": "soft_stable_stance",
+      "seed": 82011,
+      "action_coordinate": 11,
+      "status": "VALID",
+      "relative_change_3e-3_to_1e-3": 0.020100045949220657,
+      "relative_change_limit": 0.25,
+      "minimum_signal": 0.0011228942312300205,
+      "signal_noise_floor": 1e-07
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "schema": 1,
+  "status": "PASS",
+  "source_sha": "c17bb8d2aac4e71cfd41887c9a73420c340f19f2",
+  "training_log": "/home/yiwei/Documents/ChatGPT/go2-supermimic-v2/outputs/contact_structured_supermimic/formal_v2/runtime/training.log",
+  "event_count": 23,
+  "methods": {
+    "m1": {
+      "guard_events": 1,
+      "first_guard_iteration": 1800,
+      "last_guard_iteration": 1800,
+      "final_lr_scale": 0.5,
+      "guard_events_with_actor_gradient": 1,
+      "rollback_iterations": [
+        1500
+      ]
+    },
+    "m2_v2": {
+      "guard_events": 20,
+      "first_guard_iteration": 2450,
+      "last_guard_iteration": 10200,
+      "final_lr_scale": 9.54e-07,
+      "guard_events_with_actor_gradient": 20,
+      "rollback_iterations": [
+        2250,
+        2750,
+        3000,
+        3500,
+        4250,
+        4500,
+        5750,
+        7250,
+        7500,
+        10000
+      ]
+    },
+    "m2_v2_nomemory": {
+      "guard_events": 2,
+      "first_guard_iteration": 1900,
+      "last_guard_iteration": 2600,
+      "final_lr_scale": 0.25,
+      "guard_events_with_actor_gradient": 2,
+      "rollback_iterations": [
+        1750,
+        2500
+      ]
+    }
+  },
+  "final_optimizer_state": {
+    "m1": {
+      "checkpoint_sha256": "b3a76b694c7ddad1e5897ceeaa01040b3b2587a11143f36fd7a324813f658179",
+      "training_lr_scale": 0.5,
+      "actor_optimizer_lr": 4.6541126959029465e-05,
+      "actor_optimizer_state_entries": 8,
+      "actor_optimizer_step_min": 4900.0,
+      "actor_optimizer_step_max": 4900.0,
+      "nonfinite_steps": 0
+    },
+    "m2_v2": {
+      "checkpoint_sha256": "3d322d8f7ffe68f50f5b6f5573dd48af8dc8dd15220b4446802691469f117c19",
+      "training_lr_scale": 9.5367431640625e-07,
+      "actor_optimizer_lr": 8.877015487485784e-11,
+      "actor_optimizer_state_entries": 8,
+      "actor_optimizer_step_min": 1200.0,
+      "actor_optimizer_step_max": 1200.0,
+      "nonfinite_steps": 0
+    },
+    "m2_v2_nomemory": {
+      "checkpoint_sha256": "023b0eed06eb5d8bfb31f3e76c504ea6cd0ea3ae861e3839e4cfc3c49326cbee",
+      "training_lr_scale": 0.25,
+      "actor_optimizer_lr": 2.3270563479514732e-05,
+      "actor_optimizer_state_entries": 8,
+      "actor_optimizer_step_min": 4900.0,
+      "actor_optimizer_step_max": 4900.0,
+      "nonfinite_steps": 0
+    }
+  },
+  "chronology_interpretation": "Each learning-rate suppression is logged as part of and after its triggering guard event; the repeated guards therefore precede the extreme cumulative suppression.",
+  "limitations": [
+    "This is observational chronology, not a causal intervention.",
+    "Metrics are the most recent periodic log record immediately before each guard.",
+    "No training was resumed and no optimizer state was modified."
+  ]
+}
